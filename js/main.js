@@ -64,7 +64,7 @@ function go(route, params={}, replace=false){
   if(location.hash.replace(/^#/, '') === h) return render();
   if(replace) location.replace('#' + h); else location.hash = h;
 }
-const inPlacement = r => S.draft && S.draft.placement && ['ghi-am','dang-phan-tich'].includes(r);
+const inPlacement = r => S.draft && S.draft.placement && ['ghi-am','tai-len','dang-phan-tich'].includes(r);
 function render(){
   const {route, params} = parseHash();
   let r = route in ROUTES ? route : '', R = ROUTES[r];
@@ -76,7 +76,7 @@ function render(){
   if(R.need && !R.need()) return go(R.back, {}, true);
   if(r === 'bao-cao' && S.qaFor !== params.id){ S.qa = {}; S.qaFor = params.id; }
   if(r !== 'ghi-am' && S.rec) cleanupRec();
-  if(r !== 'tai-len' && S.upload){ clearInterval(S.upTimer); S.upload = null; }
+  if(r !== 'tai-len' && S.upload) Practice.cancelUpload();
   $('#app').innerHTML = R.v() + modalHtml() + devHtml() + (S.offline ? `<div class="offline" role="alert">${ic('wifi',14)} ${L('Mất kết nối mạng. Một số thao tác sẽ không thực hiện được cho tới khi có mạng lại.','You’re offline. Some actions won’t work until you reconnect.')}</div>` : '');
   if(r === '') sphereInit();
   if(S.lastRoute !== r){ window.scrollTo(0,0); S.lastRoute = r; }
@@ -93,9 +93,14 @@ function startSession(me){
   I18N.set(S.data.profile.ui);
   S.auth = {err:'', info:''}; S.draft = null;
 }
+/* Tải thư viện và báo cáo từ máy chủ (sau startSession). Lỗi chỉ báo, không chặn đăng nhập. */
+async function loadPractice(){
+  try { await Practice.hydrate(); }
+  catch(e){ toast(L('Chưa tải được thư viện bài nói. Hãy tải lại trang.','Couldn’t load your library. Please reload the page.'), 'err'); }
+}
 function afterLogin(){ const ret = S.params.returnUrl; if(!S.data.onboarded) return go('thiet-lap-muc-tieu', {}, true); if(ret){ const {route, params} = (() => { const [r, q=''] = ret.split('?'); return {route:r, params:toParams(q)}; })(); return go(route in ROUTES ? route : 'tong-quan', params, true); } go('tong-quan', {}, true); }
 function logout(){
-  if(S.rec) cleanupRec(); clearInterval(S.jobTimer); clearInterval(S.upTimer);
+  if(S.rec) cleanupRec(); clearInterval(S.jobTimer); Practice.cancelUpload();
   Auth.logout(); Object.assign(S, {me:null, data:null, draft:null, job:null, upload:null, modal:null, devOpen:false, qa:{}, compare:[], pendingAfterPay:null});
   toast(L('Đã đăng xuất','Logged out')); go('');
 }
@@ -186,19 +191,12 @@ function stopRec(){
   clearInterval(r.timer); cancelAnimationFrame(r.raf);
   const done = blob => {
     releaseRec(r); S.rec = null;
-    const item = newItem({kind:d.kind === 'video' ? 'video' : 'audio', dur, mime:blob ? blob.type : null});
-    if(blob && blob.size){ item.hasMedia = true; item.size = blob.size; Media.save(item.id, blob); }
-    submit(item);
+    if(!blob || !blob.size){ toast(L('Không thu được âm thanh. Hãy kiểm tra micro rồi ghi lại.','No audio was captured. Check your microphone and record again.'), 'err'); return go(d.placement ? 'bai-test' : 'luyen-tap'); }
+    Practice.startMedia(blob, dur, d.kind === 'video' ? 'video' : 'audio', 'recording');
   };
   if(r.mr && r.mr.state !== 'inactive'){ r.mr.onstop = () => done(new Blob(r.chunks, {type:r.mr.mimeType || (d.kind === 'video' ? 'video/webm' : 'audio/webm')})); r.mr.stop(); }
   else done(null);
 }
-function newItem(o){
-  const d = S.draft;
-  return {id:'l' + Date.now().toString(36) + Math.random().toString(36).slice(2,6), title:draftTitle(d), goal:d.goal, lang:d.lang, lessonId:d.lessonId || null, placement:!!d.placement,
-    date:todayISO(), created:Date.now(), status:'new', sessionId:null, hasMedia:false, size:0, text:null, ...o};
-}
-
 /* ================= Tải file lên ================= */
 function validateFile(f){
   const ext = (f.name.split('.').pop() || '').toLowerCase();
@@ -208,70 +206,8 @@ function validateFile(f){
   return '';
 }
 function startUpload(){
-  if(!navigator.onLine){ toast(L('Bạn đang ngoại tuyến. Kết nối mạng rồi thử lại.','You’re offline. Reconnect and try again.'), 'err'); return; }
-  S.upload = {file:S.draft.file, pct:0, status:'uploading'}; go('tai-len'); runUpload();
-}
-function runUpload(){
-  const u = S.upload; clearInterval(S.upTimer); u.status = 'uploading';
-  S.upTimer = setInterval(() => {
-    if(S.upload !== u){ clearInterval(S.upTimer); return; }
-    if((S.sim.net === 'offline' && u.pct >= 42) || !navigator.onLine){ clearInterval(S.upTimer); u.status = 'error'; render(); return; }
-    u.pct = Math.min(100, u.pct + 7 + Math.random()*6);
-    const b = $('#up-bar'), t = $('#up-pct'); if(b) b.style.width = u.pct + '%'; if(t) t.textContent = Math.round(u.pct) + '%';
-    if(u.pct >= 100){ clearInterval(S.upTimer); const f = u.file; S.upload = null;
-      const item = newItem({kind:/^video/.test(f.type) ? 'video' : 'audio', dur:f.dur || Math.max(30, Math.round(f.size/16000)), mime:f.type, size:f.size, hasMedia:true, fileName:f.name});
-      Media.save(item.id, f.obj); submit(item); }
-  }, 150);
-}
-
-/* ================= Nộp bài và phân tích ================= */
-function submit(item){
-  const D = S.data; D.library.push(item);
-  if(item.kind !== 'script' && !item.placement && item.dur > plan().maxAnalyzeSec){ item.status = 'pending_premium'; save(); S.modal = {type:'over-limit', id:item.id}; return go('thu-vien'); }
-  if(!item.placement && left() <= 0){ item.status = 'pending_quota'; save(); S.modal = {type:'quota', id:item.id}; return go('thu-vien'); }
-  save(); startJob(item.id);
-}
-function startJob(id){
-  const item = libItem(id); if(!item) return;
-  if(S.job && S.job.status === 'running' && S.job.libId !== id){ toast(L('Đang phân tích một bài khác. Vui lòng đợi.','Another talk is being analysed. Please wait.')); return; }
-  if(item.kind !== 'script' && !item.placement && item.dur > plan().maxAnalyzeSec){ S.modal = {type:'over-limit', id}; return render(); }
-  if(!item.placement && left() <= 0){ S.modal = {type:'quota', id}; return render(); }
-  if(!navigator.onLine){ toast(L('Bạn đang ngoại tuyến. Bài nói đã được lưu, hãy phân tích khi có mạng.','You’re offline. Your talk is saved; analyse it once you’re back online.'), 'err'); return; }
-  const n = item.kind === 'script' ? AN_STEPS.script.length : AN_STEPS.speech.length - (item.kind === 'video' ? 0 : 1);
-  item.status = 'analyzing'; item.reason = null; save();
-  clearInterval(S.jobTimer);
-  const j = S.job = {libId:id, i:0, n, status:'running', t0:Date.now(), mode:S.sim.ai};
-  const fail = reason => { clearInterval(S.jobTimer); j.status = 'failed'; item.status = 'error'; item.reason = reason; item.failStep = j.i; save(); if(S.route === 'dang-phan-tich') render(); else toast(L('Phân tích lỗi. Mở Thư viện để thử lại.','Analysis failed. Open your Library to retry.'), 'err'); };
-  S.jobTimer = setInterval(() => {
-    if(j.mode === 'timeout' && j.i >= 2){ if(Date.now() - j.t0 > CONFIG.aiTimeoutMs) fail('timeout'); return; }
-    j.i++;
-    if(j.mode === 'error' && j.i === 3) return fail('error');
-    if(j.i >= j.n){ clearInterval(S.jobTimer); j.status = 'done'; return finishJob(id); }
-    if(S.route === 'dang-phan-tich') render();
-  }, 700);
-  go('dang-phan-tich', {id});
-}
-function finishJob(id){
-  const item = libItem(id), D = S.data, sid = 's' + Date.now().toString(36);
-  const base = {id:sid, libId:id, title:item.title, goal:item.goal, lang:item.lang, kind:item.kind, date:todayISO(), dur:item.dur, placement:item.placement, lessonId:item.lessonId};
-  let s;
-  if(item.kind === 'script'){
-    const r = analyzeScript(item.text, item.title, item.goal, item.lang);
-    s = {...base, c:r.c, score:scoreOf(r.c), fillers:r.weakTotal, script:r, dur:r.estSec};
-  } else {
-    const prev = D.sessions.filter(x => x.kind !== 'script').pop(), video = item.kind === 'video', c = speechScores(prev, video);
-    if(item.lessonId){ const crit = SKILL[LESSON_BY_ID[item.lessonId].skill].crit; Object.keys(c).forEach(k => { if(c[k] != null) c[k] = clampScore(c[k] + (k === crit ? 8 : 2)); }); }
-    const fillers = prev ? Math.max(3, prev.fillers - 1) : 14;
-    s = {...base, c, score:scoreOf(c), fillers, report:buildSpeechReport({goal:item.goal, lang:item.lang, placement:item.placement, video, dur:item.dur, fillers})};
-  }
-  D.sessions.push(s); item.status = 'analyzed'; item.sessionId = sid;
-  if(!item.placement) D.used++;
-  if(item.placement){ D.placement = {id:sid, score:s.score, seen:false}; D.onboarded = true; S.draft = null; }
-  if(item.lessonId){ const st = D.lessons[item.lessonId] || {}; st.attempts = (st.attempts || 0) + 1; st.best = Math.max(st.best || 0, s.score); st.status = st.best >= CONFIG.passScore ? 'done' : 'doing'; D.lessons[item.lessonId] = st; }
-  save(); S.qa = {};
-  const here = S.route === 'dang-phan-tich' && S.params.id === id;
-  toast(item.placement ? L('Đã có kết quả bài test đầu vào','Your placement result is ready') : L('Báo cáo đã sẵn sàng','Your report is ready'));
-  if(here) item.placement ? go('tong-quan') : go('bao-cao', {id:sid}); else render();
+  const f = S.draft.file;
+  Practice.startMedia(f.obj, f.dur || Math.max(30, Math.round(f.size/16000)), /^video/.test(f.type) ? 'video' : 'audio', f.name);
 }
 
 /* ================= Thanh toán ================= */
@@ -322,6 +258,7 @@ function modalHtml(){
 
 /* ================= Bảng điều khiển bản thử nghiệm ================= */
 function devHtml(){
+  return '';   // các công cụ mô phỏng (AI, mạng, thanh toán) đã được thay bằng backend thật
   if(!S.data) return '';
   const seg = (k, opts) => `<div class="seg">${opts.map(([v,l]) => `<button class="${S.sim[k] === v ? 'on' : ''}" data-act="sim" data-k="${k}" data-v="${v}">${l}</button>`).join('')}</div>`;
   return `<button class="dev-btn" data-act="dev-toggle" aria-expanded="${S.devOpen}">${ic('sliders',14)} ${L('Bản thử nghiệm','Beta tools')}</button>${S.devOpen ? `<div class="dev" role="dialog" aria-label="${L('Bảng mô phỏng','Simulation panel')}">
@@ -397,41 +334,54 @@ const ACTIONS = {
   'rec-stop'(){ stopRec(); },
   'rec-ff'(){ const r = S.rec; if(!r) return; r.t = Math.min(CONFIG.maxRecordSec - 1, r.t + 60); updateRecUI(r); },
   'rec-cancel'(){ const pl = S.draft && S.draft.placement, lesson = S.draft && S.draft.lessonId; cleanupRec(); toast(L('Đã hủy bản ghi','Recording discarded')); if(pl){ S.draft = null; go('bai-test'); } else if(lesson) go('bai-hoc', {id:lesson}); else go('luyen-tap'); },
-  'upload-retry'(){ if(!navigator.onLine){ toast(L('Vẫn chưa có mạng. Kết nối lại rồi thử.','Still offline. Reconnect and retry.'), 'err'); return; } runUpload(); render(); },
-  'upload-cancel'(){ clearInterval(S.upTimer); S.upload = null; toast(L('Đã hủy tải lên','Upload cancelled')); go('luyen-tap'); },
+  'upload-retry'(){ if(!navigator.onLine){ toast(L('Vẫn chưa có mạng. Kết nối lại rồi thử.','Still offline. Reconnect and retry.'), 'err'); return; } Practice.runUpload(); render(); },
+  'upload-cancel'(){ Practice.cancelUpload(); toast(L('Đã hủy tải lên','Upload cancelled')); go('luyen-tap'); },
   'use-sample'(){ S.scriptText = SAMPLE_SCRIPT[S.draft.lang] || SAMPLE_SCRIPT.vi; S.scriptErr = ''; render(); },
   'script-back'(){ S.draft.lessonId ? go('bai-hoc', {id:S.draft.lessonId}) : go('luyen-tap'); },
-  'script-go'(){
+  async 'script-go'(){
     const t = ($('#sc-text') || {}).value ?? S.scriptText; S.scriptText = t;
     const err = scriptErrFor(t); if(err){ S.scriptErr = err; return render(); }
-    S.scriptErr = ''; const item = newItem({kind:'script', text:t, dur:Math.round(wordsOf(t)/130*60)}); S.scriptText = ''; submit(item);
+    if(!navigator.onLine){ S.scriptErr = L('Bạn đang ngoại tuyến. Kết nối mạng rồi thử lại.','You’re offline. Reconnect and try again.'); return render(); }
+    S.scriptErr = '';
+    try { await Practice.submitScript(t); S.scriptText = ''; }
+    catch(e){ S.scriptErr = e.message || L('Không gửi được kịch bản. Vui lòng thử lại.','Couldn’t send the script. Please try again.'); render(); }
   },
-  analyze(el){ startJob(el.dataset.id); },
-  retry(el){
+  analyze(el){ Practice.analyze(el.dataset.id); },
+  async retry(el){
     const s = S.data.sessions.find(x => x.id === el.dataset.id); if(!s) return;
     let kind = el.dataset.kind || s.kind; if(kind === 'video' && !plan().video){ toast(L('Quay video có trong gói Premium','Video is a Premium feature')); return openPay(null); }
     S.draft = {goal:s.goal, lang:s.lang, promptIdx:0, custom:s.placement || s.lessonId ? '' : s.title, kind, file:null, lessonId:s.lessonId || null, placement:false};
-    if(kind === 'script'){ const it = libItem(s.libId); S.scriptText = it ? it.text : ''; return go('kich-ban'); }
+    if(kind === 'script'){ const it = libItem(s.libId); S.scriptText = it ? await Practice.scriptText(it).catch(() => '') : ''; return go('kich-ban'); }
     go('luyen-tap');
   },
   jump(el){ flash(el.dataset.to); },
+  'report-reload'(el){ const x = S.data.sessions.find(q => q.id === el.dataset.id); if(x){ x.loadErr = false; x.loading = false; } render(); },
   'qa-open'(el){ if(!S.data || !isPro()){ toast(L('Trả lời phản biện có trong gói Premium','Answering questions is a Premium feature')); return S.data ? openPay(null) : go('bang-gia'); } const i = el.dataset.i; S.qa[i] = {...(S.qa[i] || {}), open:!(S.qa[i] || {}).open}; render(); },
   'qa-grade'(el){ const i = el.dataset.i, q = S.qa[i] || {}; if(!(q.text || '').trim()){ toast(L('Nhập câu trả lời trước khi chấm','Type an answer first')); return; } S.qa[i] = {...q, state:'loading'}; render(); setTimeout(() => { if(!S.qa[i]) return; S.qa[i] = {...S.qa[i], state:'done', fb:gradeAnswer(S.qa[i].text, el.dataset.goal)}; if(S.route === 'bao-cao') render(); }, 1100); },
-  'lib-play'(el){
+  async 'lib-play'(el){
     const l = libItem(el.dataset.id); if(!l) return;
     if(S.openLib === l.id){ S.openLib = null; return render(); }
-    if(l.kind === 'script'){ S.openLib = l.id; return render(); }
-    Media.url(l.id).then(url => { if(!url){ toast(L('Tệp không còn trên thiết bị này.','The file is no longer on this device.'), 'err'); return; } S.openLib = l.id; S.openUrl = url; render(); });
+    try {
+      if(l.kind === 'script'){ await Practice.scriptText(l); S.openLib = l.id; S.openUrl = null; return render(); }
+      S.openUrl = await Practice.mediaUrl(l.id); S.openLib = l.id; render();
+    } catch(e){ toast(e.code === 'MEDIA_EXPIRED' ? L('Tệp đã hết thời hạn lưu trữ và bị xóa. Báo cáo vẫn được giữ.','The file passed its retention period and was deleted. Your report is kept.') : L('Không mở được tệp. Vui lòng thử lại.','Couldn’t open the file. Please try again.'), 'err'); }
   },
-  'lib-dl'(el){
+  async 'lib-dl'(el){
     const l = libItem(el.dataset.id); if(!l) return;
-    const fire = (url, ext) => { const a = document.createElement('a'); a.href = url; a.download = slug(l.title) + ext; document.body.appendChild(a); a.click(); a.remove(); };
-    if(l.kind === 'script') return fire(URL.createObjectURL(new Blob([l.text], {type:'text/plain;charset=utf-8'})), '.txt');
-    Media.url(l.id).then(url => url ? fire(url, l.fileName ? '.' + l.fileName.split('.').pop() : /mp4/.test(l.mime || '') ? '.mp4' : '.webm') : toast(L('Tệp không còn trên thiết bị này.','The file is no longer on this device.'), 'err'));
+    const fire = (url, name) => { const a = document.createElement('a'); a.href = url; if(name) a.download = name; document.body.appendChild(a); a.click(); a.remove(); };
+    try {
+      if(l.kind === 'script') return fire(URL.createObjectURL(new Blob([await Practice.scriptText(l)], {type:'text/plain;charset=utf-8'})), slug(l.title) + '.txt');
+      fire(await Practice.mediaUrl(l.id, true));
+    } catch(e){ toast(e.code === 'MEDIA_EXPIRED' ? L('Tệp đã hết thời hạn lưu trữ và bị xóa.','The file passed its retention period and was deleted.') : L('Không tải được tệp. Vui lòng thử lại.','Couldn’t download the file. Please try again.'), 'err'); }
   },
   'lib-del'(el){ S.confirmDel = el.dataset.id; render(); },
   'lib-del-no'(){ S.confirmDel = null; render(); },
-  'lib-del-yes'(el){ const id = el.dataset.id, D = S.data, it = libItem(id); D.library = D.library.filter(l => l.id !== id); if(it && it.sessionId){ D.sessions = D.sessions.filter(s => s.id !== it.sessionId); if(D.placement && D.placement.id === it.sessionId) D.placement = null; } Media.remove(id); if(S.openLib === id) S.openLib = null; S.confirmDel = null; save(); toast(L('Đã xóa','Deleted')); render(); },
+  async 'lib-del-yes'(el){
+    const id = el.dataset.id;
+    try { await Practice.remove(id); if(S.openLib === id){ S.openLib = null; S.openUrl = null; } S.confirmDel = null; toast(L('Đã xóa bài này','Talk deleted')); }
+    catch(e){ S.confirmDel = null; toast(e.code === 'MEDIA_IN_USE' ? L('Bài đang được phân tích. Hãy thử lại sau ít phút.','This talk is being analysed. Try again in a few minutes.') : L('Chưa xóa được. Vui lòng thử lại.','Couldn’t delete. Please try again.'), 'err'); }
+    render();
+  },
   cmp(el){ const id = el.dataset.id, max = plan().compareMax, min = CONFIG.compareMin; if(S.compare.includes(id)){ if(S.compare.length <= min){ toast(L(`Cần giữ ít nhất ${min} lần để so sánh`, `Keep at least ${min} sessions selected`)); return; } S.compare = S.compare.filter(x => x !== id); } else { if(S.compare.length >= max){ toast(isPro() ? L(`So sánh tối đa ${max} lần`, `Compare up to ${max}`) : L(`Gói Miễn phí so sánh tối đa ${max} lần. Premium được ${CONFIG.plans.premium.compareMax}.`, `Free compares up to ${max}. Premium allows ${CONFIG.plans.premium.compareMax}.`)); return; } S.compare.push(id); } render(); },
   'lesson-read'(el){ const st = S.data.lessons[el.dataset.id] || {}; st.read = true; if(!st.status) st.status = 'doing'; S.data.lessons[el.dataset.id] = st; save(); render(); },
   'lesson-practice'(el){
@@ -447,7 +397,7 @@ const ACTIONS = {
   'dev-plan'(el){ setPlan(el.dataset.v); toast(isPro() ? L('Đang xem bản Premium','Viewing Premium') : L('Đã về gói Miễn phí','Back on Free')); render(); },
   'dev-reset'(){ S.devConfirm = true; render(); },
   'dev-reset-no'(){ S.devConfirm = false; render(); },
-  'dev-reset-yes'(){ const D = S.data; D.library.forEach(l => Media.remove(l.id)); Object.assign(D, {sessions:[], library:[], lessons:{}, placement:null, used:0}); S.devConfirm = false; S.compare = []; save(); toast(L('Đã xóa dữ liệu luyện tập','Practice data cleared')); render(); },
+  'dev-reset-yes'(){ const D = S.data; Object.assign(D, {sessions:[], library:[], lessons:{}, placement:null, used:0}); S.devConfirm = false; S.compare = []; save(); toast(L('Đã xóa dữ liệu luyện tập','Practice data cleared')); render(); },
 };
 
 /* ================= Sự kiện ================= */
@@ -467,7 +417,7 @@ document.addEventListener('submit', async e => {
     if(!EMAIL_OK(email)){ S.auth.err = L('Email chưa đúng định dạng, ví dụ: ban@email.com.','Enter a valid email, e.g. you@email.com.'); return render(); }
     if(!pw){ S.auth.err = L('Nhập mật khẩu.','Enter your password.'); return render(); }
     S.auth.busy = true; render();
-    try { const me = await Auth.login(email, pw); S.auth.busy = false; startSession(me); toast(L('Đã đăng nhập','Logged in')); afterLogin(); }
+    try { const me = await Auth.login(email, pw); S.auth.busy = false; startSession(me); await loadPractice(); toast(L('Đã đăng nhập','Logged in')); afterLogin(); }
     catch(err){ S.auth.busy = false;
       if(err.code === 'unverified'){ Auth.setPending(email.toLowerCase()); try { await Auth.resend(email); } catch(e){} S.auth.err = ''; S.auth.info = L('Email chưa được xác thực. Chúng tôi vừa gửi lại email xác thực.','Your email isn’t verified yet. We just sent the verification email again.'); return go('xac-thuc-email'); }
       S.auth.err = {badcred:L('Email hoặc mật khẩu không đúng. Thử lại hoặc chọn “Quên mật khẩu”.','Wrong email or password. Try again or use “Forgot password”.'), wait:L('Bạn thử quá nhiều lần. Vui lòng đợi một chút rồi thử lại.','Too many attempts. Please wait a moment and try again.'), network:L('Không kết nối được máy chủ. Kiểm tra mạng và thử lại.','Couldn’t reach the server. Check your connection and try again.')}[err.code] || L('Không đăng nhập được. Vui lòng thử lại.','Couldn’t log in. Please try again.');
@@ -541,7 +491,7 @@ document.addEventListener('keydown', e => { if(e.key === 'Escape'){ if(S.modal &
 /* ================= Khởi động ================= */
 (async function init(){
   I18N.load();
-  try { const me = await Auth.me(); if(me){ S.me = me.email; S.data = UserStore.fromMe(me); I18N.set(S.data.profile.ui); } }
+  try { const me = await Auth.me(); if(me){ S.me = me.email; S.data = UserStore.fromMe(me); I18N.set(S.data.profile.ui); await loadPractice(); } }
   catch(e){ S.offline = true; }
   render();
 })();
