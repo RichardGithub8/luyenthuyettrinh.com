@@ -1,0 +1,255 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2720" height="1290" viewBox="0 0 2720 1290" font-family="Inter, Be Vietnam Pro, Arial, sans-serif">
+<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#7A8699"/></marker></defs>
+<rect id="Background" width="2720" height="1290" fill="#FFFFFF"/>
+<g id="Title"><text x="40" y="58" font-size="30" font-weight="700" fill="#0B0F17">luyenthuyettrinh.com · Website flow</text><text x="40" y="90" font-size="15" fill="#5A6577">Bản MVP · sơ đồ các trang và quyết định chính · cập nhật 3/11/2026</text></g>
+<g id="Legend">
+<rect x="1900" y="36" width="34" height="26" rx="6" fill="#FFFFFF" stroke="#0B63CE" stroke-width="2" stroke-dasharray="none"/>
+<text x="1944" y="54" font-size="14" fill="#0B0F17">Trang</text>
+<rect x="2150" y="36" width="34" height="26" rx="6" fill="#EEF4FC" stroke="#0B63CE" stroke-width="2" stroke-dasharray="none"/>
+<text x="2194" y="54" font-size="14" fill="#0B0F17">Popup / modal</text>
+<rect x="2400" y="36" width="34" height="26" rx="6" fill="#FFFFFF" stroke="#7C3AED" stroke-width="2" stroke-dasharray="6 5"/>
+<text x="2444" y="54" font-size="14" fill="#0B0F17">Tính năng Premium</text>
+<path d="M1914 76 L1928 89 L1914 102 L1900 89Z" fill="#FFFBEB" stroke="#E6B23A" stroke-width="2"/>
+<text x="1944" y="94" font-size="14" fill="#0B0F17">Quyết định</text>
+<rect x="2150" y="76" width="34" height="26" rx="13" fill="#F1F3F6" stroke="#8A94A6" stroke-width="2" stroke-dasharray="none"/>
+<text x="2194" y="94" font-size="14" fill="#0B0F17">Liên kết tới trang khác</text>
+</g>
+<g id="Edges">
+<path d="M256 200 L344 200" fill="none" stroke="#7A8699" stroke-width="1.8" stroke-dasharray="none" marker-end="url(#arr)"/>
+<path d="M556 200 L644 200" fill="none" stroke="#7A8699" stroke-width="1.8" stroke-dasharray="none" marker-end="url(#arr)"/>
+<path d="M856 200 L944 200" fill="none" stroke="#7A8699" stroke-width="1.8" stroke-dasharray="none" marker-end="url(#arr)"/>
+<path d="M1156 200 L1244 200" fill="none" stroke="#7A8699" stroke-width="1.8" stroke-dasharray="none" marker-end="url(#arr)"/>
+<path d="M1456 200 L1562 200" fill="none" stroke="#7A8699" stroke-width="1.8" stroke-dasharray="none" marker-end="url(#arr)"/>
+<path d="M1738 200 L1844 200" fill="none" stroke="#7A8699" stroke-width="1.8" stroke-dasharray="none" marker-end="url(#arr)"/>
+<path d="M1650 256 L1650 358" fill="none" stroke="#7A8699" stroke-width="1.8" stroke-dasharray="none" marker-end="url(#arr)"/>
+<path d="M1756 400 L1950 400 L1950 242" fill="none" stroke="#7A8699" stroke-width="1.8" stroke-dasharray="none" marker-end="url(#arr)"/>
+<path d="M2056 200 L2162 200" fill="none" stroke="#7A8699" stroke-width="1.8" stroke-dasharray="none" marker-end="url(#arr)"/>
+<path d="M2338 200 L2455 200" fill="none" stroke="#7A8699" stroke-width="1.8" stroke-dasharray="none" marker-end="url(#arr)"/>
+<path d="M2250 256 L2250 358" fill="none" stroke="#7A8699" stroke-width="1.8" stroke-dasharray="none" marker-end="url(#arr)"/>
+<path d="M2250 442 L2250 510 L1650 510 L1650 578" fill="none" stroke="#7A8699" stroke-width="1.8" stroke-dasharray="none" marker-end="url(#arr)"/>
+<path d="M150 242 L150 358" fill="none" stroke="#7A8699" stroke-width="1.8" stroke-dasharray="none" marker-end="url(#arr)"/>
+<path d="M150 242 L150 318 L450 318 L450 358" fill="none" stroke="#7A8699" stroke-width="1.8" stroke-dasharray="none" marker-end="url(#arr)"/>
+<path d="M150 242 L150 318 L750 318 L750 378" fill="none" stroke="#7A8699" stroke-width="1.8" stroke-dasharray="none" marker-end="url(#arr)"/>
+<path d="M150 442 L150 578" fill="none" stroke="#7A8699" stroke-width="1.8" stroke-dasharray="none" marker-end="url(#arr)"/>
+<path d="M256 620 L344 620" fill="none" stroke="#7A8699" stroke-width="1.8" stroke-dasharray="none" marker-end="url(#arr)"/>
+<path d="M556 620 L662 620" fill="none" stroke="#7A8699" stroke-width="1.8" stroke-dasharray="none" marker-end="url(#arr)"/>
+<path d="M838 620 L962 620" fill="none" stroke="#7A8699" stroke-width="1.8" stroke-dasharray="none" marker-end="url(#arr)"/>
+<path d="M750 676 L750 958" fill="none" stroke="#7A8699" stroke-width="1.8" stroke-dasharray="none" marker-end="url(#arr)"/>
+<path d="M1138 620 L1244 620" fill="none" stroke="#7A8699" stroke-width="1.8" stroke-dasharray="none" marker-end="url(#arr)"/>
+<path d="M1050 676 L1050 820 L1244 820" fill="none" stroke="#7A8699" stroke-width="1.8" stroke-dasharray="none" marker-end="url(#arr)"/>
+<path d="M1456 820 L1650 820 L1650 662" fill="none" stroke="#7A8699" stroke-width="1.8" stroke-dasharray="none" marker-end="url(#arr)"/>
+<path d="M1456 620 L1544 620" fill="none" stroke="#7A8699" stroke-width="1.8" stroke-dasharray="none" marker-end="url(#arr)"/>
+<path d="M1756 620 L1844 620" fill="none" stroke="#7A8699" stroke-width="1.8" stroke-dasharray="none" marker-end="url(#arr)"/>
+<path d="M2056 620 L2144 620" fill="none" stroke="#7A8699" stroke-width="1.8" stroke-dasharray="none" marker-end="url(#arr)"/>
+<path d="M1980 662 L1980 720 L2250 720 L2250 778" fill="none" stroke="#7A8699" stroke-width="1.8" stroke-dasharray="none" marker-end="url(#arr)"/>
+<path d="M1950 662 L1950 778" fill="none" stroke="#7A8699" stroke-width="1.8" stroke-dasharray="none" marker-end="url(#arr)"/>
+<path d="M1950 862 L1950 978" fill="none" stroke="#7A8699" stroke-width="1.8" stroke-dasharray="none" marker-end="url(#arr)"/>
+<path d="M150 662 L150 778" fill="none" stroke="#7A8699" stroke-width="1.8" stroke-dasharray="none" marker-end="url(#arr)"/>
+<path d="M256 820 L344 820" fill="none" stroke="#7A8699" stroke-width="1.8" stroke-dasharray="none" marker-end="url(#arr)"/>
+<path d="M44 620 L14 620 L14 1000 L644 1000" fill="none" stroke="#7A8699" stroke-width="1.8" stroke-dasharray="none" marker-end="url(#arr)"/>
+<path d="M14 1000 L14 1170 L44 1170" fill="none" stroke="#7A8699" stroke-width="1.8" stroke-dasharray="none" marker-end="url(#arr)"/>
+<path d="M256 1170 L344 1170" fill="none" stroke="#7A8699" stroke-width="1.8" stroke-dasharray="none" marker-end="url(#arr)"/>
+<path d="M556 1170 L655 1170" fill="none" stroke="#7A8699" stroke-width="1.8" stroke-dasharray="none" marker-end="url(#arr)"/>
+<path d="M856 1000 L944 1000" fill="none" stroke="#7A8699" stroke-width="1.8" stroke-dasharray="none" marker-end="url(#arr)"/>
+<path d="M1156 1000 L1244 1000" fill="none" stroke="#7A8699" stroke-width="1.8" stroke-dasharray="none" marker-end="url(#arr)"/>
+<path d="M1456 1000 L1555 1000" fill="none" stroke="#7A8699" stroke-width="1.8" stroke-dasharray="none" marker-end="url(#arr)"/>
+<path d="M1350 1042 L1350 1150 L1156 1150" fill="none" stroke="#7A8699" stroke-width="1.8" stroke-dasharray="5 5" marker-end="url(#arr)"/>
+</g><g id="Edge labels">
+<g><rect x="257" y="190" width="87" height="20" rx="10" fill="#FFFFFF" stroke="#E3E8EF"/><text x="300" y="204" font-size="11.5" font-weight="600" fill="#5A6577" text-anchor="middle">Get started</text></g>
+<g><rect x="1777" y="190" width="27" height="20" rx="10" fill="#FFFFFF" stroke="#E3E8EF"/><text x="1791" y="204" font-size="11.5" font-weight="600" fill="#5A6577" text-anchor="middle">Có</text></g>
+<g><rect x="1630" y="297" width="40" height="20" rx="10" fill="#FFFFFF" stroke="#E3E8EF"/><text x="1650" y="311" font-size="11.5" font-weight="600" fill="#5A6577" text-anchor="middle">Chưa</text></g>
+<g><rect x="2370" y="190" width="54" height="20" rx="10" fill="#FFFFFF" stroke="#E3E8EF"/><text x="2396" y="204" font-size="11.5" font-weight="600" fill="#5A6577" text-anchor="middle">Để sau</text></g>
+<g><rect x="2220" y="297" width="60" height="20" rx="10" fill="#FFFFFF" stroke="#E3E8EF"/><text x="2250" y="311" font-size="11.5" font-weight="600" fill="#5A6577" text-anchor="middle">Bắt đầu</text></g>
+<g><rect x="113" y="290" width="73" height="20" rx="10" fill="#FFFFFF" stroke="#E3E8EF"/><text x="150" y="304" font-size="11.5" font-weight="600" fill="#5A6577" text-anchor="middle">Đăng nhập</text></g>
+<g><rect x="394" y="328" width="113" height="20" rx="10" fill="#FFFFFF" stroke="#E3E8EF"/><text x="450" y="342" font-size="11.5" font-weight="600" fill="#5A6577" text-anchor="middle">Xem báo cáo mẫu</text></g>
+<g><rect x="717" y="338" width="67" height="20" rx="10" fill="#FFFFFF" stroke="#E3E8EF"/><text x="750" y="352" font-size="11.5" font-weight="600" fill="#5A6577" text-anchor="middle">Bảng giá</text></g>
+<g><rect x="263" y="610" width="73" height="20" rx="10" fill="#FFFFFF" stroke="#E3E8EF"/><text x="300" y="624" font-size="11.5" font-weight="600" fill="#5A6577" text-anchor="middle">Luyện tập</text></g>
+<g><rect x="579" y="610" width="60" height="20" rx="10" fill="#FFFFFF" stroke="#E3E8EF"/><text x="609" y="624" font-size="11.5" font-weight="600" fill="#5A6577" text-anchor="middle">Bắt đầu</text></g>
+<g><rect x="883" y="610" width="34" height="20" rx="10" fill="#FFFFFF" stroke="#E3E8EF"/><text x="900" y="624" font-size="11.5" font-weight="600" fill="#5A6577" text-anchor="middle">Còn</text></g>
+<g><rect x="717" y="810" width="67" height="20" rx="10" fill="#FFFFFF" stroke="#E3E8EF"/><text x="750" y="824" font-size="11.5" font-weight="600" fill="#5A6577" text-anchor="middle">Hết lượt</text></g>
+<g><rect x="1154" y="610" width="73" height="20" rx="10" fill="#FFFFFF" stroke="#E3E8EF"/><text x="1191" y="624" font-size="11.5" font-weight="600" fill="#5A6577" text-anchor="middle">Trực tiếp</text></g>
+<g><rect x="1017" y="738" width="67" height="20" rx="10" fill="#FFFFFF" stroke="#E3E8EF"/><text x="1050" y="752" font-size="11.5" font-weight="600" fill="#5A6577" text-anchor="middle">Tải file</text></g>
+<g><rect x="2070" y="610" width="60" height="20" rx="10" fill="#FFFFFF" stroke="#E3E8EF"/><text x="2100" y="624" font-size="11.5" font-weight="600" fill="#5A6577" text-anchor="middle">Premium</text></g>
+<g><rect x="2085" y="710" width="60" height="20" rx="10" fill="#FFFFFF" stroke="#E3E8EF"/><text x="2115" y="724" font-size="11.5" font-weight="600" fill="#5A6577" text-anchor="middle">Premium</text></g>
+<g><rect x="120" y="710" width="60" height="20" rx="10" fill="#FFFFFF" stroke="#E3E8EF"/><text x="150" y="724" font-size="11.5" font-weight="600" fill="#5A6577" text-anchor="middle">Sidebar</text></g>
+<g><rect x="270" y="810" width="60" height="20" rx="10" fill="#FFFFFF" stroke="#E3E8EF"/><text x="300" y="824" font-size="11.5" font-weight="600" fill="#5A6577" text-anchor="middle">Premium</text></g>
+<g><rect x="407" y="990" width="87" height="20" rx="10" fill="#FFFFFF" stroke="#E3E8EF"/><text x="450" y="1004" font-size="11.5" font-weight="600" fill="#5A6577" text-anchor="middle">Gói dịch vụ</text></g>
+<g><rect x="867" y="990" width="67" height="20" rx="10" fill="#FFFFFF" stroke="#E3E8EF"/><text x="900" y="1004" font-size="11.5" font-weight="600" fill="#5A6577" text-anchor="middle">Nâng cấp</text></g>
+<g><rect x="1160" y="990" width="80" height="20" rx="10" fill="#FFFFFF" stroke="#E3E8EF"/><text x="1200" y="1004" font-size="11.5" font-weight="600" fill="#5A6577" text-anchor="middle">Thanh toán</text></g>
+<g><rect x="1482" y="990" width="47" height="20" rx="10" fill="#FFFFFF" stroke="#E3E8EF"/><text x="1506" y="1004" font-size="11.5" font-weight="600" fill="#5A6577" text-anchor="middle">Video</text></g>
+<g><rect x="1300" y="1090" width="100" height="20" rx="10" fill="#FFFFFF" stroke="#E3E8EF"/><text x="1350" y="1104" font-size="11.5" font-weight="600" fill="#5A6577" text-anchor="middle">Đã là Premium</text></g>
+</g><g id="Nodes">
+<g id="Landing page">
+<rect x="44.0" y="158.0" width="212.0" height="84.0" rx="12" fill="#0B63CE" stroke="#0B63CE" stroke-width="2" stroke-dasharray="none"/>
+<text x="150" y="197" font-size="15" font-weight="700" fill="#FFFFFF" text-anchor="middle">Landing page</text>
+<text x="150" y="217" font-size="11.5" fill="#DCE8FA" text-anchor="middle">Slogan · Get started</text>
+</g>
+<g id="Giới thiệu sản phẩm">
+<rect x="344.0" y="158.0" width="212.0" height="84.0" rx="12" fill="#FFFFFF" stroke="#0B63CE" stroke-width="2" stroke-dasharray="none"/>
+<text x="450" y="197" font-size="15" font-weight="700" fill="#0B0F17" text-anchor="middle">Giới thiệu sản phẩm</text>
+<text x="450" y="217" font-size="11.5" fill="#5A6577" text-anchor="middle">Onboarding bước 0</text>
+</g>
+<g id="Chọn chế độ luyện">
+<rect x="644.0" y="158.0" width="212.0" height="84.0" rx="12" fill="#FFFFFF" stroke="#0B63CE" stroke-width="2" stroke-dasharray="none"/>
+<text x="750" y="197" font-size="15" font-weight="700" fill="#0B0F17" text-anchor="middle">Chọn chế độ luyện</text>
+<text x="750" y="217" font-size="11.5" fill="#5A6577" text-anchor="middle">4 chế độ · AI riêng</text>
+</g>
+<g id="Chọn ngôn ngữ">
+<rect x="944.0" y="158.0" width="212.0" height="84.0" rx="12" fill="#FFFFFF" stroke="#0B63CE" stroke-width="2" stroke-dasharray="none"/>
+<text x="1050" y="197" font-size="15" font-weight="700" fill="#0B0F17" text-anchor="middle">Chọn ngôn ngữ</text>
+<text x="1050" y="217" font-size="11.5" fill="#5A6577" text-anchor="middle">Tiếng Việt / Tiếng Anh</text>
+</g>
+<g id="Xem trước buổi tập">
+<rect x="1244.0" y="158.0" width="212.0" height="84.0" rx="12" fill="#FFFFFF" stroke="#0B63CE" stroke-width="2" stroke-dasharray="none"/>
+<text x="1350" y="197" font-size="15" font-weight="700" fill="#0B0F17" text-anchor="middle">Xem trước buổi tập</text>
+<text x="1350" y="217" font-size="11.5" fill="#5A6577" text-anchor="middle">Người nghe AI, gói Free</text>
+</g>
+<g id="Đã đăng nhập?">
+<path d="M1650 144.0 L1738.0 200 L1650 256.0 L1562.0 200Z" fill="#FFFBEB" stroke="#E6B23A" stroke-width="2.2"/>
+<text x="1650" y="205" font-size="13.5" font-weight="700" fill="#0B0F17" text-anchor="middle">Đã đăng nhập?</text>
+</g>
+<g id="Bài test đầu vào">
+<rect x="1844.0" y="158.0" width="212.0" height="84.0" rx="12" fill="#FFFFFF" stroke="#0B63CE" stroke-width="2" stroke-dasharray="none"/>
+<text x="1950" y="197" font-size="15" font-weight="700" fill="#0B0F17" text-anchor="middle">Bài test đầu vào</text>
+<text x="1950" y="217" font-size="11.5" fill="#5A6577" text-anchor="middle">Giới thiệu bản thân 60s</text>
+</g>
+<g id="Bắt đầu test?">
+<path d="M2250 144.0 L2338.0 200 L2250 256.0 L2162.0 200Z" fill="#FFFBEB" stroke="#E6B23A" stroke-width="2.2"/>
+<text x="2250" y="205" font-size="13.5" font-weight="700" fill="#0B0F17" text-anchor="middle">Bắt đầu test?</text>
+</g>
+<g id="→ Dashboard">
+<rect x="2455" y="178" width="190" height="44" rx="22" fill="#F1F3F6" stroke="#8A94A6" stroke-width="2" stroke-dasharray="none"/>
+<text x="2550" y="205" font-size="13.5" font-weight="600" fill="#3D4757" text-anchor="middle">→ Dashboard</text>
+</g>
+<g id="Đăng nhập">
+<rect x="44.0" y="358.0" width="212.0" height="84.0" rx="12" fill="#FFFFFF" stroke="#0B63CE" stroke-width="2" stroke-dasharray="none"/>
+<text x="150" y="397" font-size="15" font-weight="700" fill="#0B0F17" text-anchor="middle">Đăng nhập</text>
+<text x="150" y="417" font-size="11.5" fill="#5A6577" text-anchor="middle">Email / Google</text>
+</g>
+<g id="Báo cáo mẫu">
+<rect x="344.0" y="358.0" width="212.0" height="84.0" rx="12" fill="#FFFFFF" stroke="#0B63CE" stroke-width="2" stroke-dasharray="none"/>
+<text x="450" y="397" font-size="15" font-weight="700" fill="#0B0F17" text-anchor="middle">Báo cáo mẫu</text>
+<text x="450" y="417" font-size="11.5" fill="#5A6577" text-anchor="middle">Dành cho khách</text>
+</g>
+<g id="→ Gói dịch vụ">
+<rect x="655" y="378" width="190" height="44" rx="22" fill="#F1F3F6" stroke="#8A94A6" stroke-width="2" stroke-dasharray="none"/>
+<text x="750" y="405" font-size="13.5" font-weight="600" fill="#3D4757" text-anchor="middle">→ Gói dịch vụ</text>
+</g>
+<g id="Đăng ký">
+<rect x="1544.0" y="358.0" width="212.0" height="84.0" rx="12" fill="#FFFFFF" stroke="#0B63CE" stroke-width="2" stroke-dasharray="none"/>
+<text x="1650" y="397" font-size="15" font-weight="700" fill="#0B0F17" text-anchor="middle">Đăng ký</text>
+<text x="1650" y="417" font-size="11.5" fill="#5A6577" text-anchor="middle">Email / Google</text>
+</g>
+<g id="Ghi âm 60 giây">
+<rect x="2144.0" y="358.0" width="212.0" height="84.0" rx="12" fill="#FFFFFF" stroke="#0B63CE" stroke-width="2" stroke-dasharray="none"/>
+<text x="2250" y="397" font-size="15" font-weight="700" fill="#0B0F17" text-anchor="middle">Ghi âm 60 giây</text>
+<text x="2250" y="417" font-size="11.5" fill="#5A6577" text-anchor="middle">Bài test, không tính lượt</text>
+</g>
+<g id="Dashboard">
+<rect x="44.0" y="578.0" width="212.0" height="84.0" rx="12" fill="#FFFFFF" stroke="#0B63CE" stroke-width="2" stroke-dasharray="none"/>
+<text x="150" y="617" font-size="15" font-weight="700" fill="#0B0F17" text-anchor="middle">Dashboard</text>
+<text x="150" y="637" font-size="11.5" fill="#5A6577" text-anchor="middle">Điểm, biểu đồ, lỗi thường gặp</text>
+</g>
+<g id="Thiết lập buổi luyện">
+<rect x="344.0" y="578.0" width="212.0" height="84.0" rx="12" fill="#FFFFFF" stroke="#0B63CE" stroke-width="2" stroke-dasharray="none"/>
+<text x="450" y="617" font-size="15" font-weight="700" fill="#0B0F17" text-anchor="middle">Thiết lập buổi luyện</text>
+<text x="450" y="637" font-size="11.5" fill="#5A6577" text-anchor="middle">Chế độ, mục đích, chủ đề</text>
+</g>
+<g id="Còn lượt phân tích?">
+<path d="M750 564.0 L838.0 620 L750 676.0 L662.0 620Z" fill="#FFFBEB" stroke="#E6B23A" stroke-width="2.2"/>
+<text x="750" y="625" font-size="13.5" font-weight="700" fill="#0B0F17" text-anchor="middle">Còn lượt phân tích?</text>
+</g>
+<g id="Cách nộp bài?">
+<path d="M1050 564.0 L1138.0 620 L1050 676.0 L962.0 620Z" fill="#FFFBEB" stroke="#E6B23A" stroke-width="2.2"/>
+<text x="1050" y="625" font-size="13.5" font-weight="700" fill="#0B0F17" text-anchor="middle">Cách nộp bài?</text>
+</g>
+<g id="Ghi âm / Quay video">
+<rect x="1244.0" y="578.0" width="212.0" height="84.0" rx="12" fill="#FFFFFF" stroke="#0B63CE" stroke-width="2" stroke-dasharray="none"/>
+<text x="1350" y="617" font-size="15" font-weight="700" fill="#0B0F17" text-anchor="middle">Ghi âm / Quay video</text>
+<text x="1350" y="637" font-size="11.5" fill="#5A6577" text-anchor="middle">Video &amp; coaching: Premium</text>
+</g>
+<g id="Đang phân tích">
+<rect x="1544.0" y="578.0" width="212.0" height="84.0" rx="12" fill="#FFFFFF" stroke="#0B63CE" stroke-width="2" stroke-dasharray="none"/>
+<text x="1650" y="617" font-size="15" font-weight="700" fill="#0B0F17" text-anchor="middle">Đang phân tích</text>
+<text x="1650" y="637" font-size="11.5" fill="#5A6577" text-anchor="middle">Các bước xử lý của AI</text>
+</g>
+<g id="Báo cáo phản hồi">
+<rect x="1844.0" y="578.0" width="212.0" height="84.0" rx="12" fill="#FFFFFF" stroke="#0B63CE" stroke-width="2" stroke-dasharray="none"/>
+<text x="1950" y="617" font-size="15" font-weight="700" fill="#0B0F17" text-anchor="middle">Báo cáo phản hồi</text>
+<text x="1950" y="637" font-size="11.5" fill="#5A6577" text-anchor="middle">Điểm, lỗi, transcript, gợi ý</text>
+</g>
+<g id="Trả lời khán giả AI">
+<rect x="2144.0" y="578.0" width="212.0" height="84.0" rx="12" fill="#FFFFFF" stroke="#7C3AED" stroke-width="2" stroke-dasharray="6 5"/>
+<rect x="2282.0" y="568.0" width="66" height="20" rx="10" fill="#7C3AED"/><text x="2315.0" y="582.0" font-size="10.5" font-weight="700" fill="#FFFFFF" text-anchor="middle">PREMIUM</text>
+<text x="2250" y="617" font-size="15" font-weight="700" fill="#0B0F17" text-anchor="middle">Trả lời khán giả AI</text>
+<text x="2250" y="637" font-size="11.5" fill="#5A6577" text-anchor="middle">AI chấm câu trả lời</text>
+</g>
+<g id="Tiến bộ">
+<rect x="44.0" y="778.0" width="212.0" height="84.0" rx="12" fill="#FFFFFF" stroke="#0B63CE" stroke-width="2" stroke-dasharray="none"/>
+<text x="150" y="817" font-size="15" font-weight="700" fill="#0B0F17" text-anchor="middle">Tiến bộ</text>
+<text x="150" y="837" font-size="11.5" fill="#5A6577" text-anchor="middle">Lịch sử, so sánh, báo cáo cũ</text>
+</g>
+<g id="Lộ trình 4 tuần">
+<rect x="344.0" y="778.0" width="212.0" height="84.0" rx="12" fill="#FFFFFF" stroke="#7C3AED" stroke-width="2" stroke-dasharray="6 5"/>
+<rect x="482.0" y="768.0" width="66" height="20" rx="10" fill="#7C3AED"/><text x="515.0" y="782.0" font-size="10.5" font-weight="700" fill="#FFFFFF" text-anchor="middle">PREMIUM</text>
+<text x="450" y="817" font-size="15" font-weight="700" fill="#0B0F17" text-anchor="middle">Lộ trình 4 tuần</text>
+<text x="450" y="837" font-size="11.5" fill="#5A6577" text-anchor="middle">Việc cần làm mỗi tuần</text>
+</g>
+<g id="Tải file lên">
+<rect x="1244.0" y="778.0" width="212.0" height="84.0" rx="12" fill="#FFFFFF" stroke="#0B63CE" stroke-width="2" stroke-dasharray="none"/>
+<text x="1350" y="817" font-size="15" font-weight="700" fill="#0B0F17" text-anchor="middle">Tải file lên</text>
+<text x="1350" y="837" font-size="11.5" fill="#5A6577" text-anchor="middle">Âm thanh / video có sẵn</text>
+</g>
+<g id="Luyện lại bài này">
+<rect x="1844.0" y="778.0" width="212.0" height="84.0" rx="12" fill="#FFFFFF" stroke="#0B63CE" stroke-width="2" stroke-dasharray="none"/>
+<text x="1950" y="825" font-size="15" font-weight="700" fill="#0B0F17" text-anchor="middle">Luyện lại bài này</text>
+</g>
+<g id="Dòng thời gian lỗi">
+<rect x="2144.0" y="778.0" width="212.0" height="84.0" rx="12" fill="#FFFFFF" stroke="#7C3AED" stroke-width="2" stroke-dasharray="6 5"/>
+<rect x="2282.0" y="768.0" width="66" height="20" rx="10" fill="#7C3AED"/><text x="2315.0" y="782.0" font-size="10.5" font-weight="700" fill="#FFFFFF" text-anchor="middle">PREMIUM</text>
+<text x="2250" y="817" font-size="15" font-weight="700" fill="#0B0F17" text-anchor="middle">Dòng thời gian lỗi</text>
+<text x="2250" y="837" font-size="11.5" fill="#5A6577" text-anchor="middle">Bấm để tới transcript</text>
+</g>
+<g id="Gói dịch vụ">
+<rect x="644.0" y="958.0" width="212.0" height="84.0" rx="12" fill="#FFFFFF" stroke="#0B63CE" stroke-width="2" stroke-dasharray="none"/>
+<text x="750" y="997" font-size="15" font-weight="700" fill="#0B0F17" text-anchor="middle">Gói dịch vụ</text>
+<text x="750" y="1017" font-size="11.5" fill="#5A6577" text-anchor="middle">So sánh Free / Premium, FAQ</text>
+</g>
+<g id="Thanh toán">
+<rect x="944.0" y="958.0" width="212.0" height="84.0" rx="12" fill="#EEF4FC" stroke="#0B63CE" stroke-width="2" stroke-dasharray="none"/>
+<text x="1050" y="997" font-size="15" font-weight="700" fill="#0B0F17" text-anchor="middle">Thanh toán</text>
+<text x="1050" y="1017" font-size="11.5" fill="#5A6577" text-anchor="middle">MoMo · VNPay · Thẻ</text>
+</g>
+<g id="Chào mừng Premium">
+<rect x="1244.0" y="958.0" width="212.0" height="84.0" rx="12" fill="#EEF4FC" stroke="#0B63CE" stroke-width="2" stroke-dasharray="none"/>
+<text x="1350" y="997" font-size="15" font-weight="700" fill="#0B0F17" text-anchor="middle">Chào mừng Premium</text>
+<text x="1350" y="1017" font-size="11.5" fill="#5A6577" text-anchor="middle">Danh sách tính năng mở</text>
+</g>
+<g id="→ Thiết lập (video)">
+<rect x="1555" y="978" width="190" height="44" rx="22" fill="#F1F3F6" stroke="#8A94A6" stroke-width="2" stroke-dasharray="none"/>
+<text x="1650" y="1005" font-size="13.5" font-weight="600" fill="#3D4757" text-anchor="middle">→ Thiết lập (video)</text>
+</g>
+<g id="→ Thiết lập buổi luyện">
+<rect x="1855" y="978" width="190" height="44" rx="22" fill="#F1F3F6" stroke="#8A94A6" stroke-width="2" stroke-dasharray="none"/>
+<text x="1950" y="1005" font-size="13.5" font-weight="600" fill="#3D4757" text-anchor="middle">→ Thiết lập buổi luyện</text>
+</g>
+<g id="Quản lý gói Premium">
+<rect x="944.0" y="1108.0" width="212.0" height="84.0" rx="12" fill="#FFFFFF" stroke="#7C3AED" stroke-width="2" stroke-dasharray="6 5"/>
+<rect x="1082.0" y="1098.0" width="66" height="20" rx="10" fill="#7C3AED"/><text x="1115.0" y="1112.0" font-size="10.5" font-weight="700" fill="#FFFFFF" text-anchor="middle">PREMIUM</text>
+<text x="1050" y="1147" font-size="15" font-weight="700" fill="#0B0F17" text-anchor="middle">Quản lý gói Premium</text>
+<text x="1050" y="1167" font-size="11.5" fill="#5A6577" text-anchor="middle">Gia hạn, đổi gói năm, hoá đơn</text>
+</g>
+<g id="Tài khoản">
+<rect x="44.0" y="1128.0" width="212.0" height="84.0" rx="12" fill="#FFFFFF" stroke="#0B63CE" stroke-width="2" stroke-dasharray="none"/>
+<text x="150" y="1167" font-size="15" font-weight="700" fill="#0B0F17" text-anchor="middle">Tài khoản</text>
+<text x="150" y="1187" font-size="11.5" fill="#5A6577" text-anchor="middle">Hồ sơ, gói, tổng kết</text>
+</g>
+<g id="Đăng xuất">
+<rect x="344.0" y="1128.0" width="212.0" height="84.0" rx="12" fill="#FFFFFF" stroke="#0B63CE" stroke-width="2" stroke-dasharray="none"/>
+<text x="450" y="1175" font-size="15" font-weight="700" fill="#0B0F17" text-anchor="middle">Đăng xuất</text>
+</g>
+<g id="→ Landing page">
+<rect x="655" y="1148" width="190" height="44" rx="22" fill="#F1F3F6" stroke="#8A94A6" stroke-width="2" stroke-dasharray="none"/>
+<text x="750" y="1175" font-size="13.5" font-weight="600" fill="#3D4757" text-anchor="middle">→ Landing page</text>
+</g>
+</g></svg>

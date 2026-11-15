@@ -1,0 +1,79 @@
+flowchart LR
+  land["Landing page"]
+  ob0["Giới thiệu sản phẩm"]
+  ob1["Chọn chế độ luyện"]
+  ob2["Chọn ngôn ngữ"]
+  ob3["Xem trước buổi tập"]
+  logged{"Đã đăng nhập?"}
+  ptest["Bài test đầu vào"]
+  pstart{"Bắt đầu test?"}
+  refdash(["→ Dashboard"])
+  login["Đăng nhập"]
+  sample["Báo cáo mẫu"]
+  refprice(["→ Gói dịch vụ"])
+  signup["Đăng ký"]
+  prec["Ghi âm 60 giây"]
+  dash["Dashboard"]
+  setup["Thiết lập buổi luyện"]
+  quota{"Còn lượt phân tích?"}
+  input{"Cách nộp bài?"}
+  rec["Ghi âm / Quay video"]
+  ana["Đang phân tích"]
+  rep["Báo cáo phản hồi"]
+  qa["Trả lời khán giả AI"]
+  hist["Tiến bộ"]
+  plan4["Lộ trình 4 tuần"]
+  upload["Tải file lên"]
+  retry["Luyện lại bài này"]
+  tl["Dòng thời gian lỗi"]
+  price["Gói dịch vụ"]
+  pay["Thanh toán"]
+  welcome["Chào mừng Premium"]
+  refsetup2(["→ Thiết lập (video)"])
+  refsetup(["→ Thiết lập buổi luyện"])
+  manage["Quản lý gói Premium"]
+  acct["Tài khoản"]
+  logout["Đăng xuất"]
+  refland(["→ Landing page"])
+  land -->|Get started| ob0
+  ob0 --> ob1
+  ob1 --> ob2
+  ob2 --> ob3
+  ob3 --> logged
+  logged -->|Có| ptest
+  logged -->|Chưa| signup
+  signup --> ptest
+  ptest --> pstart
+  pstart -->|Để sau| refdash
+  pstart -->|Bắt đầu| prec
+  prec --> ana
+  land -->|Đăng nhập| login
+  land -->|Xem báo cáo mẫu| sample
+  land -->|Bảng giá| refprice
+  login --> dash
+  dash -->|Luyện tập| setup
+  setup --> quota
+  quota -->|Còn| input
+  quota -->|Hết lượt| price
+  input -->|Trực tiếp| rec
+  input -->|Tải file| upload
+  upload --> ana
+  rec --> ana
+  ana --> rep
+  rep -->|Premium| qa
+  rep -->|Premium| tl
+  rep --> retry
+  retry --> refsetup
+  dash --> hist
+  hist -->|Premium| plan4
+  dash --> price
+  dash --> acct
+  acct --> logout
+  logout --> refland
+  price -->|Nâng cấp| pay
+  pay -->|Thanh toán| welcome
+  welcome --> refsetup2
+  welcome -->|Đã là Premium| manage
+  classDef pro stroke:#7C3AED,stroke-dasharray:5 5
+  classDef dec fill:#FFFBEB,stroke:#E6B23A
+  class qa,tl,plan4,manage pro

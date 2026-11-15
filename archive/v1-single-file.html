@@ -1,0 +1,1264 @@
+<title>luyenthuyettrinh.com</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&display=swap">
+<style>
+/* Single white theme by choice (light in every viewer setting). Layout: Dropbox-style split hero (copy left, photo + floating product UI right) on a soft panel; app shell with sidebar */
+:root{
+  --bg:#FFFFFF; --surface:#FFFFFF; --soft:#F4F7FB; --soft-2:#E2EAF4; --line:#E3E8EF;
+  --fg:#0B0F17; --muted:#5A6577; --blue:#0B63CE; --blue-2:#0952AD; --on-blue:#FFFFFF;
+  --sky:#2EA7E6; --sky-soft:#E5F3FC; --sky-ink:#075A8C;
+  --good:#1E8A4C; --good-soft:#E2F4E9; --warn:#B7791F; --bad:#C8402F; --bad-soft:#FBE6E2;
+  --shadow:0 1px 2px rgba(15,30,60,.06),0 16px 40px -16px rgba(15,30,60,.22);
+  --f-display:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-body:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --r:14px; --r-sm:10px;
+}
+:root,:root[data-theme="dark"]{color-scheme:light}
+
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:var(--f-display);line-height:1.15;margin:0;text-wrap:balance;letter-spacing:-.02em}
+p{margin:0}
+a{color:inherit}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--sky);outline-offset:2px;border-radius:6px}
+.num{font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--blue-2)}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid transparent;border-radius:12px;padding:11px 20px;font-weight:600;font-size:15px;cursor:pointer;text-decoration:none;transition:transform .15s,background .15s,border-color .15s;white-space:nowrap}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--blue);color:var(--on-blue)}
+.btn-primary:hover{background:var(--blue-2)}
+.btn-sky{background:var(--blue);color:var(--on-blue)}
+.btn-sky:hover{background:var(--blue-2)}
+.btn-ghost{background:transparent;border-color:var(--line);color:var(--fg)}
+.btn-ghost:hover{border-color:var(--blue-2)}
+.btn-text{background:none;border:none;padding:6px 4px;color:var(--fg);font-weight:600;cursor:pointer}
+.btn-text:hover{color:var(--blue-2)}
+.btn-lg{padding:15px 28px;font-size:16px}
+.btn-sm{padding:7px 14px;font-size:13px}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+
+/* ---------- Landing ---------- */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--bg)}
+.l-nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+.l-nav .wrap{display:flex;align-items:center;gap:16px;height:76px;position:relative}
+.logo{display:inline-flex;align-items:center;gap:10px;font-weight:700;letter-spacing:-.02em;font-size:18px;text-decoration:none;cursor:pointer;background:none;border:none;padding:0}
+.logo-mark{width:32px;height:32px;border-radius:9px;background:var(--blue);display:grid;place-items:center;flex:none}
+.logo-mark i{display:block;width:3px;border-radius:2px;background:var(--on-blue);margin:0 1px}
+.logo-mark span{display:flex;align-items:center;height:16px}
+.l-nav .right{margin-left:auto;display:flex;align-items:center;gap:4px}
+.nav-link{background:none;border:none;font-size:16px;font-weight:500;padding:9px 14px;cursor:pointer;color:var(--fg);border-radius:10px}
+.nav-link:hover{background:var(--soft)}
+.icon-btn{width:44px;height:44px;display:grid;place-items:center;border:none;background:none;border-radius:10px;cursor:pointer;color:var(--fg);flex:none}
+.icon-btn:hover{background:var(--soft)}
+.l-nav .btn-primary{margin:0 6px}
+.menu{position:absolute;right:max(16px,env(safe-area-inset-right,0px));top:70px;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:8px;display:flex;flex-direction:column;min-width:230px;z-index:25}
+.menu button{text-align:left;background:none;border:none;padding:11px 14px;border-radius:10px;font-weight:500;cursor:pointer}
+.menu button:hover{background:var(--soft)}
+.l-hero{background:var(--soft)}
+.l-hero .wrap{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;padding-block:64px 72px}
+.l-hero h1{font-size:clamp(36px,4.3vw,58px);font-weight:700;letter-spacing:-.035em;line-height:1.08}
+.l-hero .lead2{font-size:clamp(17px,1.6vw,21px);color:var(--muted);margin-top:24px;max-width:42ch;line-height:1.55}
+.l-hero .ctas{display:flex;gap:18px;flex-wrap:wrap;margin-top:40px;align-items:center}
+.collage{position:relative;min-width:0;height:clamp(360px,36vw,480px)}
+.collage img{position:absolute;display:block;max-width:100%;object-fit:cover;background:var(--soft-2)}
+.ph-main{right:0;top:0;width:72%;height:80%;border-radius:22px}
+.ph-side{left:0;top:9%;width:36%;height:38%;border-radius:18px;border:6px solid var(--soft);box-shadow:var(--shadow)}
+.ph-low{left:9%;bottom:0;width:44%;height:42%;border-radius:18px;border:6px solid var(--soft);box-shadow:var(--shadow)}
+.float{position:absolute;background:var(--surface);border-radius:16px;box-shadow:var(--shadow);padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.float.coach{display:none}
+.float.score{right:-14px;bottom:6%;width:200px}
+.float .wave{height:34px}
+.hv-card{background:var(--surface);border-radius:20px;box-shadow:var(--shadow);padding:22px;min-width:0}
+.hv-score{display:flex;align-items:center;gap:14px}
+.avatar{width:44px;height:44px;border-radius:50%;background:var(--sky-soft);display:grid;place-items:center;font-weight:700;color:var(--sky-ink);flex:none}
+.wave{display:flex;align-items:center;gap:3px;height:64px}
+.wave i{flex:1;background:var(--blue);border-radius:3px;opacity:.85;animation:wv 1.4s ease-in-out infinite}
+.wave i:nth-child(3n){background:var(--sky)}
+@keyframes wv{0%,100%{transform:scaleY(.5)}50%{transform:scaleY(1)}}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;background:var(--soft);font-size:13px;font-weight:500;white-space:nowrap}
+.chip.sky{background:var(--sky-soft);color:var(--sky-ink)}
+.chip.good{background:var(--good-soft);color:var(--good)}
+.chip.bad{background:var(--bad-soft);color:var(--bad)}
+.chip.line{background:transparent;border:1px solid var(--line)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.live-line{font-size:14px;line-height:1.6}
+.live-line mark{background:var(--sky-soft);color:var(--sky-ink);border-radius:4px;padding:0 3px}
+.bars{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.bar-row{display:grid;grid-template-columns:120px 1fr 34px;gap:10px;align-items:center;font-size:13px}
+.track{height:7px;border-radius:9px;background:var(--soft-2);overflow:hidden}
+.track>b{display:block;height:100%;border-radius:9px;background:var(--blue)}
+.track>b.hi{background:var(--good)}.track>b.lo{background:var(--bad)}.track>b.mid{background:var(--sky)}
+.section{padding-block:104px}
+.section-head{max-width:660px;margin-bottom:48px}
+.section-head h2{font-size:clamp(30px,4vw,46px);font-weight:700;letter-spacing:-.03em;margin-top:10px}
+.section-head p{color:var(--muted);font-size:17px;margin-top:14px}
+.mode-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+.mode-card{min-width:0}
+.mode-card img{display:block;width:100%;max-width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:14px;background:var(--soft-2)}
+.mode-card h3{font-size:20px;font-weight:700;margin-top:18px}
+.mode-card p{color:var(--muted);font-size:14px;margin-top:6px}
+.mode-card .who{font-size:13px;color:var(--blue);font-weight:600;margin-top:10px}
+.feat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:40px 32px}
+.feat h3{font-size:18px;font-weight:700;margin-top:18px}
+.feat p{color:var(--muted);margin-top:8px;font-size:15px}
+.feat-ic{width:44px;height:44px;border-radius:12px;background:var(--sky-soft);display:grid;place-items:center;color:var(--blue);font-weight:700}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:32px}
+.step{border-top:2px solid var(--fg);padding-top:20px}
+.step .n{font-size:13px;font-weight:700;color:var(--blue)}
+.step h3{font-size:22px;margin-top:10px;font-weight:700}
+.step p{color:var(--muted);margin-top:8px}
+.band{background:var(--soft)}
+.final{background:var(--blue);color:var(--on-blue);border-radius:24px;padding:clamp(32px,6vw,72px);display:flex;flex-wrap:wrap;gap:24px;align-items:end;justify-content:space-between}
+.final h2{font-size:clamp(30px,4.2vw,50px);font-weight:700;letter-spacing:-.035em;max-width:18ch}
+.final .btn{background:var(--on-blue);color:var(--blue)}
+.footer{padding-block:48px;color:var(--muted);font-size:14px;display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between}
+.footer a{color:var(--muted)}
+
+/* ---------- Premium features ---------- */
+.pro-chip{background:var(--blue);color:var(--on-blue);font-weight:700;font-size:11px;letter-spacing:.06em;padding:3px 9px}
+.tl{position:relative;height:44px;margin-top:16px}
+.tl-track{position:absolute;left:0;right:0;top:19px;height:6px;border-radius:6px;background:var(--soft-2)}
+.tl-m{position:absolute;top:6px;width:24px;height:32px;margin-left:-12px;border:none;background:none;cursor:pointer;padding:0}
+.tl-m i{display:block;width:14px;height:14px;border-radius:50%;margin:9px auto;border:2px solid var(--surface);box-shadow:0 0 0 1px var(--line);transition:transform .15s}
+.tl-m:hover i,.tl-m:focus-visible i{transform:scale(1.35)}
+.tl-ticks{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}
+.tl-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 24px;margin-top:14px}
+.tl-item{display:grid;grid-template-columns:44px 12px minmax(0,1fr);gap:10px;align-items:center;padding:8px 6px;border-radius:8px;font-size:14px;background:none;border:none;text-align:left;cursor:pointer;width:100%}
+.tl-item:hover{background:var(--soft)}
+.tl-item .dot{width:10px;height:10px;border-radius:50%}
+.switch{position:relative;width:44px;height:26px;border-radius:99px;background:var(--soft-2);border:none;cursor:pointer;flex:none;padding:0}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--surface);box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .2s}
+.switch.on{background:var(--blue)}.switch.on::after{transform:translateX(18px)}
+.kv{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 16px;font-size:14px;margin-top:14px;align-items:center}
+.kv span:nth-child(odd){color:var(--muted)}
+details.faq{border-top:1px solid var(--line);padding:16px 0}
+details.faq:last-child{border-bottom:1px solid var(--line)}
+details.faq summary{cursor:pointer;font-weight:600;list-style-position:outside}
+details.faq p{color:var(--muted);font-size:14px;margin-top:8px;max-width:70ch}
+.weeks{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:16px}
+.week{border:1px solid var(--line);border-radius:12px;padding:14px;min-width:0}
+.week.now{border-color:var(--blue);background:var(--sky-soft)}
+.week h4{font-size:14px;font-weight:700}
+.week .wk{font-size:12px;color:var(--muted);font-weight:600}
+.check{display:flex;gap:10px;align-items:flex-start;padding:7px 0;cursor:pointer;background:none;border:none;text-align:left;width:100%;font-size:13px}
+.check .box{width:18px;height:18px;border-radius:5px;border:1.5px solid var(--muted);flex:none;display:grid;place-items:center;color:var(--on-blue);margin-top:1px}
+.check.done .box{background:var(--good);border-color:var(--good)}
+.check.done .t{text-decoration:line-through;color:var(--muted)}
+.qa-ans{margin-top:10px;display:flex;flex-direction:column;gap:8px}
+.qa-ans textarea{min-height:84px}
+.fb{background:var(--soft);border-radius:10px;padding:12px 14px;font-size:14px;display:flex;flex-direction:column;gap:6px}
+.unlock{list-style:none;padding:0;margin:16px 0 0;display:flex;flex-direction:column;gap:10px;font-size:14px}
+.unlock li{display:flex;gap:10px;align-items:flex-start}
+.unlock li svg{color:var(--good);flex:none;margin-top:2px}
+@media (max-width:960px){.weeks{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:720px){.tl-list{grid-template-columns:1fr}}
+@media (max-width:480px){.weeks{grid-template-columns:1fr}}
+
+.demo-sw{position:fixed;left:calc(16px + env(safe-area-inset-left,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:40;display:flex;align-items:center;gap:4px;background:var(--fg);color:var(--bg);border-radius:999px;padding:4px;box-shadow:var(--shadow);font-size:13px}
+.demo-sw span{padding:0 8px 0 10px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.7}
+.demo-sw button{border:none;background:none;color:var(--bg);border-radius:999px;padding:6px 12px;font-weight:600;cursor:pointer}
+.demo-sw button.on{background:var(--bg);color:var(--fg)}
+.demo-sw button[data-plan="premium"].on{background:var(--blue);color:var(--on-blue)}
+
+.pain-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.section-head p.lead-strong{color:var(--blue);font-weight:600;font-size:18px}
+.pain-card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:24px;min-width:0;display:flex;flex-direction:column;gap:10px}
+.pain-ic{width:46px;height:46px;border-radius:12px;background:var(--soft);color:var(--fg);display:grid;place-items:center;margin-bottom:6px}
+.pain-card h3{font-size:20px;font-weight:700}
+.pain-card p{color:var(--muted);font-size:15px;flex:1}
+.pain-fix{margin-top:8px;padding-top:14px;border-top:1px dashed var(--line);font-size:14px;display:flex;flex-direction:column;gap:2px}
+.pain-fix b{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
+@media (max-width:960px){.pain-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.pain-grid{grid-template-columns:1fr}}
+
+/* ---------- Onboarding / Auth ---------- */
+.flow{min-height:100vh;display:flex;flex-direction:column}
+.flow-top{display:flex;align-items:center;justify-content:space-between;height:68px}
+.flow-body{flex:1;display:flex;align-items:flex-start;justify-content:center;padding-block:40px 80px}
+.flow-card{width:100%;max-width:720px}
+.flow-card.narrow{max-width:440px}
+.progress-dots{display:flex;gap:6px}
+.progress-dots i{width:28px;height:4px;border-radius:4px;background:var(--line)}
+.progress-dots i.on{background:var(--blue)}
+.flow h1{font-size:clamp(30px,5vw,46px);font-weight:800;letter-spacing:-.04em}
+.flow .lead{font-size:17px;color:var(--muted);margin-top:14px;max-width:52ch}
+.intro-list{display:grid;gap:0;margin-top:36px;border-top:1px solid var(--line)}
+.intro-list>div{display:grid;grid-template-columns:44px minmax(0,1fr);gap:16px;align-items:start;padding:20px 0;border-bottom:1px solid var(--line);animation:rise .5s both}
+.intro-list>div:nth-child(2){animation-delay:.08s}.intro-list>div:nth-child(3){animation-delay:.16s}.intro-list>div:nth-child(4){animation-delay:.24s}
+@keyframes rise{from{transform:translateY(8px);opacity:.3}to{transform:none;opacity:1}}
+.intro-list h3{font-size:17px;font-weight:700}
+.intro-list p{color:var(--muted);font-size:14px;margin-top:4px}
+.choice-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:32px}
+.choice{text-align:left;border:1.5px solid var(--line);background:var(--surface);border-radius:var(--r);padding:18px;cursor:pointer;display:flex;flex-direction:column;gap:6px;transition:border-color .15s,background .15s}
+.choice:hover{border-color:var(--blue-2)}
+.choice.on{border-color:var(--blue);background:var(--soft)}
+.choice h3{font-size:17px;font-weight:700}
+.choice p{font-size:14px;color:var(--muted)}
+.choice .who{font-size:12px;font-weight:600;color:var(--blue-2)}
+.flow-actions{display:flex;gap:12px;justify-content:space-between;align-items:center;margin-top:36px;flex-wrap:wrap}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:13px;font-weight:600}
+.input{width:100%;border:1.5px solid var(--line);background:var(--surface);border-radius:var(--r-sm);padding:11px 13px;outline:none;transition:border-color .15s}
+.input:focus{border-color:var(--blue-2)}
+textarea.input{resize:vertical;min-height:110px;line-height:1.55}
+.form{display:flex;flex-direction:column;gap:16px;margin-top:28px}
+.divider{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:13px}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line)}
+.google{background:var(--surface);border:1.5px solid var(--line);width:100%}
+.google:hover{border-color:var(--blue-2)}
+.err{color:var(--bad);font-size:13px}
+.tabs{display:inline-flex;background:var(--soft);border-radius:999px;padding:4px;gap:4px}
+.tabs button{border:none;background:none;border-radius:999px;padding:7px 16px;font-weight:600;cursor:pointer;color:var(--muted)}
+.tabs button.on{background:var(--surface);color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+
+/* ---------- App shell ---------- */
+.shell{display:grid;grid-template-columns:248px 1fr;min-height:100vh}
+.side{border-right:1px solid var(--line);padding:22px 16px;display:flex;flex-direction:column;gap:26px;position:sticky;top:0;height:100vh;background:var(--bg)}
+.side nav{display:flex;flex-direction:column;gap:2px}
+.side nav button{display:flex;align-items:center;gap:12px;background:none;border:none;text-align:left;padding:10px 12px;border-radius:10px;font-weight:500;color:var(--muted);cursor:pointer;white-space:nowrap}
+.side nav button:hover{background:var(--soft);color:var(--fg)}
+.side nav button.on{background:var(--soft);color:var(--fg);font-weight:600}
+.side nav svg{flex:none}
+.side .plan-box{margin-top:auto;background:var(--soft);border-radius:var(--r);padding:16px;font-size:13px}
+.side .plan-box b{display:block;font-size:14px}
+.main{min-width:0;padding:36px clamp(16px,4vw,48px) 80px}
+.main-inner{max-width:1040px;margin:0 auto}
+.page-head{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between;margin-bottom:28px}
+.page-head h1{font-size:clamp(26px,3.4vw,36px);font-weight:800;letter-spacing:-.035em}
+.page-head p{color:var(--muted);margin-top:6px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px;min-width:0}
+.card h3{font-size:16px;font-weight:700}
+.card .sub{color:var(--muted);font-size:13px;margin-top:2px}
+.grid{display:grid;gap:16px}
+.g-4{grid-template-columns:repeat(4,1fr)}.g-3{grid-template-columns:repeat(3,1fr)}.g-2{grid-template-columns:repeat(2,1fr)}
+.g-main{grid-template-columns:1.6fr 1fr}
+.stat .k{font-size:13px;color:var(--muted)}
+.stat .v{font-size:30px;font-weight:800;letter-spacing:-.03em;margin-top:6px}
+.stat .d{font-size:12px;margin-top:2px}
+.up{color:var(--good)}.down{color:var(--bad)}
+.list{display:flex;flex-direction:column}
+.row{display:grid;grid-template-columns:1fr auto auto;gap:16px;align-items:center;padding:14px 0;border-top:1px solid var(--line);cursor:pointer;background:none;border-left:none;border-right:none;border-bottom:none;text-align:left;width:100%}
+.row:hover .row-t{color:var(--blue-2)}
+.row-t{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row-m{font-size:12px;color:var(--muted)}
+.score-pill{min-width:48px;text-align:center;padding:4px 10px;border-radius:999px;font-weight:700;font-size:14px}
+.s-hi{background:var(--good-soft);color:var(--good)}.s-mid{background:var(--sky-soft);color:var(--sky-ink)}.s-lo{background:var(--bad-soft);color:var(--bad)}
+.chart{width:100%;height:auto;display:block}
+.chart text{fill:var(--muted);font-size:11px;font-family:var(--f-body)}
+.chart .grid-l{stroke:var(--line);stroke-width:1}
+.chart .ln{fill:none;stroke:var(--blue-2);stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
+.chart .ar{fill:var(--sky);opacity:.16}
+.chart .dt{fill:var(--surface);stroke:var(--blue-2);stroke-width:2}
+.chart .dt.last{fill:var(--sky);stroke:var(--blue)}
+.chart .band-ok{fill:var(--good);opacity:.1}
+.chart .bar{fill:var(--blue-2)}
+.chart .bar.over{fill:var(--bad)}
+.chart .lbl-v{fill:var(--fg);font-weight:700}
+.chart .ln2{fill:none;stroke:var(--sky);stroke-width:2;stroke-dasharray:4 4}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:8px}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:6px}
+.banner{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--sky-soft);border-radius:var(--r);padding:18px 22px;color:var(--sky-ink)}
+.banner h3{color:var(--fg)}
+.banner p{font-size:14px}
+.meter{height:8px;border-radius:9px;background:var(--soft-2);overflow:hidden;margin-top:10px}
+.meter b{display:block;height:100%;background:var(--blue)}
+
+/* practice setup */
+.seg{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.opt{border:1.5px solid var(--line);background:var(--surface);border-radius:var(--r-sm);padding:14px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:4px;position:relative}
+.opt:hover{border-color:var(--blue-2)}
+.opt.on{border-color:var(--blue);background:var(--soft)}
+.opt b{font-size:15px}
+.opt span{font-size:12px;color:var(--muted)}
+.opt .lock{position:absolute;top:10px;right:10px;font-size:11px;font-weight:700;color:var(--sky-ink);background:var(--sky-soft);padding:2px 7px;border-radius:99px}
+.pills{display:flex;flex-wrap:wrap;gap:8px}
+.pill{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 14px;font-size:14px;cursor:pointer}
+.pill.on{background:var(--blue);border-color:var(--blue);color:var(--on-blue)}
+.setup{display:grid;grid-template-columns:1fr 300px;gap:24px;align-items:start}
+.setup-side{position:sticky;top:24px;display:flex;flex-direction:column;gap:16px}
+.persona{display:flex;gap:12px;align-items:center}
+.drop{border:1.5px dashed var(--soft-2);border-radius:var(--r);padding:24px;text-align:center;background:var(--soft);cursor:pointer}
+.drop:hover{border-color:var(--blue-2)}
+.sec-t{font-size:14px;font-weight:700;margin-bottom:10px}
+
+/* recording */
+.rec{display:grid;grid-template-columns:1.5fr 1fr;gap:16px}
+.rec-stage{background:var(--soft);border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:22px;min-width:0}
+.timer{font-size:clamp(48px,8vw,76px);font-weight:800;letter-spacing:-.04em;line-height:1}
+.rec-dot{width:12px;height:12px;border-radius:50%;background:var(--bad);display:inline-block;animation:blink 1s infinite}
+.rec-dot.paused{animation:none;background:var(--muted)}
+@keyframes blink{50%{opacity:.25}}
+canvas.wv{width:100%;height:110px;display:block}
+.cam{position:relative;border-radius:16px;overflow:hidden;background:#0B0F17;aspect-ratio:16/9;max-width:100%}
+.cam video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1);display:block}
+.cam .ph{position:absolute;inset:0;display:grid;place-items:center;color:#D6E2F0;font-size:14px;text-align:center;padding:16px}
+.cam .tag{position:absolute;left:12px;top:12px;background:rgba(0,0,0,.55);color:#fff;border-radius:99px;padding:4px 10px;font-size:12px}
+.live{display:flex;flex-direction:column;gap:10px;max-height:420px;overflow:auto}
+.tip{border-left:3px solid var(--sky);background:var(--surface);padding:10px 12px;border-radius:0 8px 8px 0;font-size:14px;animation:rise .35s both}
+.tip.q{border-left-color:var(--blue)}
+.tip small{display:block;color:var(--muted);font-size:11px;font-weight:600;letter-spacing:.04em}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.kpi{background:var(--surface);border-radius:12px;padding:12px}
+.kpi .k{font-size:12px;color:var(--muted)}
+.kpi .v{font-size:22px;font-weight:800}
+.rec-actions{display:flex;gap:10px;flex-wrap:wrap}
+
+/* analyzing */
+.an{max-width:560px;margin:40px auto;text-align:left}
+.an-steps{list-style:none;padding:0;margin:28px 0 0;display:flex;flex-direction:column;gap:2px}
+.an-steps li{display:flex;gap:14px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line);color:var(--muted)}
+.an-steps li.done{color:var(--fg)}
+.an-steps li.act{color:var(--fg);font-weight:600}
+.an-steps .st{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);flex:none;display:grid;place-items:center}
+.an-steps li.done .st{background:var(--good);border-color:var(--good);color:#fff}
+.an-steps li.act .st{border-color:var(--sky);border-top-color:transparent;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.big-meter{height:10px;border-radius:9px;background:var(--soft);overflow:hidden;margin-top:24px}
+.big-meter b{display:block;height:100%;background:var(--sky);transition:width .4s}
+
+/* report */
+.rep-top{display:grid;grid-template-columns:auto 1fr;gap:32px;align-items:center}
+.ring{position:relative;width:150px;height:150px}
+.ring svg{transform:rotate(-90deg)}
+.ring .rv{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+.ring .rv b{font-size:44px;font-weight:800;letter-spacing:-.04em;line-height:1}
+.ring .rv span{font-size:12px;color:var(--muted)}
+.crit{display:grid;grid-template-columns:repeat(2,1fr);gap:10px 32px}
+.weak{display:flex;flex-direction:column;gap:12px}
+.weak-item{display:grid;grid-template-columns:30px 1fr;gap:14px;padding:16px 0;border-top:1px solid var(--line)}
+.weak-item .ix{width:28px;height:28px;border-radius:50%;background:var(--bad-soft);color:var(--bad);display:grid;place-items:center;font-weight:700;font-size:13px}
+.weak-item h4{font-size:16px;font-weight:700}
+.quote{margin-top:10px;background:var(--soft);border-radius:10px;padding:10px 14px;font-size:14px}
+.quote small{display:block;color:var(--muted);font-size:12px}
+.fix{margin-top:10px;font-size:14px;display:flex;gap:8px}
+.fix b{color:var(--good)}
+.transcript{display:flex;flex-direction:column;gap:2px;max-height:520px;overflow:auto;padding-right:6px}
+.seg-t{display:grid;grid-template-columns:52px 1fr;gap:12px;padding:10px;border-radius:10px;font-size:15px;line-height:1.7}
+.seg-t .ts{font-size:12px;color:var(--muted);padding-top:3px}
+.seg-t.hl{background:var(--sky-soft)}
+.seg-t .f{background:var(--bad-soft);color:var(--bad);border-radius:4px;padding:0 3px;font-weight:600}
+.seg-t .iss{display:inline-block;font-size:11px;font-weight:700;background:var(--bad);color:var(--surface);border-radius:99px;padding:0 7px;margin-left:6px;vertical-align:1px}
+.rewrite{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:14px 0;border-top:1px solid var(--line)}
+.rewrite div{font-size:14px;min-width:0}
+.rewrite small{display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+.rewrite .old small{color:var(--bad)}.rewrite .new small{color:var(--good)}
+.rewrite .old{color:var(--muted);text-decoration:line-through;text-decoration-color:color-mix(in srgb,var(--bad) 50%,transparent)}
+.body-l{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.body-l .card{padding:16px}
+.status{font-size:12px;font-weight:700}
+.qa{display:flex;flex-direction:column;gap:12px}
+.qa-item{display:grid;grid-template-columns:40px 1fr;gap:12px}
+.tbl-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:12px;color:var(--muted);font-weight:600}
+.lock-card{position:relative}
+.lock-over{position:absolute;inset:0;background:color-mix(in srgb,var(--surface) 70%,transparent);backdrop-filter:blur(3px);border-radius:var(--r);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:20px}
+
+/* pricing */
+.price-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;max-width:860px}
+.price{border:1.5px solid var(--line);border-radius:22px;padding:30px;display:flex;flex-direction:column;gap:18px;background:var(--surface)}
+.price.pro{border-color:var(--blue);background:var(--soft)}
+.price .amt{font-size:40px;font-weight:800;letter-spacing:-.04em}
+.price ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px;font-size:14px}
+.price li{display:flex;gap:10px}
+.price li svg{flex:none;margin-top:3px}
+.price li.no{color:var(--muted)}
+.modal-bg{position:fixed;inset:0;background:rgba(5,12,25,.5);display:grid;place-items:center;z-index:50;padding:16px}
+.modal{background:var(--surface);border-radius:20px;max-width:440px;width:100%;padding:28px;box-shadow:var(--shadow);max-height:90vh;overflow:auto}
+.pay{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:11px 18px;border-radius:999px;font-size:14px;font-weight:500;z-index:60;animation:rise .3s both;max-width:calc(100vw - 32px)}
+.demo-note{font-size:12px;color:var(--muted)}
+
+/* guest top bar for app views */
+.gbar{display:flex;align-items:center;justify-content:space-between;height:64px;border-bottom:1px solid var(--line)}
+
+@media (max-width:960px){
+  .feat-grid{grid-template-columns:repeat(2,1fr)}
+  .mode-cards{grid-template-columns:repeat(2,1fr)}
+  .l-hero .wrap{grid-template-columns:1fr;gap:40px;padding-block:48px 64px}
+  .float.score{right:0}
+  .g-4{grid-template-columns:repeat(2,1fr)}
+  .g-main,.setup,.rec{grid-template-columns:1fr}
+  .setup-side{position:static}
+  .body-l{grid-template-columns:repeat(2,1fr)}
+  .shell{grid-template-columns:1fr}
+  .side{position:sticky;top:env(safe-area-inset-top,0px);height:auto;flex-direction:row;align-items:center;padding:10px 16px;gap:14px;z-index:20;border-right:none;border-bottom:1px solid var(--line)}
+  .side .logo .lname{display:none}
+  .side nav{flex-direction:row;overflow-x:auto;min-width:0;flex:1;scrollbar-width:none}
+  .side nav button{padding:8px 10px}
+  .side nav button .nl{font-size:14px}
+  .side .plan-box{display:none}
+}
+@media (max-width:720px){
+  .l-nav .nav-link,.l-nav .globe{display:none}
+  .hv-grid,.g-3,.g-2,.steps,.price-grid,.crit,.rewrite{grid-template-columns:1fr}
+  .collage{height:320px}
+  .float.score{width:170px;padding:10px 12px}
+  .section{padding-block:64px}
+  .seg{grid-template-columns:repeat(2,1fr)}
+  .choice-grid{grid-template-columns:1fr}
+  .rep-top{grid-template-columns:1fr}
+  .side nav button svg{display:none}
+}
+@media (max-width:480px){
+  .feat-grid,.mode-cards,.g-4,.body-l{grid-template-columns:1fr}
+  .l-nav .btn-primary{padding:9px 14px;font-size:14px}
+  .bar-row{grid-template-columns:96px 1fr 30px}
+  .kpis{grid-template-columns:repeat(3,1fr)}
+  .row{grid-template-columns:1fr auto}
+  .row .row-d{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div id="app"></div>
+
+<script>
+/* ================= Mock data ================= */
+const MODES = {
+  presentation:{name:'Thuyết trình', desc:'Bài thuyết trình trên lớp, hội thảo, seminar.', persona:'Cô Hạnh', role:'Giảng viên phản biện', focus:'Cấu trúc, logic và cách dẫn dắt',
+    questions:['Em có thể đưa một ví dụ thực tế cho luận điểm thứ hai không?','Nguồn số liệu ở slide 3 là từ năm nào?','Nếu chỉ có 30 giây, em sẽ giữ lại ý nào?']},
+  pitching:{name:'Pitching', desc:'Gọi vốn, giới thiệu sản phẩm trong 3–5 phút.', persona:'Anh Minh', role:'Nhà đầu tư thiên thần', focus:'Sức thuyết phục, con số và lời kêu gọi',
+    questions:['Mô hình doanh thu là gì, và bao lâu thì hòa vốn?','Đối thủ lớn nhất là ai? Vì sao khách hàng chọn bạn?','Bạn cần bao nhiêu vốn và sẽ dùng vào việc gì?']},
+  reporting:{name:'Báo cáo', desc:'Báo cáo tiến độ, kết quả dự án, họp định kỳ.', persona:'Chị Thảo', role:'Trưởng phòng vận hành', focus:'Rõ ràng, súc tích, số liệu chính xác',
+    questions:['Chỉ số nào chưa đạt mục tiêu, nguyên nhân là gì?','Rủi ro lớn nhất cho quý tới là gì?','Bạn cần hỗ trợ gì từ các phòng ban khác?']},
+  debating:{name:'Tranh biện', desc:'Lập luận, phản biện, bảo vệ quan điểm.', persona:'Quân', role:'Đội phản đề', focus:'Lập luận chặt, phản bác nhanh',
+    questions:['Số liệu bạn đưa ra lấy từ nguồn nào?','Nếu lập luận đúng, sao các nơi khác chưa áp dụng?','Bạn trả lời thế nào về chi phí cơ hội của giải pháp này?']},
+};
+const PURPOSES = ['Thuyết trình trên lớp','Pitching gọi vốn','Thuyết trình học thuật','Báo cáo công việc','Phỏng vấn xin việc','Thi tranh biện'];
+const MARK = {filler:['Từ đệm','bad'],pace:['Tốc độ','warn'],eye:['Ánh mắt','sky'],off:['Lệch chủ đề','blue-2'],good:['Điểm tốt','good']};
+const CRIT = {content:'Nội dung',structure:'Cấu trúc & logic',relevance:'Bám sát chủ đề',pace:'Tốc độ nói',fluency:'Độ trôi chảy',filler:'Từ đệm',body:'Ngôn ngữ cơ thể'};
+const PLANS = {free:{name:'Free',limit:3,maxMin:5,video:false,live:false},premium:{name:'Premium',limit:50,maxMin:30,video:true,live:true}};
+
+const mk = (id,title,mode,date,dur,c,fillers,input='audio',lang='vi') => {
+  const vals = Object.values(c).filter(v=>v!=null);
+  return {id,title,mode,date,dur,c,fillers,input,lang,score:Math.round(vals.reduce((a,b)=>a+b,0)/vals.length)};
+};
+const SESSIONS = [
+  mk('s1','Giới thiệu bản thân (bài test đầu vào)','presentation','2026-09-07',64,{content:60,structure:52,relevance:70,pace:58,fluency:55,filler:40,body:null},21),
+  mk('s2','Thuyết trình môn Marketing căn bản','presentation','2026-09-14',312,{content:64,structure:58,relevance:74,pace:60,fluency:59,filler:46,body:null},18),
+  mk('s3','Pitch ý tưởng app đặt sân cầu lông','pitching','2026-09-21',198,{content:68,structure:61,relevance:72,pace:63,fluency:62,filler:50,body:55},16,'video'),
+  mk('s4','Báo cáo tiến độ dự án nhóm','reporting','2026-09-28',245,{content:70,structure:66,relevance:80,pace:62,fluency:64,filler:55,body:null},15),
+  mk('s5','Tranh biện: Có nên cấm điện thoại trong lớp?','debating','2026-10-05',180,{content:72,structure:68,relevance:76,pace:66,fluency:68,filler:60,body:60},12,'video'),
+  mk('s6','Pitch ý tưởng app đặt sân cầu lông (lần 2)','pitching','2026-10-12',205,{content:76,structure:72,relevance:82,pace:68,fluency:71,filler:64,body:63},10,'video'),
+  mk('s7','Thuyết trình: Ứng dụng AI trong giáo dục','presentation','2026-10-20',287,{content:78,structure:74,relevance:85,pace:66,fluency:72,filler:66,body:64},9,'video'),
+  mk('s8','English pitch: Smart campus parking','pitching','2026-10-29',176,{content:80,structure:78,relevance:86,pace:72,fluency:74,filler:72,body:70},7,'video','en'),
+];
+
+const SAMPLE_REPORT = {
+  segments:[
+    {t:'00:00',p:[['n','Xin chào thầy cô và các bạn. '],['f','Ừm'],['n',', hôm nay nhóm em sẽ '],['f','à'],['n',' trình bày về ứng dụng AI trong giáo dục.']],issue:2},
+    {t:'00:14',p:[['n','Thì '],['f','kiểu như'],['n',' là AI bây giờ đang có mặt ở khắp nơi, '],['f','ừm'],['n',' và giáo dục cũng không ngoại lệ.']],issue:1},
+    {t:'00:31',p:[['n','Theo khảo sát năm 2025, 68% sinh viên đã dùng công cụ AI để học ít nhất một lần mỗi tuần.']]},
+    {t:'00:52',p:[['n','Phần thứ nhất em nói về lợi ích: cá nhân hóa lộ trình, phản hồi ngay lập tức, và giảm tải cho giảng viên. Cái này rất quan trọng vì nó giúp mọi người học nhanh hơn rất nhiều và tiết kiệm thời gian cho tất cả mọi người.']],issue:3},
+    {t:'01:40',p:[['n','Ngoài ra thì em cũng từng dùng ChatGPT để viết tiểu luận môn Triết, '],['f','à'],['n',' hồi đó em được 8 điểm, thầy còn khen nữa.']],issue:5},
+    {t:'02:05',p:[['n','Phần thứ hai là rủi ro: gian lận học thuật, phụ thuộc vào công cụ, và dữ liệu cá nhân của học sinh.']]},
+    {t:'02:48',p:[['n','Nhóm em đề xuất ba nguyên tắc: minh bạch khi dùng AI, đánh giá bằng quá trình, và đào tạo kỹ năng kiểm chứng thông tin.']]},
+    {t:'04:12',p:[['n','Vâng, '],['f','ừm'],['n',', phần trình bày của nhóm em đến đây là hết ạ. Em cảm ơn.']],issue:4},
+  ],
+  weak:[
+    {title:'Dùng nhiều từ đệm ở phần mở đầu',detail:'9 trong 14 từ đệm ("ừm", "à", "kiểu như") nằm ở 40 giây đầu, lúc người nghe đang hình thành ấn tượng.',seg:1,fix:'Học thuộc 2 câu mở đầu. Khi cần suy nghĩ, ngừng im lặng 1 giây thay vì nói "ừm".'},
+    {title:'Mở bài thiếu câu thu hút',detail:'Bài bắt đầu bằng lời chào và tên chủ đề, chưa cho người nghe lý do để chú ý.',seg:0,fix:'Mở bằng con số 68% hoặc một câu hỏi: "Tuần này có bao nhiêu bạn đã hỏi AI một bài tập?"'},
+    {title:'Tốc độ tăng mạnh ở phút thứ 2',detail:'Tốc độ lên 176 từ/phút ở phần lợi ích, cao hơn ngưỡng dễ nghe (120–150 từ/phút).',seg:3,fix:'Đánh dấu điểm dừng sau mỗi lợi ích. Nói chậm lại khi liệt kê.'},
+    {title:'Kết bài chưa có thông điệp chốt',detail:'Bài kết thúc bằng "đến đây là hết", người nghe không nhớ được đề xuất chính.',seg:7,fix:'Nhắc lại 3 nguyên tắc trong một câu, rồi mới cảm ơn.'},
+    {title:'Một đoạn đi lệch khỏi chủ đề',detail:'Câu chuyện điểm tiểu luận môn Triết kéo dài 25 giây và làm yếu luận điểm về gian lận học thuật.',seg:4,fix:'Bỏ đoạn này, hoặc chuyển nó thành ví dụ cho phần rủi ro.'},
+  ],
+  pace:[128,142,176,158,134,121],
+  body:[
+    {k:'Ánh mắt',v:'38%',s:'bad',note:'Nhìn xuống ghi chú 62% thời gian, nhất là phút 1–2.'},
+    {k:'Cử chỉ tay',v:'Ổn',s:'good',note:'Dùng tay đếm 3 lợi ích, rõ ràng và tự nhiên.'},
+    {k:'Biểu cảm',v:'Ít',s:'mid',note:'Gương mặt ít thay đổi khi nói về rủi ro.'},
+    {k:'Tư thế',v:'Lệch',s:'mid',note:'Dồn trọng tâm sang chân trái, đung đưa nhẹ ở phút 3.'},
+  ],
+  dur:270,
+  marks:[
+    {t:'00:05',type:'filler',seg:0,label:'2 từ đệm ở câu mở đầu'},
+    {t:'00:14',type:'filler',seg:1,label:'“kiểu như”, “ừm” liên tiếp'},
+    {t:'00:31',type:'good',seg:2,label:'Dẫn số liệu 68% rõ ràng'},
+    {t:'00:52',type:'pace',seg:3,label:'Tốc độ lên 176 từ/phút'},
+    {t:'01:10',type:'eye',seg:3,label:'Nhìn xuống ghi chú 22 giây'},
+    {t:'01:40',type:'off',seg:4,label:'Lệch chủ đề 25 giây'},
+    {t:'02:48',type:'good',seg:6,label:'Đề xuất 3 nguyên tắc, ngắt nghỉ tốt'},
+    {t:'04:12',type:'filler',seg:7,label:'Kết bài bằng “ừm… đến đây là hết”'},
+  ],
+  rewrites:[
+    {old:'Thì kiểu như là AI bây giờ đang có mặt ở khắp nơi, ừm và giáo dục cũng không ngoại lệ.',neu:'AI đã có mặt trong lớp học của chúng ta, dù ta có chuẩn bị hay chưa.'},
+    {old:'Cái này rất quan trọng vì nó giúp mọi người học nhanh hơn rất nhiều và tiết kiệm thời gian cho tất cả mọi người.',neu:'Ba lợi ích này giúp người học tiến nhanh hơn và trả lại thời gian cho giảng viên.'},
+    {old:'Vâng, ừm, phần trình bày của nhóm em đến đây là hết ạ.',neu:'Minh bạch, đánh giá quá trình, kiểm chứng thông tin. Đó là ba điều nhóm em mong nhà trường bắt đầu từ học kỳ này. Em cảm ơn.'},
+  ],
+};
+
+/* ================= State ================= */
+const S = {
+  view:'landing', user:null, plan:'free', expiry:null, used:2,
+  sessions:SESSIONS.slice(), currentId:'s7', compare:['s1','s8'],
+  ob:{step:0, mode:'presentation', lang:'vi'},
+  auth:{mode:'signup', err:''},
+  draft:{mode:'presentation', purpose:'Thuyết trình trên lớp', lang:'vi', title:'', content:'', input:'audio', file:null, placement:false},
+  rec:null, modal:null, menu:false,
+  autoRenew:true, cycle:'m', payMethod:'MoMo', invoices:[], qa:{}, planDone:{w1a:true,w1b:true,w2a:true},
+};
+const persist=()=>{ try{ localStorage.setItem('ltt-user',JSON.stringify({user:S.user,plan:S.plan,expiry:S.expiry})); }catch(e){} };
+const plan=()=>PLANS[S.plan];
+const left=()=>Math.max(0,plan().limit-S.used);
+const isPro=()=>S.plan==='premium';
+const proChip='<span class="chip pro-chip">PREMIUM</span>';
+const gate=(html,title,desc)=>isPro()?html:`<div class="lock-card">${html}<div class="lock-over"><span class="chip pro-chip">PREMIUM</span><b>${title}</b><p class="muted" style="font-size:13px;max-width:40ch">${desc}</p><button class="btn btn-primary btn-sm" data-go="pricing">Xem gói Premium</button></div></div>`;
+function setPlan(pl){
+  if(pl===S.plan)return;
+  if(pl==='premium'){const d=new Date();d.setMonth(d.getMonth()+1);S.plan='premium';S.cycle='m';S.autoRenew=true;S.expiry=d.toISOString().slice(0,10);if(!S.invoices.length)S.invoices.push({id:'HD-2611-0001',date:new Date().toISOString().slice(0,10),amount:149000,method:S.payMethod});toast('Đang xem chế độ Premium')}
+  else{S.plan='free';S.expiry=null;S.autoRenew=true;toast('Đã về chế độ Free')}
+  persist();
+}
+const demoSwitch=()=>`<div class="demo-sw" role="group" aria-label="Chế độ xem demo"><span>Demo</span><button class="${S.plan==='free'?'on':''}" data-act="demo-plan" data-plan="free" aria-pressed="${S.plan==='free'}">Free</button><button class="${isPro()?'on':''}" data-act="demo-plan" data-plan="premium" aria-pressed="${isPro()}">Premium</button></div>`;
+const fmtVND=n=>n.toLocaleString('vi-VN')+'đ';
+
+/* ================= Helpers ================= */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmtT=s=>`${String(Math.floor(s/60)).padStart(2,'0')}:${String(Math.floor(s%60)).padStart(2,'0')}`;
+const fmtD=d=>{const x=new Date(d+'T00:00:00');return `${x.getDate()}/${x.getMonth()+1}`};
+const fmtDL=d=>{const x=new Date(d+'T00:00:00');return `${x.getDate()} tháng ${x.getMonth()+1}, ${x.getFullYear()}`};
+const sCls=v=>v>=75?'s-hi':v>=60?'s-mid':'s-lo';
+const bCls=v=>v>=75?'hi':v>=60?'mid':'lo';
+const ICON={
+  home:'<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+  mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>',
+  chart:'<path d="M4 19V5M4 19h16M8 15l4-4 3 3 5-6"/>',
+  doc:'<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/>',
+  card:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/>',
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+  check:'<path d="M5 12.5 10 17 19 7"/>',
+  x:'<path d="M6 6l12 12M18 6 6 18"/>',
+  eye:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"/>',
+  wave:'<path d="M3 12h2M7 8v8M11 5v14M15 9v6M19 7v10M21 12h0"/>',
+  up:'<path d="M12 19V5M5 12l7-7 7 7"/>',
+  dollar:'<path d="M12 3v18M16.5 7.5c-.8-1.2-2.4-2-4.5-2-2.8 0-4.5 1.4-4.5 3.2 0 4.3 9.5 2.3 9.5 6.6 0 1.9-1.9 3.2-4.9 3.2-2.3 0-4.1-.9-5-2.3"/>',
+  help:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9.2a2.6 2.6 0 0 1 5 .9c0 1.8-2.5 2.3-2.5 3.9M12 17.2v.1"/>',
+  video:'<rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3"/>',
+};
+const ic=(n,s=20)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[n]}</svg>`;
+const logo=(cls='')=>`<button class="logo ${cls}" data-go="landing" aria-label="luyenthuyettrinh.com, về trang chủ"><span class="logo-mark"><span><i style="height:6px"></i><i style="height:14px"></i><i style="height:9px"></i><i style="height:12px"></i></span></span><span class="lname">luyenthuyettrinh.com</span></button>`;
+function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2600)}
+
+function lineChart(data,{h=200,min=40,max=100,ticks=[40,60,80,100],series2=null}={}){
+  const W=640,H=h,pl=34,pr=18,pt=16,pb=28;
+  const n=data.length, x=i=>pl+(n===1?(W-pl-pr)/2:i*(W-pl-pr)/(n-1)), y=v=>pt+(max-v)*(H-pt-pb)/(max-min);
+  const pts=data.map((d,i)=>[x(i),y(d.v)]);
+  const path=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
+  const area=path+` L${pts[n-1][0]} ${y(min)} L${pts[0][0]} ${y(min)} Z`;
+  let s=`<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Biểu đồ điểm qua các lần luyện">`;
+  ticks.forEach(t=>{s+=`<line class="grid-l" x1="${pl}" x2="${W-pr}" y1="${y(t)}" y2="${y(t)}"/><text x="${pl-8}" y="${y(t)+4}" text-anchor="end">${t}</text>`});
+  s+=`<path class="ar" d="${area}"/>`;
+  if(series2){const p2=series2.map((v,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(v).toFixed(1)).join(' ');s+=`<path class="ln2" d="${p2}"/>`}
+  s+=`<path class="ln" d="${path}"/>`;
+  pts.forEach((p,i)=>{s+=`<circle class="dt ${i===n-1?'last':''}" cx="${p[0]}" cy="${p[1]}" r="${i===n-1?6:4}"/>`;s+=`<text x="${p[0]}" y="${H-8}" text-anchor="middle">${esc(data[i].label)}</text>`});
+  const lp=pts[n-1];s+=`<text class="lbl-v" x="${lp[0]}" y="${lp[1]-12}" text-anchor="middle">${data[n-1].v}</text>`;
+  return s+'</svg>';
+}
+function paceChart(vals){
+  const W=640,H=200,pl=34,pr=10,pt=14,pb=28,max=200;
+  const y=v=>pt+(max-v)*(H-pt-pb)/max, bw=(W-pl-pr)/vals.length;
+  let s=`<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Tốc độ nói theo từng phút">`;
+  s+=`<rect class="band-ok" x="${pl}" y="${y(150)}" width="${W-pl-pr}" height="${y(120)-y(150)}"/>`;
+  [0,50,100,150,200].forEach(t=>{s+=`<line class="grid-l" x1="${pl}" x2="${W-pr}" y1="${y(t)}" y2="${y(t)}"/><text x="${pl-8}" y="${y(t)+4}" text-anchor="end">${t}</text>`});
+  vals.forEach((v,i)=>{const x=pl+i*bw+bw*.22,w=bw*.56;s+=`<rect class="bar ${v>150?'over':''}" x="${x}" y="${y(v)}" width="${w}" height="${y(0)-y(v)}" rx="4"/><text class="lbl-v" x="${x+w/2}" y="${y(v)-6}" text-anchor="middle">${v}</text><text x="${x+w/2}" y="${H-8}" text-anchor="middle">Phút ${i+1}</text>`});
+  return s+'</svg>';
+}
+function ring(v,size=150){const sw=Math.max(5,Math.round(size/12)),r=size/2-sw/2-1,c=2*Math.PI*r,small=size<100;return `<div class="ring" style="width:${size}px;height:${size}px;flex:none"><svg width="${size}" height="${size}"><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--soft-2)" stroke-width="${sw}"/><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--sky)" stroke-width="${sw}" stroke-linecap="round" stroke-dasharray="${c*v/100} ${c}"/></svg><div class="rv"><div><b class="num" style="font-size:${Math.round(size*(small?.32:.29))}px">${v}</b>${small?'':'<br><span>/ 100</span>'}</div></div></div>`}
+const barRow=(k,v)=>`<div class="bar-row"><span>${k}</span><div class="track"><b class="${bCls(v)}" style="width:${v}%"></b></div><b class="num">${v}</b></div>`;
+
+/* ================= Landing ================= */
+function vLanding(){
+  const waves=Array.from({length:30},(_,i)=>`<i style="height:${10+Math.abs(Math.sin(i*1.7))*24}px;animation-delay:${(i%9)*.09}s"></i>`).join('');
+  const imgs={presentation:['stage.jpg','Diễn giả trên sân khấu hội trường lớn'],pitching:['pitch.jpg','Người thuyết trình trước màn hình trong buổi gặp gỡ'],reporting:['report.jpg','Nhân viên trình bày ý tưởng trên bảng trong phòng họp'],debating:['mic.jpg','Micro trên sân khấu trước khán giả']};
+  return `
+  <header class="l-nav"><div class="wrap">${logo()}
+    <div class="right">
+      <button class="icon-btn globe" data-act="lang" aria-label="Ngôn ngữ: Tiếng Việt"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg></button>
+      ${S.user?`<button class="nav-link" data-go="dashboard">Vào Dashboard</button><button class="nav-link" data-act="logout">Đăng xuất</button>`:`<button class="nav-link" data-act="signup">Đăng ký</button>
+      <button class="nav-link" data-act="login">Đăng nhập</button>`}
+      <button class="btn btn-primary" data-act="start">Get started</button>
+      <button class="icon-btn" data-act="menu" aria-label="Mở menu" aria-expanded="${!!S.menu}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    </div>
+    ${S.menu?`<div class="menu"><button data-scroll="modes">Chế độ luyện</button><button data-scroll="features">Tính năng</button><button data-scroll="how">Cách hoạt động</button><button data-go="pricing">Bảng giá</button><button data-act="sample">Báo cáo mẫu</button><button data-act="signup">Đăng ký</button><button data-act="login">Đăng nhập</button></div>`:''}
+  </div></header>
+
+  <section class="l-hero"><div class="wrap">
+    <div>
+      <h1>Better in presentation every moment you are with us</h1>
+      <p class="lead2">luyenthuyettrinh.com là huấn luyện viên AI lắng nghe bạn nói, chỉ ra từng lỗi nhỏ và giúp bạn tự tin hơn sau mỗi lần luyện.</p>
+      <div class="ctas"><button class="btn btn-primary btn-lg" data-act="start">Get started <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button><button class="btn-text" data-act="sample">Xem báo cáo mẫu</button></div>
+    </div>
+    <div class="collage">
+      <img class="ph-main" src="img/hero.jpg" alt="Diễn giả cầm micro nói trước một hội trường đông khán giả" width="1400" height="1100">
+      <img class="ph-side" src="img/stage.jpg" alt="Diễn giả đứng giữa sân khấu hội nghị" width="800" height="600">
+      <img class="ph-low" src="img/pitch.jpg" alt="Người thuyết trình chỉ vào màn hình trước nhóm khán giả" width="800" height="600">
+      <div class="float score">
+        <div class="hv-score">${ring(81,56)}<div><b style="font-size:14px">Điểm tổng</b><div class="muted" style="font-size:12px">+6 so với lần trước</div></div></div>
+        <div class="chips"><span class="chip good">138 từ/phút</span><span class="chip sky">Ánh mắt 71%</span></div>
+      </div>
+    </div>
+  </div></section>
+
+  <section class="section pain" id="pain"><div class="wrap">
+    <div class="section-head"><h2>Vấn đề phổ biến của các bạn là gì?</h2></div>
+    <div class="pain-grid">
+      <div class="pain-card"><div class="pain-ic">${ic('mic',22)}</div><h3>Quan trọng nhưng khó tiếp cận</h3><p>Thuyết trình là một kỹ năng quan trọng nhưng chưa dễ tiếp cận. Từ bài tập nhóm, bảo vệ đồ án đến phỏng vấn và gọi vốn đều cần, nhưng hiếm nơi dạy bài bản.</p><div class="pain-fix"><b>Với chúng tôi</b>Luyện mọi lúc ngay trên trình duyệt.</div></div>
+      <div class="pain-card"><div class="pain-ic">${ic('user',22)}</div><h3>Thiếu tự tin</h3><p>Cần thiết trong học tập và công việc, nhưng nhiều người ngại đứng trước đám đông và né các cơ hội trình bày.</p><div class="pain-fix"><b>Với chúng tôi</b>Tập riêng với AI, không ai nhìn, không sợ sai.</div></div>
+      <div class="pain-card"><div class="pain-ic">${ic('dollar',22)}</div><h3>Chi phí cao</h3><p>Khóa học và mentor chất lượng thường tốn kém, lịch học cố định và khó theo kịp.</p><div class="pain-fix"><b>Với chúng tôi</b>Miễn phí 3 lượt mỗi tháng, luyện lúc nào cũng được.</div></div>
+      <div class="pain-card"><div class="pain-ic">${ic('help',22)}</div><h3>Thiếu feedback</h3><p>Tự luyện ở nhà khó nhận ra mình nói nhanh, dùng từ đệm hay rời mắt khỏi khán giả.</p><div class="pain-fix"><b>Với chúng tôi</b>Báo cáo chỉ ra đúng câu, đúng giây cần sửa.</div></div>
+    </div>
+  </div></section>
+
+  <section class="section band" id="features"><div class="wrap">
+    <div class="section-head"><h2>Giải pháp: AI nghe, xem và đọc bài nói của bạn.</h2><p>Rồi chỉ ra đúng câu, đúng giây cần sửa.</p></div>
+    <div class="feat-grid">
+      <div class="feat"><div class="feat-ic">${ic('wave')}</div><h3>Giọng nói</h3><p>Chuyển thành văn bản, đo tốc độ, ngắt nghỉ và đếm từ đệm như “ừm”, “à”, “ờ”.</p></div>
+      <div class="feat"><div class="feat-ic">${ic('doc')}</div><h3>Nội dung</h3><p>Chấm logic, cấu trúc và cảnh báo khi bạn đi lệch khỏi chủ đề.</p></div>
+      <div class="feat"><div class="feat-ic">${ic('eye')}</div><h3>Ngôn ngữ cơ thể</h3><p>Theo dõi ánh mắt, biểu cảm, cử chỉ và tư thế qua video.</p></div>
+      <div class="feat"><div class="feat-ic">${ic('users')}</div><h3>Khán giả AI</h3><p>Đặt câu hỏi phản biện và nhắc bạn ngay khi đang nói.</p></div>
+    </div>
+  </div></section>
+
+  <section class="section" id="how"><div class="wrap">
+    <div class="section-head"><h2>Ba bước, khoảng năm phút.</h2></div>
+    <div class="steps">
+      <div class="step"><div class="n">Bước 1</div><h3>Chọn mục tiêu</h3><p>Chế độ luyện, tiếng Việt hoặc tiếng Anh, chủ đề và dàn ý nếu có.</p></div>
+      <div class="step"><div class="n">Bước 2</div><h3>Nói hoặc tải file</h3><p>Ghi âm, quay video ngay trên trình duyệt, hoặc tải lên bản ghi có sẵn.</p></div>
+      <div class="step"><div class="n">Bước 3</div><h3>Nhận báo cáo</h3><p>Điểm từng tiêu chí, 3–5 điểm yếu kèm transcript và cách nói lại tốt hơn.</p></div>
+    </div>
+  </div></section>
+
+  <section class="section band" id="modes"><div class="wrap">
+    <div class="section-head"><h2>Luyện cho đúng sân khấu bạn sắp bước lên.</h2><p class="lead-strong">AI riêng cho từng loại hình thuyết trình.</p><p>Mỗi chế độ có tiêu chí chấm riêng và một AI đóng vai người nghe.</p></div>
+    <div class="mode-cards">${Object.entries(MODES).map(([k,m])=>`<div class="mode-card"><img src="img/${imgs[k][0]}" alt="${imgs[k][1]}" loading="lazy" width="800" height="600"><h3>${m.name}</h3><p>${m.desc}</p><div class="who">Người nghe AI: ${m.persona}, ${m.role.toLowerCase()}</div></div>`).join('')}</div>
+  </div></section>
+
+  <section style="padding-block:0 24px"><div class="wrap">
+    <div class="final"><h2>Bài thuyết trình tiếp theo sẽ khác.</h2><button class="btn btn-lg" data-act="start">Get started miễn phí</button></div>
+    <footer class="footer"><span>© 2026 luyenthuyettrinh.com · Bản demo MVP, dữ liệu mẫu</span><span>Ảnh: <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a></span></footer>
+  </div></section>`;
+}
+
+/* ================= Onboarding (Get started flow) ================= */
+function vOnboard(){
+  const st=S.ob.step, total=3;
+  const dots=`<div class="progress-dots" aria-label="Bước ${st+1} / ${total+1}">${Array.from({length:total+1},(_,i)=>`<i class="${i<=st?'on':''}"></i>`).join('')}</div>`;
+  let body='';
+  if(st===0) body=`
+    <div class="eyebrow">Chào mừng</div>
+    <h1 style="margin-top:12px">Đây là cách luyenthuyettrinh.com giúp bạn.</h1>
+    <p class="lead">Mỗi buổi tập gồm ba phần, và mất khoảng 5 phút.</p>
+    <div class="intro-list">
+      <div><div class="feat-ic">${ic('mic')}</div><div><h3>Bạn nói</h3><p>Ghi âm hoặc quay video bài nói ngay trên trình duyệt, hoặc tải file có sẵn.</p></div></div>
+      <div><div class="feat-ic">${ic('users')}</div><div><h3>AI lắng nghe như khán giả thật</h3><p>Gợi ý ngay khi bạn nói quá nhanh, và đặt câu hỏi phản biện như người nghe thật.</p></div></div>
+      <div><div class="feat-ic">${ic('doc')}</div><div><h3>Bạn nhận báo cáo chi tiết</h3><p>Điểm từng tiêu chí, lỗi kèm trích dẫn transcript, và cách sửa cụ thể.</p></div></div>
+      <div><div class="feat-ic">${ic('chart')}</div><div><h3>Bạn thấy mình tiến bộ</h3><p>So sánh các lần luyện, theo dõi lỗi thường gặp giảm dần.</p></div></div>
+    </div>`;
+  if(st===1) body=`
+    <div class="eyebrow">Bước 1 · Mục tiêu</div>
+    <h1 style="margin-top:12px">Bạn muốn luyện cho dịp nào?</h1>
+    <p class="lead">Mỗi chế độ có một AI riêng đóng vai người nghe. Bạn đổi được bất cứ lúc nào.</p>
+    <div class="choice-grid">${Object.entries(MODES).map(([k,m])=>`<button class="choice ${S.ob.mode===k?'on':''}" data-ob-mode="${k}"><h3>${m.name}</h3><p>${m.desc}</p><span class="who">Người nghe: ${m.persona}, ${m.role.toLowerCase()}</span></button>`).join('')}</div>`;
+  if(st===2) body=`
+    <div class="eyebrow">Bước 2 · Ngôn ngữ</div>
+    <h1 style="margin-top:12px">Bạn sẽ nói bằng ngôn ngữ nào?</h1>
+    <p class="lead">AI chấm phát âm, từ đệm và cách diễn đạt theo ngôn ngữ bạn chọn.</p>
+    <div class="choice-grid">
+      <button class="choice ${S.ob.lang==='vi'?'on':''}" data-ob-lang="vi"><h3>Tiếng Việt</h3><p>Nhận diện từ đệm “ừm”, “à”, “ờ”, “kiểu như”, “thì là”.</p></button>
+      <button class="choice ${S.ob.lang==='en'?'on':''}" data-ob-lang="en"><h3>Tiếng Anh</h3><p>Nhận diện “um”, “uh”, “like”, “you know”; phản hồi bằng tiếng Việt.</p></button>
+    </div>`;
+  if(st===3) body=`
+    <div class="eyebrow">Bước 3 · Xem trước</div>
+    <h1 style="margin-top:12px">Buổi tập đầu tiên của bạn đã sẵn sàng.</h1>
+    <p class="lead">Tạo tài khoản để lưu lịch sử và làm bài test trình độ đầu vào 60 giây.</p>
+    <div class="hv-card" style="margin-top:28px;display:grid;gap:14px">
+      <div class="persona"><div class="avatar">${MODES[S.ob.mode].persona.split(' ').pop()[0]}</div><div><b>${MODES[S.ob.mode].persona}</b> sẽ nghe bạn nói<div class="muted" style="font-size:13px">${MODES[S.ob.mode].role} · ${MODES[S.ob.mode].name} · ${S.ob.lang==='vi'?'Tiếng Việt':'Tiếng Anh'}</div></div></div>
+      <div class="quote" style="margin:0"><small>Câu hỏi mẫu</small>“${MODES[S.ob.mode].questions[0]}”</div>
+      <div class="chips"><span class="chip">3 lượt phân tích miễn phí mỗi tháng</span><span class="chip">Tối đa 5 phút mỗi bài</span></div>
+    </div>`;
+  const next = st<3 ? `<button class="btn btn-primary" data-act="ob-next">Tiếp tục</button>` : `<button class="btn btn-primary" data-act="ob-signup">Tạo tài khoản miễn phí</button>`;
+  return `<div class="flow wrap"><div class="flow-top">${logo()}${dots}</div>
+    <div class="flow-body"><div class="flow-card">${body}
+      <div class="flow-actions">${st>0?`<button class="btn btn-ghost" data-act="ob-back">Quay lại</button>`:`<button class="btn-text" data-go="landing">Về trang chủ</button>`}${next}</div>
+    </div></div></div>`;
+}
+
+/* ================= Auth ================= */
+function vAuth(){
+  const su=S.auth.mode==='signup';
+  return `<div class="flow wrap"><div class="flow-top">${logo()}<button class="btn-text" data-go="landing">Về trang chủ</button></div>
+  <div class="flow-body"><div class="flow-card narrow">
+    <div class="tabs" role="tablist"><button class="${su?'on':''}" data-auth="signup">Đăng ký</button><button class="${!su?'on':''}" data-auth="login">Đăng nhập</button></div>
+    <h1 style="margin-top:24px;font-size:34px">${su?'Tạo tài khoản':'Chào mừng trở lại'}</h1>
+    <p class="lead" style="font-size:15px">${su?'Miễn phí 3 lượt phân tích mỗi tháng. Không cần thẻ.':'Tiếp tục buổi luyện của bạn.'}</p>
+    <form class="form" id="authForm" novalidate>
+      <button type="button" class="btn google" data-act="google"><svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>Tiếp tục với Google</button>
+      <div class="divider">hoặc dùng email</div>
+      ${su?`<div class="field"><label for="f-name">Họ và tên</label><input class="input" id="f-name" placeholder="Nguyễn Lan Anh" autocomplete="name"></div>`:''}
+      <div class="field"><label for="f-email">Email</label><input class="input" id="f-email" type="email" placeholder="ban@email.com" autocomplete="email"></div>
+      <div class="field"><label for="f-pass">Mật khẩu</label><input class="input" id="f-pass" type="password" placeholder="Tối thiểu 6 ký tự" autocomplete="${su?'new-password':'current-password'}"></div>
+      ${S.auth.err?`<p class="err">${esc(S.auth.err)}</p>`:''}
+      <button class="btn btn-primary btn-lg" type="submit">${su?'Tạo tài khoản':'Đăng nhập'}</button>
+      <p class="demo-note">Bản demo: tài khoản chỉ lưu trên trình duyệt này.</p>
+    </form>
+  </div></div></div>`;
+}
+
+/* ================= Placement offer ================= */
+function vPlacement(){
+  return `<div class="flow wrap"><div class="flow-top">${logo()}<button class="btn-text" data-go="dashboard">Bỏ qua</button></div>
+  <div class="flow-body"><div class="flow-card">
+    <div class="eyebrow">Bài test đầu vào</div>
+    <h1 style="margin-top:12px">Giới thiệu bản thân trong 60 giây.</h1>
+    <p class="lead">AI dùng bài nói này để xác định trình độ hiện tại của bạn và đề xuất lộ trình luyện. Bài test không tính vào lượt phân tích.</p>
+    <div class="intro-list">
+      <div><div class="feat-ic">1</div><div><h3>Bạn là ai</h3><p>Tên, đang học hoặc làm gì.</p></div></div>
+      <div><div class="feat-ic">2</div><div><h3>Một điều bạn tự hào</h3><p>Kể ngắn gọn một thành tích hoặc trải nghiệm.</p></div></div>
+      <div><div class="feat-ic">3</div><div><h3>Mục tiêu khi luyện thuyết trình</h3><p>Bạn muốn nói tốt hơn ở đâu.</p></div></div>
+    </div>
+    <div class="flow-actions"><button class="btn btn-ghost" data-go="dashboard">Để sau</button><button class="btn btn-primary" data-act="placement">Bắt đầu test</button></div>
+  </div></div></div>`;
+}
+
+/* ================= App shell ================= */
+const NAV=[['dashboard','Tổng quan','home'],['setup','Luyện tập','mic'],['history','Tiến bộ','chart'],['pricing','Gói dịch vụ','card'],['account','Tài khoản','user']];
+function shell(view,inner){
+  if(!S.user) return `<div class="wrap gbar">${logo()}<div style="display:flex;gap:8px"><button class="btn-text" data-act="login">Đăng nhập</button><button class="btn btn-primary btn-sm" data-act="start">Get started</button></div></div><div class="main"><div class="main-inner">${inner}</div></div>`;
+  const p=plan();
+  return `<div class="shell"><aside class="side">${logo()}<nav>${NAV.map(([k,l,i])=>`<button class="${view===k||(k==='setup'&&['record','analyzing'].includes(view))||(k==='history'&&view==='report')?'on':''}" data-go="${k}">${ic(i,18)}<span class="nl">${l}</span></button>`).join('')}</nav>
+    <div class="plan-box"><b>Gói ${p.name}</b><span class="muted">Còn ${left()} / ${p.limit} lượt tháng này</span><div class="meter"><b style="width:${100-left()/p.limit*100}%"></b></div>${S.plan==='free'?`<button class="btn btn-sky btn-sm" style="margin-top:12px;width:100%" data-go="pricing">Nâng cấp Premium</button>`:''}</div>
+  </aside><main class="main"><div class="main-inner">${inner}</div></main></div>${demoSwitch()}`;
+}
+
+/* ================= Dashboard ================= */
+function vDashboard(){
+  const ss=S.sessions, last=ss[ss.length-1], prev=ss[ss.length-2], first=ss[0];
+  const avg=Math.round(ss.reduce((a,s)=>a+s.score,0)/ss.length);
+  const mins=Math.round(ss.reduce((a,s)=>a+s.dur,0)/60);
+  const name=(S.user?.name||'bạn').split(' ').pop();
+  const recent=ss.slice(-4).reverse();
+  const errs=[['Từ đệm “ừm”, “à”',first.fillers,last.fillers,'lần/bài'],['Tốc độ vượt 150 từ/phút','4','1','đoạn/bài'],['Nhìn xuống ghi chú','62%','30%','thời gian']];
+  return shell('dashboard',`
+    <div class="page-head"><div><h1 style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">Chào ${esc(name)}.${isPro()?proChip:''}</h1><p>Điểm của bạn tăng ${last.score-first.score} điểm kể từ bài test đầu vào.</p></div><button class="btn btn-primary" data-go="setup">${ic('mic',18)} Bắt đầu luyện</button></div>
+    ${S.plan==='free'&&left()<=1?`<div class="banner" style="margin-bottom:16px"><div><h3>Còn ${left()} lượt phân tích trong tháng</h3><p>Premium có 50 lượt mỗi tháng, phân tích video và khán giả AI.</p></div><button class="btn btn-primary btn-sm" data-go="pricing">Xem gói Premium</button></div>`:''}
+    <div class="grid g-4">
+      <div class="card stat"><div class="k">Điểm gần nhất</div><div class="v num">${last.score}</div><div class="d ${last.score>=prev.score?'up':'down'}">${last.score>=prev.score?'+':''}${last.score-prev.score} so với lần trước</div></div>
+      <div class="card stat"><div class="k">Điểm trung bình</div><div class="v num">${avg}</div><div class="d muted">${ss.length} lần luyện</div></div>
+      <div class="card stat"><div class="k">Thời gian đã nói</div><div class="v num">${mins} <span style="font-size:16px">phút</span></div><div class="d muted">từ 7/9/2026</div></div>
+      <div class="card stat"><div class="k">Lượt phân tích còn lại</div><div class="v num">${left()}<span style="font-size:16px" class="muted"> / ${plan().limit}</span></div><div class="meter"><b style="width:${100-left()/plan().limit*100}%"></b></div></div>
+    </div>
+    <div class="grid g-main" style="margin-top:16px">
+      <div class="card"><h3>Điểm tổng qua các lần luyện</h3><div class="sub">Thang 100 · chấm theo 7 tiêu chí</div><div style="margin-top:12px">${lineChart(ss.map(s=>({label:fmtD(s.date),v:s.score})))}</div></div>
+      <div class="card"><h3>Lỗi thường gặp</h3><div class="sub">Bài test đầu vào → bài gần nhất</div>
+        <div class="list" style="margin-top:10px">${errs.map(e=>`<div style="padding:12px 0;border-top:1px solid var(--line)"><div style="font-weight:600;font-size:14px">${e[0]}</div><div style="display:flex;align-items:center;gap:8px;margin-top:4px" class="num"><span class="chip bad">${e[1]}</span>→<span class="chip good">${e[2]}</span><span class="muted" style="font-size:12px">${e[3]}</span></div></div>`).join('')}</div>
+      </div>
+    </div>
+    <div class="grid g-main" style="margin-top:16px">
+      <div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><h3>Lần luyện gần đây</h3><button class="btn-text" data-go="history">Xem tất cả</button></div>
+        <div class="list" style="margin-top:6px">${recent.map(rowHtml).join('')}</div></div>
+      <div class="card" style="background:var(--soft);border-color:var(--soft)"><div class="eyebrow">Gợi ý buổi tiếp theo</div><h3 style="font-size:19px;margin-top:8px">Luyện mở bài trong 30 giây</h3><p class="muted" style="font-size:14px;margin-top:6px">Mở bài là phần bạn dùng nhiều từ đệm nhất. Thử 3 cách mở: câu hỏi, con số, câu chuyện.</p><button class="btn btn-primary btn-sm" style="margin-top:16px" data-act="suggest">Luyện ngay</button></div>
+    </div>`);
+}
+function rowHtml(s){return `<button class="row" data-open="${s.id}"><div style="min-width:0"><div class="row-t">${esc(s.title)}</div><div class="row-m">${MODES[s.mode].name} · ${s.lang==='vi'?'Tiếng Việt':'Tiếng Anh'} · ${s.input==='video'?'Video':'Âm thanh'} · ${fmtT(s.dur)}</div></div><span class="row-m row-d num">${fmtD(s.date)}</span><span class="score-pill num ${sCls(s.score)}">${s.score}</span></button>`}
+
+/* ================= Practice setup ================= */
+function vSetup(){
+  const d=S.draft, m=MODES[d.mode], p=plan();
+  const inputs=[['audio','Ghi âm','Nói trực tiếp qua micro',false],['video','Quay video','Phân tích cả ngôn ngữ cơ thể',!p.video],['upload','Tải file lên','Âm thanh hoặc video có sẵn',false]];
+  return shell('setup',`
+    <div class="page-head"><div><h1>${d.placement?'Bài test đầu vào':'Thiết lập buổi luyện'}</h1><p>${d.placement?'Nói 60 giây để AI xác định trình độ hiện tại.':'Chọn chế độ, ngôn ngữ và cách bạn muốn nộp bài nói.'}</p></div></div>
+    <div class="setup">
+      <div class="card" style="display:flex;flex-direction:column;gap:26px">
+        <div><div class="sec-t">Chế độ luyện</div><div class="seg">${Object.entries(MODES).map(([k,x])=>`<button class="opt ${d.mode===k?'on':''}" data-d-mode="${k}"><b>${x.name}</b><span>${x.desc}</span></button>`).join('')}</div></div>
+        <div><div class="sec-t">Mục đích</div><div class="pills">${PURPOSES.map(x=>`<button class="pill ${d.purpose===x?'on':''}" data-d-purpose="${esc(x)}">${x}</button>`).join('')}</div></div>
+        <div><div class="sec-t">Ngôn ngữ</div><div class="pills"><button class="pill ${d.lang==='vi'?'on':''}" data-d-lang="vi">Tiếng Việt</button><button class="pill ${d.lang==='en'?'on':''}" data-d-lang="en">Tiếng Anh</button></div></div>
+        <div class="field"><label for="d-title">Chủ đề bài nói</label><input class="input" id="d-title" value="${esc(d.title)}" placeholder="VD: Ứng dụng AI trong giáo dục"></div>
+        <div class="field"><label for="d-content">Nội dung hoặc dàn ý (không bắt buộc)</label><textarea class="input" id="d-content" placeholder="Dán dàn ý để AI kiểm tra bạn có bám sát nội dung không.">${esc(d.content)}</textarea></div>
+        <div><div class="sec-t">Cách nộp bài</div><div class="seg" style="grid-template-columns:repeat(3,1fr)">${inputs.map(([k,l,s,lock])=>`<button class="opt ${d.input===k?'on':''}" data-d-input="${k}" ${lock?'data-locked="1"':''}>${lock?'<span class="lock">Premium</span>':''}<b>${l}</b><span>${s}</span></button>`).join('')}</div></div>
+        ${d.input==='upload'?`<label class="drop" for="d-file"><input type="file" id="d-file" accept="audio/*,video/*" hidden><b>${d.file?esc(d.file.name):'Chọn file âm thanh hoặc video'}</b><div class="muted" style="font-size:13px;margin-top:4px">${d.file?`${(d.file.size/1048576).toFixed(1)} MB${d.file.dur?' · '+fmtT(d.file.dur):''}`:`MP3, M4A, WAV, MP4 · tối đa ${p.maxMin} phút với gói ${p.name}`}</div></label>`:''}
+        <div style="display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-primary btn-lg" data-act="begin" ${d.input==='upload'&&!d.file?'disabled':''}>${d.input==='upload'?'Phân tích file':'Bắt đầu nói'}</button>
+        </div>
+      </div>
+      <div class="setup-side">
+        <div class="card"><div class="eyebrow">Người nghe của bạn</div><div class="persona" style="margin-top:12px"><div class="avatar">${m.persona.split(' ').pop()[0]}</div><div><b>${m.persona}</b><div class="muted" style="font-size:13px">${m.role}</div></div></div><p class="muted" style="font-size:14px;margin-top:12px">Tập trung chấm: ${m.focus.toLowerCase()}.</p><div class="quote"><small>Có thể sẽ hỏi</small>“${m.questions[0]}”</div></div>
+        <div class="card"><h3>Gói ${p.name}</h3><div class="sub">Còn ${d.placement?'không giới hạn (bài test)':left()+' lượt'} · tối đa ${d.placement?'1':p.maxMin} phút/bài</div>${S.plan==='free'?`<p class="muted" style="font-size:13px;margin-top:10px">Phân tích video và coaching thời gian thực có trong gói Premium.</p><button class="btn btn-ghost btn-sm" style="margin-top:12px" data-go="pricing">So sánh gói</button>`:''}</div>
+      </div>
+    </div>`);
+}
+
+/* ================= Recording ================= */
+function vRecord(){
+  const d=S.draft, m=MODES[d.mode], p=plan(), r=S.rec;
+  const max=d.placement?60:p.maxMin*60;
+  return shell('record',`
+    <div class="page-head"><div><div class="eyebrow">${m.name} · ${d.lang==='vi'?'Tiếng Việt':'Tiếng Anh'}</div><h1 style="margin-top:6px">${esc(d.title||'Bài nói chưa đặt tên')}</h1></div><button class="btn btn-ghost btn-sm" data-act="rec-cancel">Huỷ</button></div>
+    <div class="rec">
+      <div class="rec-stage">
+        ${d.input==='video'?`<div class="cam"><video id="camv" autoplay muted playsinline></video><div class="ph" id="camph">Đang mở camera…</div><span class="tag">Theo dõi ánh mắt · cử chỉ</span></div>`:''}
+        <div style="display:flex;align-items:end;justify-content:space-between;gap:16px;flex-wrap:wrap">
+          <div><div style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600"><span class="rec-dot ${r.paused?'paused':''}" id="recdot"></span><span id="recst">${r.paused?'Tạm dừng':'Đang ghi'}</span></div><div class="timer num" id="timer">${fmtT(r.t)}</div><div class="muted num" style="font-size:13px">Giới hạn ${fmtT(max)}</div></div>
+          <div class="rec-actions"><button class="btn btn-ghost" data-act="rec-pause" id="pausebtn">${r.paused?'Tiếp tục':'Tạm dừng'}</button><button class="btn btn-primary" data-act="rec-stop">Kết thúc & phân tích</button></div>
+        </div>
+        <canvas class="wv" id="wv"></canvas>
+        <div class="demo-note" id="micnote">${r.real?'Đang dùng micro của bạn.':'Đang mở micro…'}</div>
+        <div class="kpis"><div class="kpi"><div class="k">Tốc độ</div><div class="v num" id="k-wpm">–</div><div class="k">từ/phút</div></div><div class="kpi"><div class="k">Từ đệm</div><div class="v num" id="k-fill">0</div><div class="k">lần</div></div><div class="kpi"><div class="k">Ngắt nghỉ</div><div class="v num" id="k-pause">0</div><div class="k">lần &gt; 2 giây</div></div></div>
+      </div>
+      <div class="card ${p.live?'':'lock-card'}">
+        <h3>Coaching thời gian thực</h3><div class="sub">${m.persona}, ${m.role.toLowerCase()}, đang nghe</div>
+        <div class="live" id="live" style="margin-top:14px">${r.tips.map(tipHtml).join('')||'<p class="muted" style="font-size:14px">Gợi ý và câu hỏi của khán giả AI sẽ hiện ở đây khi bạn nói.</p>'}</div>
+        ${p.live?'':`<div class="lock-over"><b>Có trong gói Premium</b><p class="muted" style="font-size:13px">AI nhắc bạn ngay khi nói quá nhanh, dùng từ đệm, và đặt câu hỏi phản biện.</p><button class="btn btn-sky btn-sm" data-act="rec-upgrade">Xem gói Premium</button></div>`}
+      </div>
+    </div>`);
+}
+const tipHtml=t=>`<div class="tip ${t.q?'q':''}"><small>${t.at} · ${t.q?'CÂU HỎI TỪ KHÁN GIẢ':'GỢI Ý'}</small>${esc(t.text)}</div>`;
+
+const LIVE_TIPS=[
+  [6,'Mở bài tốt. Thử nhìn thẳng vào camera ở câu tiếp theo.'],
+  [12,'Bạn vừa nói “ừm” 2 lần liên tiếp. Dừng im lặng 1 giây sẽ tốt hơn.'],
+  [20,'Q'],
+  [28,'Tốc độ đang lên 168 từ/phút. Chậm lại một chút.'],
+  [38,'Ngắt nghỉ sau ý chính rất tốt, giữ nhịp này.'],
+  [48,'Q'],
+  [58,'Bạn sắp hết thời gian dự kiến. Chuẩn bị kết bài.'],
+];
+function startRec(){
+  const d=S.draft;
+  S.rec={t:0,paused:false,tips:[],real:false,stream:null,analyser:null,ctx:null,wpm:0,fill:0,pause:0,qi:0,timer:null,raf:null};
+  go('record');
+  const r=S.rec;
+  const constraints=d.input==='video'?{audio:true,video:true}:{audio:true};
+  if(navigator.mediaDevices?.getUserMedia){
+    navigator.mediaDevices.getUserMedia(constraints).then(stream=>{
+      if(S.rec!==r){stream.getTracks().forEach(t=>t.stop());return}
+      r.stream=stream;r.real=true;
+      try{r.ctx=new (window.AudioContext||window.webkitAudioContext)();const src=r.ctx.createMediaStreamSource(stream);r.analyser=r.ctx.createAnalyser();r.analyser.fftSize=256;src.connect(r.analyser)}catch(e){}
+      const v=$('#camv');if(v&&stream.getVideoTracks().length){v.srcObject=stream;$('#camph').hidden=true}
+      const n=$('#micnote');if(n)n.textContent='Đang dùng micro của bạn.';
+    }).catch(()=>demoFallback(r));
+  } else demoFallback(r);
+  r.timer=setInterval(()=>tick(r),1000);
+  drawWave(r);
+}
+function demoFallback(r){
+  if(S.rec!==r)return;
+  const n=$('#micnote');if(n)n.textContent='Không truy cập được micro, đang chạy chế độ demo với dữ liệu mô phỏng.';
+  const ph=$('#camph');if(ph)ph.textContent='Không mở được camera. Chế độ demo: phân tích ngôn ngữ cơ thể dùng dữ liệu mẫu.';
+}
+function tick(r){
+  if(S.rec!==r||r.paused)return;
+  r.t++;
+  const max=S.draft.placement?60:plan().maxMin*60;
+  const el=$('#timer');if(el)el.textContent=fmtT(r.t);
+  if(r.t>3){r.wpm=Math.round(132+Math.sin(r.t/6)*22+Math.random()*8);const w=$('#k-wpm');if(w)w.textContent=r.wpm}
+  if(Math.random()<.12){r.fill++;const f=$('#k-fill');if(f)f.textContent=r.fill}
+  if(r.t%17===0){r.pause++;const f=$('#k-pause');if(f)f.textContent=r.pause}
+  if(plan().live){
+    const loop=r.t%64, hit=LIVE_TIPS.find(x=>x[0]===loop);
+    if(hit){
+      const m=MODES[S.draft.mode];
+      const tip=hit[1]==='Q'?{q:true,at:fmtT(r.t),text:`${m.persona}: “${m.questions[r.qi++%m.questions.length]}”`}:{at:fmtT(r.t),text:hit[1]};
+      r.tips.unshift(tip);
+      const live=$('#live');if(live){if(r.tips.length===1)live.innerHTML='';live.insertAdjacentHTML('afterbegin',tipHtml(tip))}
+    }
+  }
+  if(r.t>=max){toast('Đã đạt giới hạn thời gian của gói');stopRec(true)}
+}
+function drawWave(r){
+  const cv=$('#wv');if(!cv||S.rec!==r)return;
+  const dpr=window.devicePixelRatio||1,W=cv.clientWidth,H=cv.clientHeight;
+  if(cv.width!==W*dpr){cv.width=W*dpr;cv.height=H*dpr}
+  const c=cv.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);c.clearRect(0,0,W,H);
+  const cs=getComputedStyle(document.documentElement);
+  const col1=cs.getPropertyValue('--blue-2').trim(),col2=cs.getPropertyValue('--sky').trim();
+  const bars=Math.floor(W/7);let data=null;
+  if(r.analyser){data=new Uint8Array(r.analyser.frequencyBinCount);r.analyser.getByteFrequencyData(data)}
+  const now=performance.now()/1000;
+  for(let i=0;i<bars;i++){
+    let v;
+    if(r.paused)v=.04;
+    else if(data)v=(data[Math.floor(i/bars*data.length*.7)]||0)/255;
+    else v=.15+.55*Math.abs(Math.sin(i*.35+now*3)*Math.sin(i*.13-now*1.7))+Math.random()*.08;
+    const h=Math.max(3,v*H*.9);
+    c.fillStyle=i%4===0?col2:col1;
+    c.beginPath();c.roundRect?c.roundRect(i*7,(H-h)/2,4,h,2):c.rect(i*7,(H-h)/2,4,h);c.fill();
+  }
+  r.raf=requestAnimationFrame(()=>drawWave(r));
+}
+function cleanupRec(){
+  const r=S.rec;if(!r)return;
+  clearInterval(r.timer);cancelAnimationFrame(r.raf);
+  r.stream?.getTracks().forEach(t=>t.stop());
+  try{r.ctx?.close()}catch(e){}
+  S.rec=null;
+}
+function stopRec(){const r=S.rec;const dur=Math.max(r?r.t:0,8);cleanupRec();startAnalysis(dur)}
+
+/* ================= Analyzing ================= */
+const AN_STEPS=['Tải bài nói lên máy chủ','Chuyển giọng nói thành văn bản','Phân tích nội dung và cấu trúc','Đo tốc độ nói và ngắt nghỉ','Phát hiện từ đệm và độ trôi chảy','Phân tích ngôn ngữ cơ thể','Viết báo cáo và gợi ý cải thiện'];
+let anTimer=null;
+function startAnalysis(dur){
+  const d=S.draft;
+  S.an={i:0,dur,steps:AN_STEPS.filter((s,i)=>i!==5||d.input!=='audio')};
+  go('analyzing');
+  clearInterval(anTimer);
+  anTimer=setInterval(()=>{
+    S.an.i++;
+    if(S.an.i>=S.an.steps.length){clearInterval(anTimer);finishAnalysis();return}
+    if(S.view==='analyzing')render();
+  },750);
+}
+function vAnalyzing(){
+  const a=S.an, pct=Math.round(a.i/a.steps.length*100);
+  return shell('analyzing',`<div class="an">
+    <div class="eyebrow">Đang xử lý · ${fmtT(a.dur)} bài nói</div>
+    <h1 style="font-size:clamp(26px,4vw,38px);font-weight:800;letter-spacing:-.035em;margin-top:10px">AI đang nghe lại bài nói của bạn.</h1>
+    <p class="muted" style="margin-top:10px">Thường mất dưới 2 phút. Bạn có thể rời trang, báo cáo sẽ được lưu vào lịch sử.</p>
+    <div class="big-meter"><b style="width:${pct}%"></b></div><div class="muted num" style="font-size:13px;margin-top:6px">${pct}%</div>
+    <ul class="an-steps">${a.steps.map((s,i)=>`<li class="${i<a.i?'done':i===a.i?'act':''}"><span class="st">${i<a.i?ic('check',14):''}</span>${s}</li>`).join('')}</ul>
+  </div>`);
+}
+function finishAnalysis(){
+  const d=S.draft, base=S.sessions[S.sessions.length-1];
+  const bump=v=>v==null?null:Math.min(95,Math.max(40,v+Math.round(Math.random()*6-2)));
+  const c={};Object.keys(CRIT).forEach(k=>c[k]=k==='body'&&d.input==='audio'?null:bump(base.c[k]??66));
+  const id='s'+Date.now();
+  const s=mk(id,d.placement?'Giới thiệu bản thân (bài test lại)':(d.title||`${MODES[d.mode].name} ${fmtD(new Date().toISOString().slice(0,10))}`),d.mode,new Date().toISOString().slice(0,10),S.an.dur,c,Math.max(3,base.fillers-1),d.input==='upload'?'audio':d.input,d.lang);
+  s.placement=d.placement;
+  S.sessions.push(s);
+  if(!d.placement)S.used++;
+  S.currentId=id;
+  S.draft.placement=false;
+  go('report');
+  toast('Báo cáo đã sẵn sàng');
+}
+
+/* ================= Report ================= */
+function vReport(){
+  const s=S.sessions.find(x=>x.id===S.currentId)||S.sessions[6];
+  const R=SAMPLE_REPORT, m=MODES[s.mode], idx=S.sessions.indexOf(s), prev=S.sessions[idx-1];
+  const hasBody=s.c.body!=null;
+  const level=s.score>=80?'Nâng cao':s.score>=65?'Khá':s.score>=55?'Trung bình':'Mới bắt đầu';
+  const crit=Object.entries(CRIT).filter(([k])=>s.c[k]!=null).map(([k,l])=>barRow(l,s.c[k])).join('');
+  return shell('report',`
+    <div class="page-head"><div><div class="eyebrow">Báo cáo · ${fmtDL(s.date)}</div><h1 style="margin-top:6px">${esc(s.title)}</h1><p>${m.name} · ${s.lang==='vi'?'Tiếng Việt':'Tiếng Anh'} · ${s.input==='video'?'Video':'Âm thanh'} · ${fmtT(s.dur)}</p></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">${S.user?`<button class="btn btn-ghost btn-sm" data-go="history">Lịch sử</button><button class="btn btn-primary btn-sm" data-act="retry">Luyện lại bài này</button>`:`<button class="btn btn-primary btn-sm" data-act="start">Luyện bài của bạn</button>`}</div></div>
+    ${!S.user?`<div class="banner" style="margin-bottom:16px"><div><h3>Đây là báo cáo mẫu</h3><p>Bài thuyết trình 4 phút của một sinh viên năm 2, phân tích từ video.</p></div></div>`:''}
+
+    <div class="card"><div class="rep-top">${ring(s.score)}<div style="min-width:0">
+      <div class="chips" style="margin-bottom:12px"><span class="chip sky">Trình độ: ${level}</span>${prev?`<span class="chip ${s.score>=prev.score?'good':'bad'}">${s.score>=prev.score?'+':''}${s.score-prev.score} so với lần trước</span>`:''}<span class="chip line">${s.fillers} từ đệm</span></div>
+      <h3 style="font-size:20px">Bố cục rõ, số liệu thuyết phục. Phần mở và kết còn yếu.</h3>
+      <p class="muted" style="margin-top:6px;font-size:14px">Bạn trình bày đủ ba phần và dùng dẫn chứng tốt. Ưu tiên luyện 40 giây đầu: đây là nơi tập trung nhiều từ đệm nhất và chưa có câu thu hút.</p>
+      <div class="crit" style="margin-top:18px">${crit}</div>
+    </div></div></div>
+
+    <div class="grid g-main" style="margin-top:16px">
+      <div class="card"><h3>Điểm cần cải thiện</h3><div class="sub">${R.weak.length} vấn đề nổi bật nhất, xếp theo mức ảnh hưởng</div>
+        <div class="weak" style="margin-top:12px">${R.weak.map((w,i)=>`<div class="weak-item"><span class="ix">${i+1}</span><div style="min-width:0"><h4>${w.title}</h4><p class="muted" style="font-size:14px;margin-top:4px">${w.detail}</p><div class="quote"><small>Transcript · ${R.segments[w.seg].t} · <button class="btn-text" style="font-size:12px;padding:0" data-seg="${w.seg}">Xem trong transcript</button></small>“${R.segments[w.seg].p.map(x=>x[1]).join('')}”</div><div class="fix"><b>Sửa:</b><span>${w.fix}</span></div></div></div>`).join('')}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+        <div class="card"><h3>Tốc độ nói</h3><div class="sub">Từ/phút. Vùng xanh 120–150 là dễ nghe.</div><div style="margin-top:10px">${paceChart(R.pace)}</div></div>
+        ${qaCard(m)}
+      </div>
+    </div>
+
+    ${timelineCard()}
+
+    <div class="card" style="margin-top:16px"><h3>Ngôn ngữ cơ thể</h3><div class="sub">${hasBody?'Phân tích từ video: ánh mắt, cử chỉ, biểu cảm, tư thế':'Bài này nộp bằng âm thanh. Quay video để nhận phân tích ngôn ngữ cơ thể.'}</div>
+      ${hasBody?`<div class="body-l" style="margin-top:14px">${R.body.map(b=>`<div class="card" style="background:var(--bg)"><div class="k muted" style="font-size:13px">${b.k}</div><div style="font-size:22px;font-weight:800;margin-top:2px">${b.v}</div><div class="status" style="color:var(--${b.s==='mid'?'warn':b.s})">${b.s==='good'?'Tốt':b.s==='bad'?'Cần sửa':'Cần chú ý'}</div><p class="muted" style="font-size:13px;margin-top:6px">${b.note}</p></div>`).join('')}</div>
+      <div class="fix" style="margin-top:14px"><b>Gợi ý:</b><span>In dàn ý cỡ chữ lớn, mỗi ý một dòng, để chỉ cần liếc. Đứng hai chân rộng bằng vai và chọn 3 điểm nhìn trong phòng.</span></div>`:`<button class="btn btn-ghost btn-sm" style="margin-top:12px" data-act="retry-video">Luyện lại bằng video</button>`}
+    </div>
+
+    <div class="grid g-2" style="margin-top:16px">
+      <div class="card"><h3>Transcript</h3><div class="sub"><span style="color:var(--bad);font-weight:600">Đỏ</span>: từ đệm · số: điểm yếu tương ứng</div>
+        <div class="transcript" id="transcript" style="margin-top:12px">${R.segments.map((sg,i)=>`<div class="seg-t" id="seg-${i}"><span class="ts num">${sg.t}</span><span>${sg.p.map(([t,x])=>t==='f'?`<span class="f">${x}</span>`:esc(x)).join('')}${sg.issue?`<span class="iss">#${sg.issue}</span>`:''}</span></div>`).join('')}</div>
+      </div>
+      <div class="card"><h3>Diễn đạt tốt hơn</h3><div class="sub">Phiên bản đề xuất cho các câu chưa rõ</div>
+        <div style="margin-top:10px">${R.rewrites.map(w=>`<div class="rewrite"><div class="old"><small>Bạn đã nói</small>${esc(w.old)}</div><div class="new"><small>Thử nói</small>${esc(w.neu)}</div></div>`).join('')}</div>
+      </div>
+    </div>`);
+}
+
+function timelineCard(){
+  const R=SAMPLE_REPORT, sec=t=>{const [a,b]=t.split(':');return +a*60+ +b};
+  const ticks=[0,60,120,180,240,R.dur].map(fmtT);
+  const html=`<div class="card" style="margin-top:16px"><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><h3>Dòng thời gian bài nói</h3>${proChip}</div><div class="sub">Mỗi chấm là một khoảnh khắc AI ghi nhận. Bấm để xem đoạn transcript tương ứng.</div>
+    <div class="tl"><div class="tl-track"></div>${R.marks.map(k=>`<button class="tl-m" style="left:${sec(k.t)/R.dur*100}%" data-seg="${k.seg}" aria-label="${k.t} ${esc(k.label)}" title="${k.t} · ${esc(k.label)}"><i style="background:var(--${MARK[k.type][1]})"></i></button>`).join('')}</div>
+    <div class="tl-ticks num">${ticks.map(x=>`<span>${x}</span>`).join('')}</div>
+    <div class="legend">${Object.values(MARK).map(([l,c])=>`<span><i style="background:var(--${c});height:8px;width:8px;border-radius:50%"></i>${l}</span>`).join('')}</div>
+    <div class="tl-list">${R.marks.map(k=>`<button class="tl-item" data-seg="${k.seg}"><span class="num muted">${k.t}</span><span class="dot" style="background:var(--${MARK[k.type][1]})"></span><span>${esc(k.label)}</span></button>`).join('')}</div>
+  </div>`;
+  return gate(html,'Dòng thời gian lỗi trong bài nói','Xem chính xác giây nào bạn nói nhanh, dùng từ đệm hay rời mắt khỏi khán giả.');
+}
+function qaCard(m){
+  const ini=m.persona.split(' ').pop()[0];
+  const items=m.questions.map((q,i)=>{
+    const a=S.qa[i]||{};
+    let body='';
+    if(isPro()&&a.open){
+      body=`<div class="qa-ans"><label class="muted" for="qa-${i}" style="font-size:12px;font-weight:600">Câu trả lời của bạn</label><textarea class="input" id="qa-${i}" data-qa-text="${i}" placeholder="Gõ hoặc đọc câu trả lời như khi đứng trước ${m.persona}…">${esc(a.text||'')}</textarea>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-primary btn-sm" data-act="qa-grade" data-i="${i}" ${a.state==='loading'?'disabled':''}>${a.state==='loading'?'AI đang chấm…':'Chấm câu trả lời'}</button><button class="btn-text" style="font-size:13px" data-act="qa-open" data-i="${i}">Thu gọn</button></div>
+        ${a.fb?`<div class="fb"><div style="display:flex;gap:8px;align-items:center"><span class="score-pill num ${sCls(a.fb.score)}">${a.fb.score}</span><b>${a.fb.head}</b></div>${a.fb.points.map(x=>`<div>${x}</div>`).join('')}<div class="muted" style="font-size:13px"><b>Khung trả lời gợi ý:</b> trả lời thẳng trong 1 câu, đưa 1 bằng chứng hoặc con số, rồi nối lại thông điệp chính.</div></div>`:''}
+      </div>`;
+    }
+    return `<div class="qa-item"><div class="avatar" style="width:36px;height:36px;font-size:13px">${ini}</div><div style="min-width:0"><div class="quote" style="margin:0">“${q}”</div>
+      ${!a.open?`<button class="btn-text" style="font-size:13px;margin-top:4px" data-act="qa-open" data-i="${i}">${isPro()?(a.fb?'Xem lại câu trả lời':'Luyện trả lời'):'Luyện trả lời · Premium'}</button>`:''}${body}</div></div>`;
+  }).join('');
+  return `<div class="card"><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><h3>Câu hỏi phản biện từ ${m.persona}</h3>${proChip}</div><div class="sub">${m.role}. Luyện trả lời ngay để AI chấm phần hỏi đáp.</div><div class="qa" style="margin-top:14px">${items}</div></div>`;
+}
+function gradeAnswer(text,mode){
+  const words=text.trim().split(/\s+/).filter(Boolean).length, hasNum=/\d/.test(text), fill=(text.match(/(^|[\s,.])(ừm|ờ|à|kiểu như|um|uh)(?=[\s,.!?]|$)/giu)||[]).length;
+  let score=60+Math.min(20,words/3)+(hasNum?10:0)-fill*4; score=Math.round(Math.max(45,Math.min(92,score)));
+  const points=[];
+  points.push(words<15?'• Câu trả lời còn ngắn ('+words+' từ). Người hỏi cần thêm lý do hoặc ví dụ.':'• Độ dài phù hợp ('+words+' từ), đủ để trả lời trong khoảng 30–45 giây.');
+  points.push(hasNum?'• Có số liệu cụ thể, tăng độ tin cậy.':'• Chưa có con số nào. Thêm một số liệu sẽ thuyết phục hơn'+(mode==='pitching'?', nhất là với nhà đầu tư.':'.'));
+  if(fill)points.push('• Có '+fill+' từ đệm trong câu trả lời. Dừng 1 giây thay vì nói “ừm”.');
+  return {score,head:score>=75?'Trả lời thuyết phục':score>=60?'Ổn, có thể gọn và chắc hơn':'Chưa thuyết phục',points};
+}
+const PLAN4=[
+  {w:'Tuần 1',t:'Mở bài 30 giây',items:[['w1a','Viết 3 câu mở: câu hỏi, con số, câu chuyện'],['w1b','Ghi âm mỗi câu mở 2 lần'],['w1c','Giữ từ đệm dưới 2 lần trong 30 giây đầu']]},
+  {w:'Tuần 2',t:'Nhịp nói',items:[['w2a','Luyện 1 bài 3 phút ở 130 từ/phút'],['w2b','Đánh dấu điểm dừng sau mỗi ý chính'],['w2c','Không đoạn nào vượt 150 từ/phút']]},
+  {w:'Tuần 3',t:'Ánh mắt & cử chỉ',items:[['w3a','Quay video 1 bài, ánh mắt trên 60%'],['w3b','Dùng tay đếm ý khi liệt kê'],['w3c','Đứng yên, không đung đưa ở phút 3']]},
+  {w:'Tuần 4',t:'Hỏi đáp',items:[['w4a','Trả lời 3 câu phản biện của khán giả AI'],['w4b','Mỗi câu trả lời có 1 con số'],['w4c','Bài tổng kết đạt từ 80 điểm']]},
+];
+function planCard(){
+  const all=PLAN4.flatMap(w=>w.items), done=all.filter(([id])=>S.planDone[id]).length;
+  const html=`<div class="card" style="margin-bottom:16px"><div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start"><div><div style="display:flex;gap:10px;align-items:center"><h3>Lộ trình luyện tập 4 tuần</h3>${proChip}</div><div class="sub">AI lập từ 8 báo cáo gần nhất: ưu tiên mở bài, nhịp nói và ánh mắt.</div></div><span class="num" style="font-weight:700">${done}/${all.length} việc</span></div>
+    <div class="meter"><b style="width:${done/all.length*100}%;background:var(--good)"></b></div>
+    <div class="weeks">${PLAN4.map((w,i)=>`<div class="week ${i===1?'now':''}"><div class="wk">${w.w}${i===1?' · tuần này':''}</div><h4>${w.t}</h4><div style="margin-top:6px">${w.items.map(([id,t])=>`<button class="check ${S.planDone[id]?'done':''}" data-act="plan-check" data-id="${id}" aria-pressed="${!!S.planDone[id]}"><span class="box">${S.planDone[id]?ic('check',12):''}</span><span class="t">${t}</span></button>`).join('')}</div></div>`).join('')}</div>
+  </div>`;
+  return gate(html,'Lộ trình luyện tập cá nhân','AI đọc toàn bộ lịch sử luyện tập và lập kế hoạch 4 tuần tập trung vào lỗi bạn hay mắc nhất.');
+}
+
+/* ================= History / progress ================= */
+function vHistory(){
+  const ss=S.sessions, pool=isPro()?ss:ss.slice(-3);
+  S.compare=S.compare.map((id,i)=>pool.some(s=>s.id===id)?id:pool[i?pool.length-1:0].id);
+  const [a,b]=S.compare.map(id=>ss.find(s=>s.id===id));
+  const opts=sel=>pool.map(s=>`<option value="${s.id}" ${s.id===sel?'selected':''}>${fmtD(s.date)} · ${esc(s.title)}</option>`).join('');
+  return shell('history',`
+    <div class="page-head"><div><h1>Tiến bộ</h1><p>${ss.length} lần luyện · lưu toàn bộ báo cáo.</p></div><button class="btn btn-primary" data-go="setup">Luyện thêm</button></div>
+    ${planCard()}
+    <div class="grid g-main">
+      <div class="card"><h3>Điểm tổng và độ trôi chảy</h3><div class="sub">Thang 100</div><div style="margin-top:10px">${lineChart(ss.map(s=>({label:fmtD(s.date),v:s.score})),{series2:ss.map(s=>s.c.fluency)})}</div><div class="legend"><span><i style="background:var(--blue-2)"></i>Điểm tổng</span><span><i style="background:var(--sky)"></i>Độ trôi chảy</span></div></div>
+      <div class="card"><h3>Từ đệm mỗi bài</h3><div class="sub">Giảm ${ss[0].fillers-ss[ss.length-1].fillers} lần so với bài đầu</div>
+        <div style="display:flex;align-items:flex-end;gap:6px;height:150px;margin-top:18px">${ss.map(s=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end"><span class="num" style="font-size:11px;font-weight:700">${s.fillers}</span><div style="width:100%;max-width:26px;border-radius:5px 5px 2px 2px;background:var(--${s.fillers>14?'bad':s.fillers>9?'warn':'good'});height:${s.fillers/22*100}%"></div><span class="muted num" style="font-size:10px">${fmtD(s.date)}</span></div>`).join('')}</div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px"><h3>So sánh hai lần luyện</h3>${isPro()?'':'<div class="sub">Gói Free so sánh được 3 lần luyện gần nhất. <button class="btn-text" style="font-size:13px;padding:0" data-go="pricing">Premium không giới hạn</button></div>'}
+      <div class="grid g-2" style="margin-top:14px"><div class="field"><label for="cmp-a">Lần A</label><select class="input" id="cmp-a" data-cmp="0">${opts(a.id)}</select></div><div class="field"><label for="cmp-b">Lần B</label><select class="input" id="cmp-b" data-cmp="1">${opts(b.id)}</select></div></div>
+      <div class="tbl-wrap" style="margin-top:14px"><table><thead><tr><th>Tiêu chí</th><th>A</th><th>B</th><th>Thay đổi</th></tr></thead><tbody>
+        ${[['Điểm tổng','score'],...Object.entries(CRIT).map(([k,l])=>[l,k])].map(([l,k])=>{const va=k==='score'?a.score:a.c[k],vb=k==='score'?b.score:b.c[k];const dd=va!=null&&vb!=null?vb-va:null;return `<tr><td>${l}</td><td class="num">${va??'–'}</td><td class="num">${vb??'–'}</td><td class="num ${dd>0?'up':dd<0?'down':''}">${dd==null?'Không có video':(dd>0?'+':'')+dd}</td></tr>`}).join('')}
+        <tr><td>Từ đệm</td><td class="num">${a.fillers}</td><td class="num">${b.fillers}</td><td class="num ${b.fillers<a.fillers?'up':'down'}">${b.fillers-a.fillers>0?'+':''}${b.fillers-a.fillers} lần</td></tr>
+      </tbody></table></div>
+    </div>
+    <div class="card" style="margin-top:16px"><h3>Tất cả báo cáo</h3><div class="list" style="margin-top:6px">${ss.slice().reverse().map(rowHtml).join('')}</div></div>`);
+}
+
+/* ================= Pricing ================= */
+function vPricing(){
+  const li=(t,ok=true)=>`<li class="${ok?'':'no'}">${ic(ok?'check':'x',16)}<span>${t}</span></li>`;
+  const pro=isPro();
+  const rows=[['Lượt phân tích mỗi tháng','3','50'],['Thời lượng tối đa mỗi bài','5 phút','30 phút'],['Ghi âm, tải file âm thanh','✓','✓'],['Quay video, tải file video','–','✓'],['Phân tích ánh mắt, biểu cảm, cử chỉ, tư thế','–','✓'],['Coaching thời gian thực khi đang nói','–','✓'],['Khán giả AI đặt câu hỏi phản biện','Xem câu hỏi','Luyện trả lời và được chấm'],['Dòng thời gian lỗi trong báo cáo','–','✓'],['Lộ trình luyện tập 4 tuần','–','✓'],['So sánh các lần luyện','3 lần gần nhất','Không giới hạn']];
+  const manage=pro?`<div class="grid g-2" style="margin-top:24px;max-width:860px">
+      <div class="card"><div style="display:flex;gap:10px;align-items:center"><h3>Quản lý gói Premium</h3>${proChip}</div>
+        <div class="kv"><span>Chu kỳ</span><b>${S.cycle==='m'?'Hằng tháng · 149.000đ':'Hằng năm · 1.290.000đ'}</b><span>${S.autoRenew?'Gia hạn tiếp theo':'Hết hạn vào'}</span><b class="num">${fmtDL(S.expiry)}</b><span>Phương thức</span><b>${S.payMethod}</b><span>Tự động gia hạn</span><button class="switch ${S.autoRenew?'on':''}" data-act="autorenew" role="switch" aria-checked="${S.autoRenew}" aria-label="Tự động gia hạn"></button></div>
+        ${S.autoRenew?'':`<p class="muted" style="font-size:13px;margin-top:12px">Bạn vẫn dùng Premium đến ${fmtDL(S.expiry)}, sau đó tài khoản về gói Free. Lịch sử luyện tập được giữ nguyên.</p>`}
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px">${S.cycle==='m'?'<button class="btn btn-ghost btn-sm" data-act="to-yearly">Chuyển sang gói năm, tiết kiệm 28%</button>':''}<button class="btn-text" style="font-size:13px" data-act="free-now">Quay lại chế độ Free (demo)</button></div>
+      </div>
+      <div class="card"><h3>Lịch sử thanh toán</h3>
+        <div class="tbl-wrap" style="margin-top:10px"><table><thead><tr><th>Mã hoá đơn</th><th>Ngày</th><th>Số tiền</th><th>Phương thức</th></tr></thead><tbody>${S.invoices.slice().reverse().map(v=>`<tr><td class="num">${v.id}</td><td class="num">${fmtD(v.date)}/${v.date.slice(0,4)}</td><td class="num">${fmtVND(v.amount)}</td><td>${v.method}</td></tr>`).join('')}</tbody></table></div>
+      </div></div>`:'';
+  return shell('pricing',`
+    <div class="page-head"><div><h1>Gói dịch vụ</h1><p>${pro?'Bạn đang dùng Premium. Cảm ơn bạn đã luyện tập cùng chúng tôi.':'Bắt đầu miễn phí. Nâng cấp khi bạn cần luyện nhiều hơn.'}</p></div></div>
+    <div class="price-grid">
+      <div class="price"><div><div class="eyebrow">Free</div><div class="amt num" style="margin-top:6px">0đ</div><div class="muted">Mãi mãi</div></div>
+        <ul>${li('3 lượt phân tích mỗi tháng')}${li('Tối đa 5 phút mỗi bài nói')}${li('Ghi âm và tải file âm thanh')}${li('Báo cáo điểm, transcript, từ đệm')}${li('Phân tích video và ngôn ngữ cơ thể',false)}${li('Khán giả AI và coaching thời gian thực',false)}</ul>
+        <button class="btn btn-ghost" disabled>${!S.user?'Có sẵn khi đăng ký':pro?'Gói cơ bản':'Gói hiện tại'}</button></div>
+      <div class="price pro"><div><div class="eyebrow">Premium</div><div class="amt num" style="margin-top:6px">149.000đ<span style="font-size:16px;font-weight:500" class="muted"> /tháng</span></div><div class="muted">hoặc 1.290.000đ/năm, tiết kiệm 28%</div></div>
+        <ul>${li('50 lượt phân tích mỗi tháng, tối đa 30 phút/bài')}${li('Phân tích video: ánh mắt, biểu cảm, cử chỉ, tư thế')}${li('Coaching thời gian thực khi đang nói')}${li('Luyện trả lời câu hỏi của khán giả AI')}${li('Dòng thời gian lỗi và lộ trình 4 tuần')}${li('So sánh tiến bộ không giới hạn')}</ul>
+        <button class="btn btn-primary" ${pro?'disabled':''} data-act="buy">${pro?'Gói hiện tại':'Nâng cấp Premium'}</button></div>
+    </div>
+    ${manage}
+    <div class="card" style="margin-top:24px;max-width:860px"><h3>So sánh chi tiết</h3>
+      <div class="tbl-wrap" style="margin-top:10px"><table><thead><tr><th>Tính năng</th><th>Free</th><th>Premium</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${r[0]}</td><td class="${r[1]==='–'?'muted':''}">${r[1]}</td><td style="font-weight:600">${r[2]}</td></tr>`).join('')}</tbody></table></div>
+    </div>
+    <div style="margin-top:32px;max-width:860px"><h3 style="font-size:18px;margin-bottom:8px">Câu hỏi thường gặp</h3>
+      <details class="faq"><summary>Tôi có thể huỷ Premium bất cứ lúc nào không?</summary><p>Có. Tắt tự động gia hạn trong trang này. Bạn vẫn dùng Premium đến hết chu kỳ đã trả, sau đó tài khoản về gói Free và giữ nguyên lịch sử luyện tập.</p></details>
+      <details class="faq"><summary>Lượt phân tích chưa dùng có cộng dồn sang tháng sau không?</summary><p>Không. Lượt phân tích làm mới vào ngày 1 hằng tháng.</p></details>
+      <details class="faq"><summary>Video của tôi có bị chia sẻ cho ai không?</summary><p>Không. Video chỉ dùng để phân tích bài nói của bạn và bạn có thể xoá bất cứ lúc nào trong lịch sử luyện tập.</p></details>
+      <details class="faq"><summary>Thanh toán bằng cách nào?</summary><p>MoMo, VNPay hoặc thẻ quốc tế. Bản demo này không thực hiện giao dịch thật.</p></details>
+    </div>`);
+}
+function modalHtml(){
+  if(!S.modal)return '';
+  if(S.modal.type==='welcome')return `<div class="modal-bg" data-act="modal-close"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="mt" data-act="noop">
+    ${proChip}<h2 id="mt" style="font-size:24px;font-weight:800;margin-top:12px">Chào mừng đến với Premium</h2>
+    <p class="muted" style="margin-top:6px;font-size:14px">Thanh toán thành công. Các tính năng sau đã được mở:</p>
+    <ul class="unlock">${['Quay video và phân tích ngôn ngữ cơ thể','Coaching thời gian thực khi đang nói','Luyện trả lời câu hỏi của khán giả AI','Dòng thời gian lỗi trong mỗi báo cáo','Lộ trình luyện tập 4 tuần','50 lượt phân tích mỗi tháng, tối đa 30 phút/bài'].map(x=>`<li>${ic('check',16)}<span>${x}</span></li>`).join('')}</ul>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:22px"><button class="btn btn-primary" data-act="welcome-go">Luyện bằng video ngay</button><button class="btn btn-ghost" data-act="modal-close">Để sau</button></div>
+  </div></div>`;
+  return `<div class="modal-bg" data-act="modal-close"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="mt" data-act="noop">
+    <h2 id="mt" style="font-size:24px;font-weight:800">Nâng cấp Premium</h2>
+    <p class="muted" style="margin-top:6px;font-size:14px">Chọn chu kỳ và phương thức thanh toán.</p>
+    <div class="form" style="margin-top:18px">
+      <div class="pills"><button class="pill ${S.modal.cycle==='m'?'on':''}" data-cycle="m">Tháng · 149.000đ</button><button class="pill ${S.modal.cycle==='y'?'on':''}" data-cycle="y">Năm · 1.290.000đ</button></div>
+      <div><div class="sec-t" style="margin-bottom:4px">Phương thức</div><div class="pay">${['MoMo','VNPay','Thẻ quốc tế'].map(x=>`<button class="opt ${S.modal.pay===x?'on':''}" data-pay="${x}"><b style="font-size:14px">${x}</b></button>`).join('')}</div></div>
+      <div style="display:flex;justify-content:space-between;font-weight:700;border-top:1px solid var(--line);padding-top:14px"><span>Tổng</span><span class="num">${S.modal.cycle==='m'?'149.000đ':'1.290.000đ'}</span></div>
+      <button class="btn btn-primary btn-lg" data-act="pay">Thanh toán</button>
+      <p class="demo-note">Bản demo: không có giao dịch thật nào được thực hiện.</p>
+    </div>
+  </div></div>`;
+}
+
+/* ================= Account ================= */
+function vAccount(){
+  const u=S.user||{}, ss=S.sessions, best=ss.reduce((a,s)=>s.score>a.score?s:a,ss[0]);
+  return shell('account',`
+    <div class="page-head"><div><h1>Tài khoản</h1><p>Thông tin cá nhân, gói dịch vụ và tổng kết luyện tập.</p></div><button class="btn btn-ghost btn-sm" data-act="logout">Đăng xuất</button></div>
+    <div class="grid g-main">
+      <form class="card" id="profileForm"><h3>Thông tin cá nhân</h3>
+        <div class="form" style="margin-top:16px">
+          <div class="grid g-2"><div class="field"><label for="p-name">Họ và tên</label><input class="input" id="p-name" value="${esc(u.name)}"></div><div class="field"><label for="p-email">Email</label><input class="input" id="p-email" value="${esc(u.email)}" type="email"></div></div>
+          <div class="grid g-2"><div class="field"><label for="p-org">Trường / Công ty</label><input class="input" id="p-org" value="${esc(u.org||'')}" placeholder="VD: Đại học Kinh tế TP.HCM"></div><div class="field"><label for="p-goal">Mục tiêu chính</label><select class="input" id="p-goal">${Object.entries(MODES).map(([k,m])=>`<option value="${k}" ${u.goal===k?'selected':''}>${m.name}</option>`).join('')}</select></div></div>
+          <div><button class="btn btn-primary btn-sm" type="submit">Lưu thay đổi</button></div>
+        </div>
+      </form>
+      <div class="card"><h3>Gói dịch vụ</h3>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:12px">${isPro()?proChip:'<span class="chip">Free</span>'}<span class="muted" style="font-size:13px">${isPro()?(S.autoRenew?'Gia hạn '+fmtDL(S.expiry):'Hết hạn '+fmtDL(S.expiry)):'Không giới hạn thời gian'}</span></div>
+        ${isPro()?`<div class="kv" style="font-size:13px"><span>Chu kỳ</span><b>${S.cycle==='m'?'Hằng tháng':'Hằng năm'}</b><span>Phương thức</span><b>${S.payMethod}</b><span>Tự động gia hạn</span><b>${S.autoRenew?'Đang bật':'Đã tắt'}</b></div>`:''}
+        <div style="margin-top:16px;font-size:14px">Đã dùng <b class="num">${S.used}</b> / ${plan().limit} lượt tháng 11</div><div class="meter"><b style="width:${S.used/plan().limit*100}%"></b></div>
+        <div class="muted" style="font-size:13px;margin-top:6px">Làm mới vào 1/12/2026</div>
+        <button class="btn ${S.plan==='premium'?'btn-ghost':'btn-sky'} btn-sm" style="margin-top:16px" data-go="pricing">${S.plan==='premium'?'Quản lý gói':'Nâng cấp Premium'}</button>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px"><h3>Tổng kết luyện tập</h3>
+      <div class="grid g-4" style="margin-top:14px">
+        <div class="stat"><div class="k">Bài đã làm</div><div class="v num">${ss.length}</div></div>
+        <div class="stat"><div class="k">Tổng thời gian nói</div><div class="v num">${Math.round(ss.reduce((a,s)=>a+s.dur,0)/60)}<span style="font-size:15px"> phút</span></div></div>
+        <div class="stat"><div class="k">Điểm cao nhất</div><div class="v num">${best.score}</div><div class="d muted">${esc(best.title)}</div></div>
+        <div class="stat"><div class="k">Chế độ luyện nhiều nhất</div><div class="v" style="font-size:22px">Pitching</div></div>
+      </div>
+      <div style="margin-top:18px;border-top:1px solid var(--line);padding-top:14px"><div class="sec-t">Nhận xét tổng hợp từ AI</div><p style="font-size:14px;max-width:70ch">Bạn tiến bộ rõ nhất ở <b>cấu trúc bài nói</b> (+26) và <b>từ đệm</b> (giảm từ 21 xuống 7 lần mỗi bài). Điểm cần tập trung tiếp theo là <b>ngôn ngữ cơ thể</b>: ánh mắt vẫn dưới 50% ở các bài thuyết trình dài.</p></div>
+    </div>`);
+}
+
+/* ================= Router ================= */
+const VIEWS={landing:vLanding,onboard:vOnboard,auth:vAuth,placement:vPlacement,dashboard:vDashboard,setup:vSetup,record:vRecord,analyzing:vAnalyzing,report:vReport,history:vHistory,pricing:vPricing,account:vAccount};
+const NEED_AUTH=['dashboard','setup','record','history','account','placement'];
+function go(v){
+  if(S.rec&&v!=='record')cleanupRec();
+  if(v!=='analyzing')clearInterval(anTimer);
+  if(NEED_AUTH.includes(v)&&!S.user){S.auth={mode:'login',err:''};v='auth'}
+  S.view=v;render();window.scrollTo(0,0);
+}
+function render(){
+  const app=$('#app');
+  app.innerHTML=VIEWS[S.view]()+modalHtml();
+  if(S.view==='record'&&S.rec)drawWave(S.rec);
+}
+function login(u){S.user=u;persist()}
+
+/* ================= Events ================= */
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-go],[data-act],[data-scroll],[data-ob-mode],[data-ob-lang],[data-auth],[data-d-mode],[data-d-purpose],[data-d-lang],[data-d-input],[data-open],[data-seg],[data-cycle],[data-pay]');
+  if(!t)return;
+  const ds=t.dataset;
+  if(t.tagName==='BUTTON'&&t.type!=='submit')e.preventDefault();
+  if(ds.go){S.menu=false;return go(ds.go)}
+  if(ds.scroll){if(S.menu){S.menu=false;render()}return document.getElementById(ds.scroll)?.scrollIntoView({behavior:'smooth'})}
+  if(ds.obMode){S.ob.mode=ds.obMode;return render()}
+  if(ds.obLang){S.ob.lang=ds.obLang;return render()}
+  if(ds.auth){S.auth={mode:ds.auth,err:''};return render()}
+  if(ds.dMode){saveDraftFields();S.draft.mode=ds.dMode;return render()}
+  if(ds.dPurpose){saveDraftFields();S.draft.purpose=ds.dPurpose;return render()}
+  if(ds.dLang){saveDraftFields();S.draft.lang=ds.dLang;return render()}
+  if(ds.dInput){saveDraftFields();if(ds.locked){toast('Quay video có trong gói Premium');return}S.draft.input=ds.dInput;return render()}
+  if(ds.open){S.currentId=ds.open;S.qa={};return go('report')}
+  if(ds.seg){const el=document.getElementById('seg-'+ds.seg);if(el){document.querySelectorAll('.seg-t.hl').forEach(x=>x.classList.remove('hl'));el.classList.add('hl');el.scrollIntoView({behavior:'smooth',block:'center'})}return}
+  if(ds.cycle){S.modal.cycle=ds.cycle;return render()}
+  if(ds.pay){S.modal.pay=ds.pay;return render()}
+  const a=ds.act;
+  if(a==='noop')return;
+  if(a==='demo-plan'){setPlan(ds.plan);return render()}
+  if(a==='menu'){S.menu=!S.menu;return render()}
+  S.menu=false;
+  if(a==='signup'){S.auth={mode:'signup',err:''};return go('auth')}
+  if(a==='lang'){toast('Hiện hỗ trợ giao diện Tiếng Việt');return}
+  if(a==='start'){S.ob={step:0,mode:'presentation',lang:'vi'};return go('onboard')}
+  if(a==='login'){S.auth={mode:'login',err:''};return go('auth')}
+  if(a==='sample'){S.currentId='s7';return go('report')}
+  if(a==='ob-next'){S.ob.step++;return render()}
+  if(a==='ob-back'){S.ob.step--;return render()}
+  if(a==='ob-signup'){S.auth={mode:'signup',err:''};S.draft.mode=S.ob.mode;S.draft.lang=S.ob.lang;return go(S.user?'placement':'auth')}
+  if(a==='google'){login({name:'Nguyễn Lan Anh',email:'lananh.nguyen@gmail.com',goal:S.ob.mode,org:''});toast('Đã đăng nhập bằng Google');return go(S.auth.mode==='signup'?'placement':'dashboard')}
+  if(a==='placement'){S.draft={...S.draft,placement:true,title:'Giới thiệu bản thân trong 60 giây',input:'audio',mode:'presentation',content:''};return startRec()}
+  if(a==='begin'){
+    saveDraftFields();
+    if(!S.draft.placement&&left()<=0){toast('Bạn đã dùng hết lượt phân tích tháng này');return go('pricing')}
+    if(S.draft.input==='upload')return startAnalysis(S.draft.file?.dur||180);
+    return startRec();
+  }
+  if(a==='rec-pause'){const r=S.rec;r.paused=!r.paused;$('#pausebtn').textContent=r.paused?'Tiếp tục':'Tạm dừng';$('#recst').textContent=r.paused?'Tạm dừng':'Đang ghi';$('#recdot').classList.toggle('paused',r.paused);return}
+  if(a==='rec-stop')return stopRec();
+  if(a==='rec-cancel'){S.draft.placement=false;return go(S.user?'setup':'landing')}
+  if(a==='rec-upgrade')return go('pricing');
+  if(a==='suggest'){S.draft={...S.draft,title:'Luyện mở bài trong 30 giây',purpose:'Thuyết trình trên lớp',input:'audio'};return go('setup')}
+  if(a==='retry'||a==='retry-video'){const s=S.sessions.find(x=>x.id===S.currentId);S.draft={...S.draft,mode:s.mode,lang:s.lang,title:s.title.replace(/ \(.*\)$/,''),input:a==='retry-video'&&plan().video?'video':'audio',placement:false};if(a==='retry-video'&&!plan().video){toast('Quay video có trong gói Premium');return go('pricing')}return go('setup')}
+  if(a==='buy'){if(!S.user){S.auth={mode:'signup',err:''};return go('auth')}S.modal={cycle:'m',pay:'MoMo'};return render()}
+  if(a==='modal-close'){S.modal=null;return render()}
+  if(a==='pay'){const c=S.modal.cycle,d=new Date();d.setMonth(d.getMonth()+(c==='m'?1:12));const was=isPro();S.plan='premium';S.cycle=c;S.payMethod=S.modal.pay;S.autoRenew=true;S.expiry=d.toISOString().slice(0,10);S.invoices.push({id:'HD-2611-'+String(S.invoices.length+1).padStart(4,'0'),date:new Date().toISOString().slice(0,10),amount:c==='m'?149000:1290000,method:S.modal.pay});S.modal=was?null:{type:'welcome'};persist();if(was)toast('Đã chuyển sang gói năm');return render()}
+  if(a==='welcome-go'){S.modal=null;S.draft={...S.draft,input:'video',placement:false};return go('setup')}
+  if(a==='to-yearly'){S.modal={cycle:'y',pay:S.payMethod};return render()}
+  if(a==='autorenew'){S.autoRenew=!S.autoRenew;toast(S.autoRenew?'Đã bật tự động gia hạn':'Đã tắt tự động gia hạn');return render()}
+  if(a==='free-now'){S.plan='free';S.expiry=null;S.autoRenew=true;persist();toast('Đã chuyển về gói Free');return render()}
+  if(a==='qa-open'){const i=ds.i;if(!isPro()){toast('Luyện trả lời khán giả AI có trong gói Premium');return go('pricing')}S.qa[i]={...(S.qa[i]||{}),open:!(S.qa[i]||{}).open};return render()}
+  if(a==='qa-grade'){const i=ds.i,q=S.qa[i]||{};if(!(q.text||'').trim()){toast('Nhập câu trả lời trước khi chấm');return}const mode=(S.sessions.find(x=>x.id===S.currentId)||{}).mode;S.qa[i]={...q,state:'loading'};render();setTimeout(()=>{S.qa[i]={...S.qa[i],state:'done',fb:gradeAnswer(S.qa[i].text,mode)};if(S.view==='report')render()},1100);return}
+  if(a==='plan-check'){S.planDone[ds.id]=!S.planDone[ds.id];return render()}
+
+  if(a==='logout'){S.user=null;S.plan='free';S.used=2;try{localStorage.removeItem('ltt-user')}catch(e){}toast('Đã đăng xuất');return go('landing')}
+});
+function saveDraftFields(){const t=$('#d-title'),c=$('#d-content');if(t)S.draft.title=t.value;if(c)S.draft.content=c.value}
+document.addEventListener('submit',e=>{
+  e.preventDefault();
+  if(e.target.id==='authForm'){
+    const email=$('#f-email').value.trim(),pass=$('#f-pass').value,name=$('#f-name')?.value.trim();
+    if(S.auth.mode==='signup'&&!name){S.auth.err='Nhập họ và tên để tạo tài khoản.';return render()}
+    if(!/^\S+@\S+\.\S+$/.test(email)){S.auth.err='Email chưa đúng định dạng, ví dụ: ban@email.com.';return render()}
+    if(pass.length<6){S.auth.err='Mật khẩu cần ít nhất 6 ký tự.';return render()}
+    login({name:name||email.split('@')[0],email,goal:S.ob.mode,org:''});
+    toast(S.auth.mode==='signup'?'Đã tạo tài khoản':'Đã đăng nhập');
+    return go(S.auth.mode==='signup'?'placement':'dashboard');
+  }
+  if(e.target.id==='profileForm'){
+    S.user={...S.user,name:$('#p-name').value.trim()||S.user.name,email:$('#p-email').value.trim()||S.user.email,org:$('#p-org').value.trim(),goal:$('#p-goal').value};
+    persist();toast('Đã lưu thông tin');render();
+  }
+});
+document.addEventListener('change',e=>{
+  if(e.target.id==='d-file'){
+    const f=e.target.files[0];if(!f)return;saveDraftFields();
+    S.draft.file={name:f.name,size:f.size,dur:0};render();
+    const el=document.createElement(f.type.startsWith('video')?'video':'audio');el.preload='metadata';
+    el.onloadedmetadata=()=>{if(S.draft.file&&isFinite(el.duration)){S.draft.file.dur=Math.round(el.duration);if(S.view==='setup')render()}URL.revokeObjectURL(el.src)};
+    el.src=URL.createObjectURL(f);
+  }
+  if(e.target.dataset.cmp){S.compare[+e.target.dataset.cmp]=e.target.value;render()}
+});
+document.addEventListener('input',e=>{const i=e.target.dataset?.qaText;if(i!=null)S.qa[i]={...(S.qa[i]||{}),text:e.target.value}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&S.modal){S.modal=null;render()}});
+
+render();
+</script>

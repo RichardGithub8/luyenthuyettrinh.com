@@ -1,0 +1,599 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-10T13:56:28+00:00",
+  "title": "Design System: luyenthuyettrinh.com",
+  "extensions": {
+    "colorMeta": {
+      "bg": {
+        "role": "neutral",
+        "displayName": "Paper White",
+        "canonical": "#FFFFFF",
+        "tonalRamp": [
+          "#111827",
+          "#374151",
+          "#4B5563",
+          "#6B7280",
+          "#D1D5DB",
+          "#E5E7EB",
+          "#ECEEF2",
+          "#F6F7F9"
+        ]
+      },
+      "soft": {
+        "role": "neutral",
+        "displayName": "Panel Grey",
+        "canonical": "#F6F7F9",
+        "tonalRamp": [
+          "#111827",
+          "#374151",
+          "#4B5563",
+          "#6B7280",
+          "#D1D5DB",
+          "#E5E7EB",
+          "#ECEEF2",
+          "#F6F7F9"
+        ]
+      },
+      "soft-2": {
+        "role": "neutral",
+        "displayName": "Tile Grey",
+        "canonical": "#ECEEF2",
+        "tonalRamp": [
+          "#111827",
+          "#374151",
+          "#4B5563",
+          "#6B7280",
+          "#D1D5DB",
+          "#E5E7EB",
+          "#ECEEF2",
+          "#F6F7F9"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "#E5E7EB",
+        "tonalRamp": [
+          "#111827",
+          "#374151",
+          "#4B5563",
+          "#6B7280",
+          "#D1D5DB",
+          "#E5E7EB",
+          "#ECEEF2",
+          "#F6F7F9"
+        ]
+      },
+      "line-2": {
+        "role": "neutral",
+        "displayName": "Control Line",
+        "canonical": "#D1D5DB",
+        "tonalRamp": [
+          "#111827",
+          "#374151",
+          "#4B5563",
+          "#6B7280",
+          "#D1D5DB",
+          "#E5E7EB",
+          "#ECEEF2",
+          "#F6F7F9"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#111827",
+        "tonalRamp": [
+          "#111827",
+          "#374151",
+          "#4B5563",
+          "#6B7280",
+          "#D1D5DB",
+          "#E5E7EB",
+          "#ECEEF2",
+          "#F6F7F9"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Ink Soft",
+        "canonical": "#374151",
+        "tonalRamp": [
+          "#111827",
+          "#374151",
+          "#4B5563",
+          "#6B7280",
+          "#D1D5DB",
+          "#E5E7EB",
+          "#ECEEF2",
+          "#F6F7F9"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted",
+        "canonical": "#4B5563",
+        "tonalRamp": [
+          "#111827",
+          "#374151",
+          "#4B5563",
+          "#6B7280",
+          "#D1D5DB",
+          "#E5E7EB",
+          "#ECEEF2",
+          "#F6F7F9"
+        ]
+      },
+      "faint": {
+        "role": "neutral",
+        "displayName": "Faint",
+        "canonical": "#6B7280",
+        "tonalRamp": [
+          "#111827",
+          "#374151",
+          "#4B5563",
+          "#6B7280",
+          "#D1D5DB",
+          "#E5E7EB",
+          "#ECEEF2",
+          "#F6F7F9"
+        ]
+      },
+      "blue": {
+        "role": "primary",
+        "displayName": "Action Blue",
+        "canonical": "#2563EB",
+        "tonalRamp": [
+          "#172554",
+          "#1E3A8A",
+          "#1E40AF",
+          "#1D4ED8",
+          "#2563EB",
+          "#A9C3FB",
+          "#DBE6FE",
+          "#EFF4FF"
+        ]
+      },
+      "blue-600": {
+        "role": "primary",
+        "displayName": "Action Blue Pressed",
+        "canonical": "#1D4ED8",
+        "tonalRamp": [
+          "#172554",
+          "#1E3A8A",
+          "#1E40AF",
+          "#1D4ED8",
+          "#2563EB",
+          "#A9C3FB",
+          "#DBE6FE",
+          "#EFF4FF"
+        ]
+      },
+      "blue-700": {
+        "role": "primary",
+        "displayName": "Deep Blue Ink",
+        "canonical": "#1E40AF",
+        "tonalRamp": [
+          "#172554",
+          "#1E3A8A",
+          "#1E40AF",
+          "#1D4ED8",
+          "#2563EB",
+          "#A9C3FB",
+          "#DBE6FE",
+          "#EFF4FF"
+        ]
+      },
+      "blue-50": {
+        "role": "primary",
+        "displayName": "Blue Wash",
+        "canonical": "#EFF4FF",
+        "tonalRamp": [
+          "#172554",
+          "#1E3A8A",
+          "#1E40AF",
+          "#1D4ED8",
+          "#2563EB",
+          "#A9C3FB",
+          "#DBE6FE",
+          "#EFF4FF"
+        ]
+      },
+      "blue-100": {
+        "role": "primary",
+        "displayName": "Blue Mist",
+        "canonical": "#DBE6FE",
+        "tonalRamp": [
+          "#172554",
+          "#1E3A8A",
+          "#1E40AF",
+          "#1D4ED8",
+          "#2563EB",
+          "#A9C3FB",
+          "#DBE6FE",
+          "#EFF4FF"
+        ]
+      },
+      "blue-200": {
+        "role": "primary",
+        "displayName": "Blue Haze",
+        "canonical": "#A9C3FB",
+        "tonalRamp": [
+          "#172554",
+          "#1E3A8A",
+          "#1E40AF",
+          "#1D4ED8",
+          "#2563EB",
+          "#A9C3FB",
+          "#DBE6FE",
+          "#EFF4FF"
+        ]
+      },
+      "good": {
+        "role": "tertiary",
+        "displayName": "Pass Green",
+        "canonical": "#15803D",
+        "tonalRamp": [
+          "#0B3D20",
+          "#11652F",
+          "#15803D",
+          "#2E9E58",
+          "#6CC08C",
+          "#A9DDBD",
+          "#C6EBD6",
+          "#E8F6ED"
+        ]
+      },
+      "good-50": {
+        "role": "tertiary",
+        "displayName": "Pass Green Wash",
+        "canonical": "#E8F6ED",
+        "tonalRamp": [
+          "#0B3D20",
+          "#11652F",
+          "#15803D",
+          "#2E9E58",
+          "#6CC08C",
+          "#A9DDBD",
+          "#C6EBD6",
+          "#E8F6ED"
+        ]
+      },
+      "warn": {
+        "role": "tertiary",
+        "displayName": "Caution Amber",
+        "canonical": "#B45309",
+        "tonalRamp": [
+          "#4A2503",
+          "#8A4208",
+          "#B45309",
+          "#D97706",
+          "#EDA63F",
+          "#F6DDAA",
+          "#FBEACB",
+          "#FEF3E2"
+        ]
+      },
+      "warn-50": {
+        "role": "tertiary",
+        "displayName": "Caution Amber Wash",
+        "canonical": "#FEF3E2",
+        "tonalRamp": [
+          "#4A2503",
+          "#8A4208",
+          "#B45309",
+          "#D97706",
+          "#EDA63F",
+          "#F6DDAA",
+          "#FBEACB",
+          "#FEF3E2"
+        ]
+      },
+      "orange": {
+        "role": "tertiary",
+        "displayName": "Signal Orange",
+        "canonical": "#D97706",
+        "tonalRamp": [
+          "#4A2503",
+          "#8A4208",
+          "#B45309",
+          "#D97706",
+          "#EDA63F",
+          "#F6DDAA",
+          "#FBEACB",
+          "#FEF3E2"
+        ]
+      },
+      "bad": {
+        "role": "tertiary",
+        "displayName": "Mistake Red",
+        "canonical": "#C81E1E",
+        "tonalRamp": [
+          "#4D0B0B",
+          "#9B1616",
+          "#A51616",
+          "#C81E1E",
+          "#E05A5A",
+          "#F0A3A3",
+          "#F6CACA",
+          "#FDECEC"
+        ]
+      },
+      "bad-50": {
+        "role": "tertiary",
+        "displayName": "Mistake Red Wash",
+        "canonical": "#FDECEC",
+        "tonalRamp": [
+          "#4D0B0B",
+          "#9B1616",
+          "#A51616",
+          "#C81E1E",
+          "#E05A5A",
+          "#F0A3A3",
+          "#F6CACA",
+          "#FDECEC"
+        ]
+      },
+      "yellow-50": {
+        "role": "tertiary",
+        "displayName": "Flash Yellow",
+        "canonical": "#FEF6DC",
+        "tonalRamp": [
+          "#3D2E00",
+          "#7A5B00",
+          "#B88A00",
+          "#F5B700",
+          "#F8CF52",
+          "#FBE39A",
+          "#FDEDC0",
+          "#FEF6DC"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Landing headline only."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Public section headings and the closing band."
+      },
+      "page-title": {
+        "displayName": "Page title",
+        "purpose": "H1 of each app, flow and course screen."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Card and list headings."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Default text; leads run 16-18px in Muted."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Field labels, mini-headings, table headers."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Chips, hints, row meta, timestamps."
+      },
+      "stat": {
+        "displayName": "Stat",
+        "purpose": "Tabular figures: dashboard stats, score, timer, price."
+      }
+    },
+    "shadows": [
+      {
+        "name": "shadow-sm",
+        "value": "0 1px 2px rgba(17,24,39,.06)",
+        "purpose": "Contact: selected segment, small floating utility buttons."
+      },
+      {
+        "name": "shadow",
+        "value": "0 1px 2px rgba(17,24,39,.05),0 12px 28px -12px rgba(17,24,39,.18)",
+        "purpose": "Float: menu, modal, sample report panel, featured pricing card, course card hover."
+      },
+      {
+        "name": "focus-ring-input",
+        "value": "0 0 0 3px #DBE6FE",
+        "purpose": "Input focus ring, paired with a blue border."
+      },
+      {
+        "name": "selected-inset",
+        "value": "inset 0 0 0 1px #2563EB",
+        "purpose": "Selected option cards, prompts and the next lesson."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease",
+        "value": "cubic-bezier(.16,1,.3,1)",
+        "purpose": "Entrances and the report panel sequence; no bounce."
+      },
+      {
+        "name": "state",
+        "value": "150ms",
+        "purpose": "Hover, focus and selection changes on controls (100ms press nudge, 200ms card hover)."
+      },
+      {
+        "name": "rise",
+        "value": "translateY(8px) and opacity .3 to rest, 250-500ms",
+        "purpose": "Modal, toast, live tips, intro rows."
+      },
+      {
+        "name": "report-sequence",
+        "value": "count 1.1s; bars 0.9s staggered 80ms; marks 0.5s after 1s",
+        "purpose": "Sample report panel plays once on load."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "animation:none; transition:none",
+        "purpose": "All motion off; the photo sphere renders one still frame."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "nav-collapse",
+        "value": "1080px"
+      },
+      {
+        "name": "app-tab-bar",
+        "value": "960px"
+      },
+      {
+        "name": "single-column",
+        "value": "720px"
+      },
+      {
+        "name": "compact",
+        "value": "520px"
+      },
+      {
+        "name": "narrow",
+        "value": "380px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The single solid action of a view.",
+      "html": "<button class=\"ds-btn-primary\">Bắt đầu ngay <svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14M13 6l6 6-6 6\"/></svg></button>",
+      "css": ".ds-btn-primary{font-family:var(--font);display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid transparent;border-radius:10px;padding:10px 18px;min-height:42px;font-weight:600;font-size:15px;line-height:1.2;cursor:pointer;white-space:nowrap;transition:background .15s,border-color .15s,color .15s,transform .1s;background:var(--blue);color:#fff}.ds-btn-primary:hover{background:var(--blue-600)}.ds-btn-primary:active{transform:translateY(1px)}.ds-btn-primary:focus-visible{outline:2px solid var(--blue);outline-offset:2px}"
+    },
+    {
+      "name": "Tonal Button",
+      "kind": "button",
+      "refersTo": "button-tonal",
+      "description": "Second-rank action; what a primary becomes inside next-lesson cards, empty states, Premium locks and course cards.",
+      "html": "<button class=\"ds-btn-tonal\">Học ngay</button>",
+      "css": ".ds-btn-tonal{font-family:var(--font);display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid transparent;border-radius:10px;padding:10px 18px;min-height:42px;font-weight:600;font-size:15px;line-height:1.2;cursor:pointer;white-space:nowrap;transition:background .15s,border-color .15s,color .15s,transform .1s;background:var(--blue-50);color:var(--blue-700)}.ds-btn-tonal:hover{background:var(--blue-100)}.ds-btn-tonal:active{transform:translateY(1px)}.ds-btn-tonal:focus-visible{outline:2px solid var(--blue);outline-offset:2px}"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Neutral alternative action beside a primary.",
+      "html": "<button class=\"ds-btn-outline\">Xem báo cáo mẫu</button>",
+      "css": ".ds-btn-outline{font-family:var(--font);display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid transparent;border-radius:10px;padding:10px 18px;min-height:42px;font-weight:600;font-size:15px;line-height:1.2;cursor:pointer;white-space:nowrap;transition:background .15s,border-color .15s,color .15s,transform .1s;background:#fff;border-color:var(--line-2);color:var(--ink)}.ds-btn-outline:hover{background:var(--soft);border-color:var(--faint)}.ds-btn-outline:active{transform:translateY(1px)}.ds-btn-outline:focus-visible{outline:2px solid var(--blue);outline-offset:2px}"
+    },
+    {
+      "name": "Chips and Score Pills",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Neutral by default; colour only when reporting a score or state.",
+      "html": "<div class=\"ds-chips\"><span class=\"ds-chip\">Trình độ: Khá</span><span class=\"ds-chip ds-chip-line\">9 từ đệm</span><span class=\"ds-chip ds-chip-bad\">Ánh mắt 38%</span><span class=\"ds-chip ds-chip-pro\">PREMIUM</span><span class=\"ds-score ds-s-hi\">82</span><span class=\"ds-score ds-s-mid\">66</span><span class=\"ds-score ds-s-lo\">38</span></div>",
+      "css": ".ds-chips{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-family:var(--font);}.ds-chip{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:6px;background:var(--soft-2);font-size:12.5px;font-weight:500;white-space:nowrap;color:var(--ink-2)}.ds-chip-line{background:#fff;border:1px solid var(--line-2)}.ds-chip-bad{background:var(--bad-50);color:var(--bad)}.ds-chip-pro{background:var(--ink);color:#fff;font-weight:600;font-size:11px;letter-spacing:.04em;padding:2px 7px}.ds-score{min-width:44px;text-align:center;padding:3px 9px;border-radius:6px;font-weight:700;font-size:14px;font-variant-numeric:tabular-nums}.ds-s-hi{background:var(--good-50);color:var(--good)}.ds-s-mid{background:var(--warn-50);color:var(--warn)}.ds-s-lo{background:var(--bad-50);color:var(--bad)}"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Label above, hint below, blue border with a soft ring on focus.",
+      "html": "<div class=\"ds-field\"><label for=\"ds-in\">Email</label><input id=\"ds-in\" class=\"ds-input\" placeholder=\"ban@email.com\"><span class=\"ds-hint\">Chúng tôi gửi mã xác thực đến địa chỉ này.</span></div>",
+      "css": ".ds-field{display:flex;flex-direction:column;gap:6px;max-width:340px;font-family:var(--font);}.ds-field label{font-size:13px;font-weight:600;color:var(--ink-2)}.ds-hint{font-size:12.5px;color:var(--muted)}.ds-input{font:inherit;font-size:15px;color:var(--ink);width:100%;border:1px solid var(--line-2);background:#fff;border-radius:10px;padding:11px 14px;min-height:44px;outline:none;transition:border-color .15s,box-shadow .15s}.ds-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-100)}.ds-input::placeholder{color:var(--faint)}"
+    },
+    {
+      "name": "Card with Row List",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "White card on the grey shell; items inside are hairline rows, not nested cards.",
+      "html": "<div class=\"ds-card\"><h3>Buổi luyện gần đây</h3><div class=\"ds-sub\">3 buổi trong tuần này</div><button class=\"ds-row\"><span><span class=\"ds-row-t\">Ứng dụng AI trong giáo dục</span><span class=\"ds-row-m\">Thuyết trình · 04:12</span></span><span class=\"ds-pill ds-hi\">82</span></button><button class=\"ds-row\"><span><span class=\"ds-row-t\">Báo cáo tiến độ quý 3</span><span class=\"ds-row-m\">Báo cáo · 02:40</span></span><span class=\"ds-pill ds-mid\">66</span></button></div>",
+      "css": ".ds-card{font-family:var(--font);background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:22px;color:var(--ink);max-width:420px}.ds-card h3{margin:0;font-size:16px;font-weight:600;letter-spacing:-.015em;line-height:1.25}.ds-sub{color:var(--muted);font-size:13px;margin:3px 0 10px}.ds-row{font:inherit;color:inherit;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:center;padding:13px 0;border:none;border-top:1px solid var(--line);cursor:pointer;background:none;text-align:left;width:100%}.ds-row-t{display:block;font-weight:600;font-size:15px}.ds-row:hover .ds-row-t{color:var(--blue)}.ds-row:focus-visible{outline:2px solid var(--blue);outline-offset:2px}.ds-row-m{display:block;font-size:12.5px;color:var(--muted)}.ds-pill{min-width:44px;text-align:center;padding:3px 9px;border-radius:6px;font-weight:700;font-size:14px;font-variant-numeric:tabular-nums}.ds-hi{background:var(--good-50);color:var(--good)}.ds-mid{background:var(--warn-50);color:var(--warn)}"
+    },
+    {
+      "name": "Bottom Tab Bar (phone)",
+      "kind": "nav",
+      "refersTo": "nav-item",
+      "description": "Fixed five-destination app navigation below 960px; current item is blue text with no fill.",
+      "html": "<nav class=\"ds-tabs\" aria-label=\"Điều hướng ứng dụng\"><button class=\"ds-on\" aria-current=\"page\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z\"/></svg><span>Tổng quan</span></button><button class=\"\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect x=\"9\" y=\"3\" width=\"6\" height=\"11\" rx=\"3\"/><path d=\"M5 11a7 7 0 0 0 14 0M12 18v3\"/></svg><span>Luyện tập</span></button><button class=\"\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z\"/><path d=\"M4 19V5M8 7h7M8 11h5\"/></svg><span>Khóa học</span></button><button class=\"\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 4h4v16H4zM10 4h4v16h-4z\"/><path d=\"m16 5 3.6-1 2.4 15.6-3.6 1z\"/></svg><span>Thư viện</span></button><button class=\"\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 19V5M4 19h16M8 15l4-4 3 3 5-6\"/></svg><span>Tiến bộ</span></button></nav>",
+      "css": ".ds-tabs{font-family:var(--font);display:grid;grid-template-columns:repeat(5,minmax(0,1fr));background:#fff;border-top:1px solid var(--line);padding:6px;max-width:390px}.ds-tabs button{font:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:6px 2px;min-height:52px;font-size:11px;font-weight:500;border:none;background:none;border-radius:10px;color:var(--muted);cursor:pointer;min-width:0}.ds-tabs button:hover{background:var(--soft);color:var(--ink)}.ds-tabs button.ds-on{background:none;color:var(--blue);font-weight:600}.ds-tabs button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}"
+    },
+    {
+      "name": "Sidebar Nav Item (desktop)",
+      "kind": "nav",
+      "refersTo": "nav-item-current",
+      "description": "App sidebar rows; current is Blue Wash with blue semibold text.",
+      "html": "<nav class=\"ds-side\"><button class=\"ds-on\" aria-current=\"page\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z\"/></svg><span>Tổng quan</span></button><button><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect x=\"9\" y=\"3\" width=\"6\" height=\"11\" rx=\"3\"/><path d=\"M5 11a7 7 0 0 0 14 0M12 18v3\"/></svg><span>Luyện tập</span></button><button><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 4h4v16H4zM10 4h4v16h-4z\"/><path d=\"m16 5 3.6-1 2.4 15.6-3.6 1z\"/></svg><span>Thư viện</span><span class=\"ds-badge\">2</span></button></nav>",
+      "css": ".ds-side{font-family:var(--font);display:flex;flex-direction:column;gap:3px;width:236px}.ds-side button{font:inherit;font-size:15px;display:flex;align-items:center;gap:12px;background:none;border:none;text-align:left;padding:10px 12px;border-radius:10px;font-weight:500;color:var(--ink-2);cursor:pointer}.ds-side button:hover{background:var(--soft);color:var(--ink)}.ds-side button.ds-on{background:var(--blue-50);color:var(--blue);font-weight:600}.ds-side button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}.ds-badge{margin-left:auto;background:var(--orange);color:#fff;border-radius:6px;font-size:11px;font-weight:700;padding:1px 6px}"
+    },
+    {
+      "name": "Sample Report Panel",
+      "kind": "custom",
+      "refersTo": "card",
+      "description": "Signature: overall score, criterion bars, a timestamped transcript line with marked filler words, one fix.",
+      "html": "<div class=\"ds-rep\"><div class=\"ds-rep-bar\"><b>Thuyết trình: Ứng dụng AI trong giáo dục</b><span>Báo cáo mẫu</span></div><div class=\"ds-rep-top\"><div class=\"ds-rep-score\">72<small>Điểm tổng · / 100</small></div><div class=\"ds-bars\"><div class=\"ds-bar\"><span>Đúng trọng tâm</span><div class=\"ds-track\"><b class=\"ds-hi\" style=\"width:85%\"></b></div><b>85</b></div><div class=\"ds-bar\"><span>Tốc độ nói</span><div class=\"ds-track\"><b class=\"ds-mid\" style=\"width:66%\"></b></div><b>66</b></div><div class=\"ds-bar\"><span>Ánh mắt</span><div class=\"ds-track\"><b class=\"ds-lo\" style=\"width:38%\"></b></div><b>38</b></div></div></div><div class=\"ds-rep-line\"><span class=\"ds-ts\">00:00</span><span>Xin chào mọi người, <span class=\"ds-f\">ừm</span>, hôm nay em xin trình bày về ứng dụng AI trong giáo dục.</span></div><div class=\"ds-rep-fix\"><b>Sửa:</b><span>Khi cần suy nghĩ, dừng im lặng 1 giây thay vì nói “ừm”.</span></div></div>",
+      "css": ".ds-rep{font-family:var(--font);color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:var(--r-xl);box-shadow:var(--shadow);overflow:hidden;max-width:520px;padding-bottom:20px}.ds-rep-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 20px;border-bottom:1px solid var(--line);font-size:13px;color:var(--muted);background:var(--soft)}.ds-rep-bar b{color:var(--ink);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}.ds-rep-bar span{flex:none}.ds-rep-top{display:grid;grid-template-columns:auto minmax(0,1fr);gap:22px;align-items:center;padding:22px 20px 18px}.ds-rep-score{font-size:76px;font-weight:700;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}.ds-rep-score small{display:block;font-size:13px;font-weight:500;letter-spacing:0;color:var(--muted);margin-top:8px}.ds-bars{display:flex;flex-direction:column;gap:10px}.ds-bar{display:grid;grid-template-columns:118px minmax(0,1fr) 28px;gap:10px;align-items:center;font-size:13px;font-variant-numeric:tabular-nums}.ds-track{height:6px;border-radius:9px;background:var(--soft-2);overflow:hidden}.ds-track>b{display:block;height:100%;border-radius:9px;transform-origin:left;animation:ds-grow .9s var(--ease) backwards}.ds-track>b.ds-hi{background:var(--good)}.ds-track>b.ds-mid{background:var(--orange)}.ds-track>b.ds-lo{background:var(--bad)}.ds-rep-line{margin:0 20px;padding:14px 16px;background:var(--soft);border-radius:var(--r);font-size:15px;line-height:1.7;display:grid;grid-template-columns:44px minmax(0,1fr);gap:10px}.ds-ts{font-size:12px;color:var(--muted);padding-top:4px;font-variant-numeric:tabular-nums}.ds-f{border-radius:4px;padding:0 3px;font-weight:600;background:var(--bad-50);color:var(--bad)}.ds-rep-fix{display:flex;gap:8px;margin:12px 20px 0;font-size:14px;color:var(--ink-2)}.ds-rep-fix b{color:var(--good);flex:none}@keyframes ds-grow{from{transform:scaleX(0)}}@media (prefers-reduced-motion:reduce){.ds-track>b{animation:none}}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Marked Transcript",
+    "overview": "The product's proof is one device: a line of the user's own speech with a timestamp beside it and the filler word marked in red. Everything around that device stays out of its way. The ground is white, the text is near-black, panels are a quiet grey, borders are hairlines, and a single blue says \"press this\" or \"you are here\". It is the familiar learning-platform look played straight, built so a nervous, price-sensitive speaker trusts it enough to pay.\n\nDensity is moderate. Public pages are roomy (96px section rhythm, a 1160px column) and argue with real report fragments instead of illustration. App screens sit on a grey shell with white cards and always resolve to one obvious next step. The landing hero carries the one decorative device in the system, a slowly rotating sphere of presentation photographs; the sample report panel opens the solution section directly below.\n\nColour outside the blue is reserved for meaning. Green, amber and red appear only where a score, a state or a mistake is being reported. Category colour does not exist: course, goal and feature tiles are all the same neutral grey.",
+    "keyCharacteristics": [
+      "White ground, near-black ink, one blue, grey panels, hairline borders.",
+      "One typeface (Be Vietnam Pro) in four weights; heavy, tight headings; tabular numerals for every score and time.",
+      "Flat at rest. Shadow only on things that float or lift.",
+      "One solid blue button per view; tonal blue for the second-rank action.",
+      "Semantic colour is spent only on scores and states.",
+      "Phone app layout: compact top bar plus a fixed five-item bottom tab bar."
+    ],
+    "rules": [
+      {
+        "name": "The One Blue Rule",
+        "body": "Blue means \"act\", \"current\" or \"your data\". If an element is none of those three, it is not blue.",
+        "section": "colors"
+      },
+      {
+        "name": "The Earned Colour Rule",
+        "body": "Green, amber and red are score and state colours. They never decorate, never categorise. Thresholds are fixed: 75 and above is green, 60 to 74 is amber, below 60 is red.",
+        "section": "colors"
+      },
+      {
+        "name": "The Neutral Tile Rule",
+        "body": "Goals, courses and features do not get their own hue. Every category tile is Tile Grey with Ink Soft content.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tabular Figure Rule",
+        "body": "Every score, percentage, time, price and table cell uses tabular numerals so digits do not shift as values change.",
+        "section": "typography"
+      },
+      {
+        "name": "The Balanced Heading Rule",
+        "body": "Headings wrap balanced and paragraphs wrap pretty. Vietnamese headlines break mid-phrase badly without it.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat-At-Rest Rule",
+        "body": "A card in the normal flow has a hairline and no shadow. Shadow appears when something floats over content or lifts in response to hover.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Inset-Ring Rule",
+        "body": "Selection is shown with a blue border plus a 1px inset blue ring and a Blue Wash fill, never with a drop shadow or a thicker outer border that would shift layout.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do keep one solid Action Blue button per view and demote the next action to tonal (Blue Wash with Deep Blue Ink text) or outline.",
+      "Do colour scores by the fixed thresholds: 75 and above green, 60 to 74 amber, below 60 red.",
+      "Do show feedback as the real thing: a timestamp, the user's sentence, the marked word, one fix.",
+      "Do set every number that can change in tabular figures.",
+      "Do keep pressable and typable controls at 44px or taller on phones, with a Control Line border when they are not filled.",
+      "Do use Be Vietnam Pro for everything and leave body line height at 1.6 so stacked Vietnamese diacritics never collide.",
+      "Do keep the phone tab bar at five destinations and reserve bottom padding so content clears it.",
+      "Do ship an end state for every animation and honour reduced motion."
+    ],
+    "donts": [
+      "Don't give goals, courses or features their own colours; category tiles stay Tile Grey.",
+      "Don't use green, amber or red for decoration or emphasis that is not a score or a state.",
+      "Don't add a second accent hue; the only saturated colour that is not a state is Action Blue.",
+      "Don't put a shadow on a card at rest; shadow is for menus, modals, the report panel and hover lift.",
+      "Don't nest cards inside cards; separate items with hairline rows or grey insets."
+    ]
+  }
+}
