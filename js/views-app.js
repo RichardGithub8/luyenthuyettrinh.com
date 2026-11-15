@@ -378,7 +378,7 @@ function vPricing(inApp){
 
 /* ---------- Tài khoản ---------- */
 function vAccount(){
-  const D = S.data, p = D.profile, u = Auth.find(p.email) || {};
+  const D = S.data, p = D.profile, u = {pw:true};
   const manage = `<div class="card mt"><div class="card-head"><div class="t"><h3>${L('Quản lý gói Premium','Manage Premium')}</h3>${proChip()}</div></div>
     <div class="grid g-2">
       <div><div class="kv"><span>${L('Chu kỳ','Billing')}</span><b>${D.cycle === 'm' ? L('Hằng tháng','Monthly') + ' · ' + fmtVND(CONFIG.price.m) : L('Hằng năm','Yearly') + ' · ' + fmtVND(CONFIG.price.y)}</b><span>${D.autoRenew ? L('Gia hạn tiếp theo','Next renewal') : L('Hết hạn vào','Expires on')}</span><b class="num">${D.expiry ? fmtDL(D.expiry) : '–'}</b><span>${L('Phương thức','Method')}</span><b>${D.payMethod}</b><span>${L('Tự động gia hạn','Auto-renew')}</span><button class="switch ${D.autoRenew ? 'on' : ''}" data-act="autorenew" role="switch" aria-checked="${D.autoRenew}" aria-label="${L('Tự động gia hạn','Auto-renew')}"></button></div>

@@ -25,8 +25,9 @@ const ROUTES = {
   'bat-dau-xem-truoc': {v:vGsPreview, a:'guest'},
   'dang-nhap':         {v:vLogin, a:'guest'},
   'dang-ky':           {v:vRegister, a:'guest'},
-  'xac-thuc-email':    {v:vVerify, a:'guest', need:() => Auth.pending('verify'), back:'dang-ky'},
+  'xac-thuc-email':    {v:vVerify, a:'guest', need:() => Auth.pending(), back:'dang-ky'},
   'quen-mat-khau':     {v:vForgot, a:'guest'},
+  'dat-lai-mat-khau':  {v:vReset, a:'auth'},
   'bang-gia':          {v:() => vPricing(false), a:'guest', alt:'goi-dich-vu'},
   'bao-cao-mau':       {v:() => vReport(true), a:'guest'},
   'thiet-lap-muc-tieu':{v:vObGoal, a:'onboard'},
@@ -87,17 +88,15 @@ window.addEventListener('offline', () => { S.offline = true; render(); });
 window.addEventListener('beforeunload', e => { if((S.rec && S.rec.state === 'live') || (S.upload && S.upload.status === 'uploading')){ e.preventDefault(); e.returnValue = ''; } });
 
 /* ================= Phiên đăng nhập ================= */
-function startSession(user){
-  S.me = user.email; Auth.start(user.email);
-  S.data = UserStore.load(user);
-  if(!S.data.onboarded && !S.data.sessions.length){ S.data.profile.goal = S.ob.goal; S.data.profile.speechLang = S.ob.lang; }
-  if(S.data.profile.ui) I18N.set(S.data.profile.ui); else S.data.profile.ui = I18N.ui;
-  S.auth = {err:'', info:''}; S.draft = null; save();
+function startSession(me){
+  S.me = me.email; S.data = UserStore.fromMe(me);
+  I18N.set(S.data.profile.ui);
+  S.auth = {err:'', info:''}; S.draft = null;
 }
 function afterLogin(){ const ret = S.params.returnUrl; if(!S.data.onboarded) return go('thiet-lap-muc-tieu', {}, true); if(ret){ const {route, params} = (() => { const [r, q=''] = ret.split('?'); return {route:r, params:toParams(q)}; })(); return go(route in ROUTES ? route : 'tong-quan', params, true); } go('tong-quan', {}, true); }
 function logout(){
   if(S.rec) cleanupRec(); clearInterval(S.jobTimer); clearInterval(S.upTimer);
-  Auth.end(); Object.assign(S, {me:null, data:null, draft:null, job:null, upload:null, modal:null, devOpen:false, qa:{}, compare:[], pendingAfterPay:null});
+  Auth.logout(); Object.assign(S, {me:null, data:null, draft:null, job:null, upload:null, modal:null, devOpen:false, qa:{}, compare:[], pendingAfterPay:null});
   toast(L('Đã đăng xuất','Logged out')); go('');
 }
 function setPlan(p){
@@ -351,10 +350,15 @@ const ACTIONS = {
   'ob-goal'(el){ S.ob.goal = el.dataset.goal; render(); },
   'ob-lang'(el){ S.ob.lang = el.dataset.v; render(); },
   'need-account'(){ S.modal = {type:'need-account'}; render(); },
-  google(el){ S.modal = {type:'google', mode:el.dataset.mode}; render(); },
+  google(){ Auth.google(); },
   'google-cancel'(){ S.modal = null; S.auth.err = L('Bạn đã đóng cửa sổ Google trước khi đăng nhập xong. Hãy thử lại.','You closed the Google window before finishing. Please try again.'); render(); },
-  resend(el){ try { Auth.resend(el.dataset.purpose); S.auth.err = ''; S.auth.info = L('Đã gửi mã mới.','A new code has been sent.'); } catch(e){ S.auth.info = ''; S.auth.err = e.code === 'wait' ? L(`Vui lòng đợi ${e.sec} giây trước khi gửi lại.`, `Please wait ${e.sec} seconds before resending.`) : L('Không tìm thấy yêu cầu. Hãy bắt đầu lại.','No pending request. Please start again.'); } render(); },
-  'reset-restart'(){ DB.del('ltt.code'); S.auth = {err:'', info:''}; render(); },
+  async resend(){
+    try { await Auth.resend(Auth.pending()); S.auth.err = ''; S.auth.info = L('Đã gửi lại email xác thực. Kiểm tra cả thư mục spam.','Verification email sent again. Check your spam folder too.'); }
+    catch(e){ S.auth.info = ''; S.auth.err = e.code === 'wait' ? L('Bạn vừa yêu cầu gửi email. Vui lòng đợi một chút rồi thử lại.','You just requested an email. Please wait a moment and try again.') : L('Chưa gửi được email. Vui lòng thử lại.','Couldn’t send the email. Please try again.'); }
+    render();
+  },
+  'reset-restart'(){ S.auth = {err:'', info:''}; render(); },
+  'change-email'(){ Auth.setPending(null); S.auth = {err:'', info:''}; go('dang-ky'); },
   'set-goal'(el){ S.data.profile.goal = el.dataset.goal; S.draft = null; save(); render(); },
   'set-speech'(el){ S.data.profile.speechLang = el.dataset.v; S.draft = null; save(); render(); },
   'ob-finish'(){ S.data.onboarded = true; save(); go('tong-quan'); },
@@ -463,10 +467,10 @@ document.addEventListener('submit', async e => {
     if(!EMAIL_OK(email)){ S.auth.err = L('Email chưa đúng định dạng, ví dụ: ban@email.com.','Enter a valid email, e.g. you@email.com.'); return render(); }
     if(!pw){ S.auth.err = L('Nhập mật khẩu.','Enter your password.'); return render(); }
     S.auth.busy = true; render();
-    try { const u = await Auth.login(email, pw); S.auth.busy = false; startSession(u); toast(L('Đã đăng nhập','Logged in')); afterLogin(); }
+    try { const me = await Auth.login(email, pw); S.auth.busy = false; startSession(me); toast(L('Đã đăng nhập','Logged in')); afterLogin(); }
     catch(err){ S.auth.busy = false;
-      if(err.code === 'unverified'){ S.auth.err = ''; S.auth.info = L('Email chưa được xác thực. Chúng tôi vừa gửi mã mới.','Your email isn’t verified yet. We just sent a new code.'); return go('xac-thuc-email'); }
-      S.auth.err = {nouser:L('Email này chưa có tài khoản. Kiểm tra lại hoặc đăng ký mới.','No account uses this email. Check it or sign up.'), badpass:L('Mật khẩu không đúng. Thử lại hoặc chọn “Quên mật khẩu”.','Wrong password. Try again or use “Forgot password”.'), google:L('Tài khoản này đăng nhập bằng Google. Bấm “Tiếp tục với Google”.','This account uses Google. Click “Continue with Google”.')}[err.code] || L('Không đăng nhập được. Vui lòng thử lại.','Couldn’t log in. Please try again.');
+      if(err.code === 'unverified'){ Auth.setPending(email.toLowerCase()); try { await Auth.resend(email); } catch(e){} S.auth.err = ''; S.auth.info = L('Email chưa được xác thực. Chúng tôi vừa gửi lại email xác thực.','Your email isn’t verified yet. We just sent the verification email again.'); return go('xac-thuc-email'); }
+      S.auth.err = {badcred:L('Email hoặc mật khẩu không đúng. Thử lại hoặc chọn “Quên mật khẩu”.','Wrong email or password. Try again or use “Forgot password”.'), wait:L('Bạn thử quá nhiều lần. Vui lòng đợi một chút rồi thử lại.','Too many attempts. Please wait a moment and try again.'), network:L('Không kết nối được máy chủ. Kiểm tra mạng và thử lại.','Couldn’t reach the server. Check your connection and try again.')}[err.code] || L('Không đăng nhập được. Vui lòng thử lại.','Couldn’t log in. Please try again.');
       render(); }
   }
   if(f.id === 'registerForm'){
@@ -474,40 +478,28 @@ document.addEventListener('submit', async e => {
     if(!name){ S.auth.err = L('Nhập họ và tên.','Enter your full name.'); return render(); }
     if(!EMAIL_OK(email)){ S.auth.err = L('Email chưa đúng định dạng, ví dụ: ban@email.com.','Enter a valid email, e.g. you@email.com.'); return render(); }
     if(!PW_OK(pw)){ S.auth.err = L('Mật khẩu cần ít nhất 8 ký tự, có cả chữ và số.','Use at least 8 characters with letters and numbers.'); return render(); }
-    try { await Auth.register({name, email, password:pw}); S.auth.err = ''; go('xac-thuc-email'); }
-    catch(err){ S.auth.err = err.code === 'exists' ? L('Email này đã được đăng ký. Hãy đăng nhập hoặc chọn “Quên mật khẩu”.','This email is already registered. Log in or reset your password.') : L('Không tạo được tài khoản. Vui lòng thử lại.','Couldn’t create the account. Please try again.'); render(); }
-  }
-  if(f.id === 'verifyForm'){
-    const code = v('f-code').trim(); S.auth.info = '';
-    if(!/^\d{6}$/.test(code)){ S.auth.err = L('Mã gồm 6 chữ số.','The code has 6 digits.'); return render(); }
-    try { const u = Auth.verify(code); startSession(u); toast(L('Email đã được xác thực','Email verified')); go('thiet-lap-muc-tieu'); }
-    catch(err){ S.auth.err = {wrong:L(`Mã không đúng. Bạn còn ${err.left} lần thử.`, `Wrong code. ${err.left} attempts left.`), expired:L('Mã đã hết hạn. Bấm “Gửi lại mã”.','The code has expired. Click “Resend code”.'), locked:L('Bạn đã nhập sai quá 5 lần. Bấm “Gửi lại mã” để nhận mã mới.','Too many wrong attempts. Click “Resend code” for a new one.'), nocode:L('Không có mã đang chờ. Hãy đăng ký lại.','No pending code. Please sign up again.')}[err.code]; render(); }
+    S.auth.busy = true; render();
+    try { await Auth.register({name, email, password:pw, ui:I18N.ui, goal:S.ob.goal, lang:S.ob.lang}); S.auth.busy = false; S.auth.err = ''; go('xac-thuc-email'); }
+    catch(err){ S.auth.busy = false; S.auth.err = {exists:L('Email này đã được đăng ký. Hãy đăng nhập hoặc chọn “Quên mật khẩu”.','This email is already registered. Log in or reset your password.'), weak:L('Mật khẩu cần ít nhất 8 ký tự, có cả chữ và số.','Use at least 8 characters with letters and numbers.'), wait:L('Bạn thử quá nhiều lần. Vui lòng đợi một chút rồi thử lại.','Too many attempts. Please wait a moment and try again.'), network:L('Không kết nối được máy chủ. Kiểm tra mạng và thử lại.','Couldn’t reach the server. Check your connection and try again.')}[err.code] || L('Không tạo được tài khoản. Vui lòng thử lại.','Couldn’t create the account. Please try again.'); render(); }
   }
   if(f.id === 'forgotForm'){
     const email = v('f-email').trim(); S.auth.email = email;
     if(!EMAIL_OK(email)){ S.auth.err = L('Email chưa đúng định dạng.','Enter a valid email.'); return render(); }
-    const c = Auth.forgot(email);
-    if(!c){ S.auth.err = L('Không tìm thấy tài khoản với email này.','No account found with this email.'); return render(); }
-    S.auth.err = ''; S.auth.resetSent = true; render();
+    try { await Auth.forgot(email); S.auth.err = ''; S.auth.resetSent = true; }
+    catch(err){ S.auth.err = err.code === 'wait' ? L('Bạn vừa yêu cầu gửi email. Vui lòng đợi một chút rồi thử lại.','You just requested an email. Please wait a moment and try again.') : L('Chưa gửi được email. Vui lòng thử lại.','Couldn’t send the email. Please try again.'); }
+    render();
   }
   if(f.id === 'resetForm'){
-    const code = v('f-code').trim(), pw = v('f-pass');
-    if(!/^\d{6}$/.test(code)){ S.auth.err = L('Mã gồm 6 chữ số.','The code has 6 digits.'); return render(); }
+    const pw = v('f-pass');
     if(!PW_OK(pw)){ S.auth.err = L('Mật khẩu cần ít nhất 8 ký tự, có cả chữ và số.','Use at least 8 characters with letters and numbers.'); return render(); }
-    try { const u = await Auth.reset(code, pw); S.auth = {err:'', info:L('Đã đặt lại mật khẩu. Hãy đăng nhập bằng mật khẩu mới.','Password reset. Log in with your new password.'), email:u.email}; go('dang-nhap'); }
-    catch(err){ S.auth.err = {wrong:L(`Mã không đúng. Bạn còn ${err.left} lần thử.`, `Wrong code. ${err.left} attempts left.`), expired:L('Mã đã hết hạn. Bấm “Gửi lại mã”.','The code has expired. Click “Resend code”.'), locked:L('Nhập sai quá 5 lần. Bấm “Gửi lại mã”.','Too many attempts. Click “Resend code”.'), nocode:L('Yêu cầu đã hết hiệu lực. Hãy bắt đầu lại.','This request has expired. Please start again.')}[err.code]; render(); }
-  }
-  if(f.id === 'googleForm'){
-    const name = v('g-name').trim(), email = v('g-email').trim(); Object.assign(S.modal, {name, email});
-    if(!name){ S.modal.err = L('Nhập tên hiển thị.','Enter a display name.'); return render(); }
-    if(!/^[^\s@]+@(gmail\.com|googlemail\.com)$/i.test(email)){ S.modal.err = L('Hãy dùng địa chỉ Gmail, ví dụ: ten@gmail.com.','Use a Gmail address, e.g. name@gmail.com.'); return render(); }
-    const u = Auth.google({name, email}); S.modal = null; startSession(u); toast(L('Đã đăng nhập bằng Google','Signed in with Google')); afterLogin();
+    try { await Auth.reset(pw); S.auth = {err:'', info:''}; toast(L('Đã đặt lại mật khẩu','Password reset')); go('tong-quan', {}, true); }
+    catch(err){ S.auth.err = {expired:L('Link đặt lại mật khẩu đã hết hạn. Hãy yêu cầu link mới.','This reset link has expired. Please request a new one.'), same:L('Mật khẩu mới phải khác mật khẩu cũ.','Your new password must differ from the old one.'), weak:L('Mật khẩu cần ít nhất 8 ký tự, có cả chữ và số.','Use at least 8 characters with letters and numbers.')}[err.code] || L('Không đặt lại được mật khẩu. Vui lòng thử lại.','Couldn’t reset the password. Please try again.'); render(); }
   }
   if(f.id === 'profileForm'){ const p = S.data.profile; p.name = v('p-name').trim() || p.name; p.org = v('p-org').trim(); save(); toast(L('Đã lưu thông tin','Profile saved')); render(); }
   if(f.id === 'pwForm'){
     const cur = v('pw-cur'), nw = v('pw-new'); S.pwOk = '';
     if(!PW_OK(nw)){ S.pwErr = L('Mật khẩu mới cần ít nhất 8 ký tự, có cả chữ và số.','Your new password needs 8+ characters with letters and numbers.'); return render(); }
-    try { await Auth.changePassword(S.me, cur, nw); S.pwErr = ''; S.pwOk = L('Đã lưu mật khẩu mới.','New password saved.'); } catch(err){ S.pwErr = L('Mật khẩu hiện tại không đúng.','Your current password is wrong.'); }
+    try { await Auth.changePassword(cur, nw); S.pwErr = ''; S.pwOk = L('Đã lưu mật khẩu mới.','New password saved.'); } catch(err){ S.pwErr = err.code === 'badcred' ? L('Mật khẩu hiện tại không đúng.','Your current password is wrong.') : err.code === 'same' ? L('Mật khẩu mới phải khác mật khẩu hiện tại.','Your new password must differ from the current one.') : L('Chưa đổi được mật khẩu. Vui lòng thử lại.','Couldn’t change the password. Please try again.'); }
     render();
   }
 });
@@ -547,9 +539,9 @@ document.addEventListener('change', e => {
 document.addEventListener('keydown', e => { if(e.key === 'Escape'){ if(S.modal && !(S.modal.type === 'pay' && S.modal.step === 'processing')){ if(S.modal.type === 'pay') S.pendingAfterPay = null; S.modal = null; render(); } else if(S.menu || S.devOpen){ S.menu = false; S.devOpen = false; render(); } } });
 
 /* ================= Khởi động ================= */
-(function init(){
+(async function init(){
   I18N.load();
-  const email = Auth.session(), u = email && Auth.find(email);
-  if(u && u.verified){ S.me = u.email; S.data = UserStore.load(u); if(S.data.profile.ui) I18N.set(S.data.profile.ui); }
+  try { const me = await Auth.me(); if(me){ S.me = me.email; S.data = UserStore.fromMe(me); I18N.set(S.data.profile.ui); } }
+  catch(e){ S.offline = true; }
   render();
 })();

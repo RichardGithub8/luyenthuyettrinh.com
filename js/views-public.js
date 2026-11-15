@@ -167,7 +167,7 @@ function vLogin(){
     <p class="lead" style="font-size:15px">${ret ? L('Đăng nhập để tiếp tục tới trang bạn vừa mở.','Log in to continue to the page you opened.') : L('Đăng nhập để tiếp tục luyện tập.','Log in to keep practising.')}</p>
     <form class="form" id="loginForm" novalidate style="margin-top:22px">
       ${googleBtn('login')}<div class="divider">${L('hoặc dùng email','or use email')}</div>
-      ${alertBox('err', S.auth.err)}${alertBox('ok', S.auth.info)}
+      ${alertBox('err', S.auth.err || LINK_ERRORS()[S.params.error] || '')}${alertBox('ok', S.auth.info)}
       <div class="field"><label for="f-email">Email</label><input class="input" id="f-email" type="email" autocomplete="email" value="${esc(S.auth.email || '')}" placeholder="ban@email.com" required></div>
       <div class="field"><div style="display:flex;justify-content:space-between;align-items:center"><label for="f-pass">${L('Mật khẩu','Password')}</label><button type="button" class="btn-link" style="font-size:13px" data-go="quen-mat-khau">${L('Quên mật khẩu?','Forgot password?')}</button></div><input class="input" id="f-pass" type="password" autocomplete="current-password" required></div>
       <button class="btn btn-primary btn-lg btn-block" type="submit" ${S.auth.busy ? 'disabled' : ''}>${S.auth.busy ? '<span class="spinner" style="width:18px;height:18px;border-width:2px"></span>' : L('Đăng nhập','Log in')}</button>
@@ -188,34 +188,38 @@ function vRegister(){
       <p class="hint" style="text-align:center">${L('Đã có tài khoản?','Already have an account?')} <button type="button" class="btn-link" data-go="dang-nhap">${L('Đăng nhập','Log in')}</button></p>
     </form></div>`, true);
 }
-const demoCode = c => c ? `<div class="demo-code">${L('Bản thử nghiệm chưa gửi email thật. Mã của bạn là','This beta does not send real emails. Your code is')} <b>${c.code}</b></div>` : '';
+const LINK_ERRORS = () => ({LINK_EXPIRED:L('Link đã hết hạn hoặc đã được dùng. Hãy yêu cầu link mới.','This link has expired or was already used. Please request a new one.'), OAUTH_FAILED:L('Không đăng nhập được bằng Google. Vui lòng thử lại.','Couldn’t sign in with Google. Please try again.'), AUTH_FAILED:L('Không đăng nhập được. Vui lòng thử lại.','Couldn’t sign in. Please try again.')});
 function vVerify(){
-  const c = Auth.pending('verify');
+  const email = Auth.pending();
   return flow(`<div class="panel">
     <div class="m-ic c-blue" style="margin-bottom:14px">${ic('mail',28)}</div>
-    <h1 style="font-size:26px">${L('Xác thực email','Verify your email')}</h1>
-    <p class="lead" style="font-size:15px">${L(`Chúng tôi đã gửi mã 6 số tới <b>${esc(c.email)}</b>. Mã có hiệu lực trong 10 phút.`, `We sent a 6-digit code to <b>${esc(c.email)}</b>. It expires in 10 minutes.`)}</p>
-    <form class="form" id="verifyForm" novalidate style="margin-top:20px">
-      ${demoCode(c)}${alertBox('err', S.auth.err)}${alertBox('ok', S.auth.info)}
-      <div class="field"><label for="f-code">${L('Mã xác thực','Verification code')}</label><input class="input code-input" id="f-code" inputmode="numeric" maxlength="6" autocomplete="one-time-code" required></div>
-      <button class="btn btn-primary btn-lg btn-block" type="submit">${L('Xác thực','Verify')}</button>
-      <p class="hint" style="text-align:center">${L('Không nhận được mã?','Didn’t get it?')} <button type="button" class="btn-link" data-act="resend" data-purpose="verify">${L('Gửi lại mã','Resend code')}</button> · <button type="button" class="btn-link" data-go="dang-ky">${L('Đổi email','Change email')}</button></p>
-    </form></div>`, true);
+    <h1 style="font-size:26px">${L('Kiểm tra email của bạn','Check your email')}</h1>
+    <p class="lead" style="font-size:15px">${L(`Chúng tôi đã gửi link xác thực tới <b>${esc(email)}</b>. Bấm vào link trong email để kích hoạt tài khoản và tiếp tục.`, `We sent a verification link to <b>${esc(email)}</b>. Click the link in the email to activate your account and continue.`)}</p>
+    <div class="form" style="margin-top:20px">
+      ${alertBox('err', S.auth.err)}${alertBox('ok', S.auth.info)}
+      <p class="hint" style="text-align:center">${L('Không thấy email?','Didn’t get it?')} <button type="button" class="btn-link" data-act="resend">${L('Gửi lại email','Resend email')}</button> · <button type="button" class="btn-link" data-act="change-email">${L('Đổi email','Change email')}</button></p>
+    </div></div>`, true);
 }
 function vForgot(){
-  const c = Auth.pending('reset'), step2 = S.auth.resetSent && c;
+  const sent = S.auth.resetSent;
   return flow(`<div class="panel">
-    <h1 style="font-size:26px">${L('Quên mật khẩu','Reset your password')}</h1>
-    ${!step2 ? `<p class="lead" style="font-size:15px">${L('Nhập email đã đăng ký. Chúng tôi sẽ gửi mã để đặt lại mật khẩu.','Enter your account email and we’ll send you a reset code.')}</p>
+    <h1 style="font-size:26px">${sent ? L('Kiểm tra email của bạn','Check your email') : L('Quên mật khẩu','Reset your password')}</h1>
+    ${!sent ? `<p class="lead" style="font-size:15px">${L('Nhập email đã đăng ký. Chúng tôi sẽ gửi link để đặt lại mật khẩu.','Enter your account email and we’ll send you a link to reset your password.')}</p>
       <form class="form" id="forgotForm" novalidate style="margin-top:20px">${alertBox('err', S.auth.err)}
         <div class="field"><label for="f-email">Email</label><input class="input" id="f-email" type="email" autocomplete="email" value="${esc(S.auth.email || '')}" required></div>
-        <button class="btn btn-primary btn-lg btn-block" type="submit">${L('Gửi mã','Send code')}</button>
+        <button class="btn btn-primary btn-lg btn-block" type="submit">${L('Gửi link','Send link')}</button>
         <p class="hint" style="text-align:center"><button type="button" class="btn-link" data-go="dang-nhap">${L('Quay lại đăng nhập','Back to log in')}</button></p></form>`
-    : `<p class="lead" style="font-size:15px">${L(`Nhập mã đã gửi tới <b>${esc(c.email)}</b> và mật khẩu mới.`, `Enter the code sent to <b>${esc(c.email)}</b> and your new password.`)}</p>
-      <form class="form" id="resetForm" novalidate style="margin-top:20px">${demoCode(c)}${alertBox('err', S.auth.err)}
-        <div class="field"><label for="f-code">${L('Mã xác thực','Code')}</label><input class="input code-input" id="f-code" inputmode="numeric" maxlength="6" autocomplete="one-time-code" required></div>
-        <div class="field"><label for="f-pass">${L('Mật khẩu mới','New password')}</label><input class="input" id="f-pass" type="password" autocomplete="new-password" required><span class="hint">${L('Tối thiểu 8 ký tự, có cả chữ và số.','At least 8 characters with letters and numbers.')}</span></div>
-        <button class="btn btn-primary btn-lg btn-block" type="submit">${L('Đặt lại mật khẩu','Reset password')}</button>
-        <p class="hint" style="text-align:center"><button type="button" class="btn-link" data-act="resend" data-purpose="reset">${L('Gửi lại mã','Resend code')}</button> · <button type="button" class="btn-link" data-act="reset-restart">${L('Dùng email khác','Use another email')}</button></p></form>`}
+    : `<p class="lead" style="font-size:15px">${L(`Nếu <b>${esc(S.auth.email)}</b> đã có tài khoản, chúng tôi vừa gửi link đặt lại mật khẩu tới đó. Link có hiệu lực trong thời gian ngắn.`, `If <b>${esc(S.auth.email)}</b> has an account, we just sent a password-reset link there. The link is valid for a short time.`)}</p>
+      <div class="form" style="margin-top:20px">${alertBox('err', S.auth.err)}
+        <p class="hint" style="text-align:center"><button type="button" class="btn-link" data-act="reset-restart">${L('Dùng email khác','Use another email')}</button> · <button type="button" class="btn-link" data-go="dang-nhap">${L('Quay lại đăng nhập','Back to log in')}</button></p></div>`}
   </div>`, true);
+}
+function vReset(){
+  return flow(`<div class="panel">
+    <h1 style="font-size:26px">${L('Đặt mật khẩu mới','Set a new password')}</h1>
+    <p class="lead" style="font-size:15px">${L('Nhập mật khẩu mới cho tài khoản của bạn.','Enter a new password for your account.')}</p>
+    <form class="form" id="resetForm" novalidate style="margin-top:20px">${alertBox('err', S.auth.err)}
+      <div class="field"><label for="f-pass">${L('Mật khẩu mới','New password')}</label><input class="input" id="f-pass" type="password" autocomplete="new-password" required><span class="hint">${L('Tối thiểu 8 ký tự, có cả chữ và số.','At least 8 characters with letters and numbers.')}</span></div>
+      <button class="btn btn-primary btn-lg btn-block" type="submit">${L('Đặt lại mật khẩu','Reset password')}</button>
+    </form></div>`, true);
 }
