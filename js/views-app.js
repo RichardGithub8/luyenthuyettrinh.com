@@ -185,7 +185,7 @@ function vAnalyzing(){
   const timeout = failed && item.reason === 'timeout';
   return AppLayout(`<div class="an">
     <h1>${failed ? (timeout ? L('Phân tích lâu hơn dự kiến','Analysis is taking too long') : L('AI chưa phân tích được bài này','AI couldn’t analyse this talk')) : item.kind === 'script' ? L('AI đang đọc kịch bản của bạn','AI is reading your script') : L('AI đang nghe lại bài nói của bạn','AI is listening to your talk')}</h1>
-    <span class="eyebrow">${item.kind === 'script' ? L(`Kịch bản ${wordsOf(item.text)} từ`, `Script, ${wordsOf(item.text)} words`) : L(`Bài nói ${fmtT(item.dur)}`, `Talk, ${fmtT(item.dur)}`)}</span>
+    <span class="eyebrow">${item.kind === 'script' ? L(`Kịch bản ${item.words ?? wordsOf(item.text)} từ`, `Script, ${item.words ?? wordsOf(item.text)} words`) : L(`Bài nói ${fmtT(item.dur)}`, `Talk, ${fmtT(item.dur)}`)}</span>
     <p class="muted" style="margin-top:8px">${esc(item.title)}</p>
     ${failed ? `<div style="margin-top:16px">${alertBox('err', timeout ? L('Máy chủ phản hồi quá thời gian chờ. Lượt phân tích chưa bị trừ, bài nói vẫn được lưu trong Thư viện.','The server timed out. No analysis was used up, and your talk is still saved in your Library.') : L('Máy chủ AI gặp lỗi khi xử lý. Lượt phân tích chưa bị trừ, bài nói vẫn được lưu trong Thư viện.','The AI server hit an error. No analysis was used up, and your talk is still saved in your Library.'))}</div>` : `<p class="muted" style="margin-top:4px">${L('Thường mất dưới 2 phút. Bạn có thể rời trang, kết quả sẽ có trong Thư viện.','Usually under 2 minutes. You can leave this page; results will appear in your Library.')}</p>`}
     <div class="big-meter ${failed ? 'fail' : ''}"><b style="width:${failed ? Math.max(pct, 20) : pct}%"></b></div>
@@ -201,6 +201,11 @@ function vReport(sample){
     const c = {content:78, structure:74, relevance:85, pace:66, fluency:72, filler:66, body:64};
     s = {id:'sample', title:L('Thuyết trình: Ứng dụng AI trong giáo dục','Presentation: AI in education'), goal:'presentation', lang:I18N.ui, kind:'video', date:'2026-10-20', dur:270, c, score:scoreOf(c), fillers:9, report:buildSpeechReport({goal:'presentation', lang:I18N.ui, video:true, dur:270, fillers:9})};
   } else s = S.data.sessions.find(x => x.id === S.params.id);
+  if(s && !s.full && !sample){
+    if(s.loadErr) return AppLayout(`<div class="empty"><b>${L('Chưa tải được báo cáo','Couldn’t load this report')}</b><button class="btn btn-primary btn-sm" data-act="report-reload" data-id="${s.id}">${L('Thử lại','Try again')}</button></div>`);
+    Practice.ensureFull(s);
+    return AppLayout(`<div class="an"><div class="spinner" aria-hidden="true"></div><p class="muted" style="margin-top:12px">${L('Đang tải báo cáo…','Loading your report…')}</p></div>`);
+  }
   if(!s) return AppLayout(`<div class="empty"><b>${L('Không tìm thấy báo cáo','Report not found')}</b><button class="btn btn-primary btn-sm" data-go="tien-bo">${L('Xem các báo cáo','See reports')}</button></div>`);
   const g = GOALS[s.goal], isScript = s.kind === 'script', crit = isScript ? SCRIPT_CRIT : CRIT;
   const same = sample ? [] : S.data.sessions.filter(x => (x.kind === 'script') === isScript), prev = same[same.indexOf(s) - 1];
@@ -213,16 +218,23 @@ function vReport(sample){
     <div class="page-head"><div><h1 style="margin-top:8px">${esc(s.title)}</h1><span class="eyebrow">${s.placement ? L('Bài test đầu vào','Placement test') + ' · ' : ''}${L('Báo cáo','Report')} · ${fmtDL(s.date)}</span><p>${tx(g.name)} · ${langName(s.lang)} · ${tx(KIND[s.kind])} · ${isScript ? L('ước tính ','est. ') : ''}${fmtT(s.dur)}</p></div><div class="acts">${acts}</div></div>
     ${sample ? `<div class="banner"><div><h3>${L('Đây là báo cáo mẫu','This is a sample report')}</h3><p>${L('Bài thuyết trình 4 phút từ video. Phần Premium được làm mờ.','A 4-minute video presentation. Premium sections are blurred.')}</p></div></div>` : ''}
     ${lesson ? `<div class="banner ${passed ? 'good' : 'warn'}"><div><h3>${passed ? L(`Hoàn thành bài ${lesson.n}: ${tx(lesson.title)}`, `Lesson ${lesson.n} complete: ${tx(lesson.title)}`) : L(`Chưa đạt ${CONFIG.passScore} điểm để hoàn thành bài ${lesson.n}`, `You need ${CONFIG.passScore} points to complete lesson ${lesson.n}`)}</h3><p>${passed ? L('Tiến độ khóa học đã được cập nhật.','Your course progress has been updated.') : L('Xem các gợi ý bên dưới rồi thử lại nhé.','Check the tips below and try again.')}</p></div><div class="acts"><button class="btn btn-ghost btn-sm" data-go="bai-hoc" data-p="id=${lesson.id}">${L('Về bài học','Back to lesson')}</button>${passed && nextL ? `<button class="btn btn-primary btn-sm" data-go="bai-hoc" data-p="id=${nextL.id}">${L('Bài tiếp theo','Next lesson')}</button>` : !passed ? `<button class="btn btn-primary btn-sm" data-act="lesson-practice" data-id="${lesson.id}" data-kind="${lesson.kind}">${L('Thử lại','Try again')}</button>` : ''}</div></div>` : ''}
-    ${!sample && !isScript ? `<div class="banner"><div><h3>${L('Bản thử nghiệm chưa kết nối AI giọng nói','Beta: speech AI not connected yet')}</h3><p>${L(`Điểm, bản chép lời và gợi ý là dữ liệu mẫu theo loại hình ${tx(g.name).toLowerCase()}. Bản ghi của bạn vẫn được lưu để nghe lại.`, `Scores, transcript and tips are sample data for ${tx(g.name).toLowerCase()}. Your recording is still saved for playback.`)}</p></div></div>` : ''}
-    ${isScript ? `<div class="banner good"><div><h3>${L('Phân tích tự động trên kịch bản của bạn','Automatic analysis of your script')}</h3><p>${L('Điểm và lỗi dưới đây được tính từ chính nội dung bạn gửi.','The scores and issues below are calculated from your own text.')}</p></div></div>` : ''}
+    ${!sample && s.mock ? `<div class="banner"><div><h3>${L('Đây là kết quả mô phỏng','These are simulated results')}</h3><p>${L('Hệ thống đang chạy chế độ mô phỏng (chưa kết nối AI thật), nên điểm và nhận xét chỉ để minh họa luồng sử dụng.','The system is in simulation mode (no live AI connected), so scores and feedback only illustrate the flow.')}</p></div></div>` : ''}
+    ${!sample && !isScript && !s.server ? `<div class="banner"><div><h3>${L('Bản thử nghiệm chưa kết nối AI giọng nói','Beta: speech AI not connected yet')}</h3><p>${L(`Điểm, bản chép lời và gợi ý là dữ liệu mẫu theo loại hình ${tx(g.name).toLowerCase()}. Bản ghi của bạn vẫn được lưu để nghe lại.`, `Scores, transcript and tips are sample data for ${tx(g.name).toLowerCase()}. Your recording is still saved for playback.`)}</p></div></div>` : ''}
+    ${isScript && !s.mock ? `<div class="banner good"><div><h3>${L('Phân tích tự động trên kịch bản của bạn','Automatic analysis of your script')}</h3><p>${L('Điểm và lỗi dưới đây được tính từ chính nội dung bạn gửi.','The scores and issues below are calculated from your own text.')}</p></div></div>` : ''}
     <div class="card"><div class="rep-top">${ring(s.score)}<div style="min-width:0">
       <div class="chips" style="margin-bottom:12px"><span class="chip blue">${L('Trình độ','Level')}: ${levelName(s.score)}</span>${prev ? `<span class="chip ${s.score >= prev.score ? 'good' : 'bad'}">${s.score >= prev.score ? '+' : ''}${s.score - prev.score} ${L('so với lần trước','vs. last time')}</span>` : ''}<span class="chip line">${isScript ? s.script.weakTotal + ' ' + L('từ thừa','filler words') : s.fillers + ' ' + L('từ đệm','fillers')}</span></div>
       <h3 style="font-size:19px">${L(`Mạnh nhất: ${tx(crit[ranked[0]]).toLowerCase()}. Cần ưu tiên: ${tx(crit[ranked[ranked.length-1]]).toLowerCase()}.`, `Strongest: ${tx(crit[ranked[0]]).toLowerCase()}. Focus next on: ${tx(crit[ranked[ranked.length-1]]).toLowerCase()}.`)}</h3>
       <p class="muted" style="margin-top:6px;font-size:14px">${isScript ? L(`Kịch bản ${s.script.wc} từ, ${s.script.paras} đoạn, khoảng ${fmtDur(s.script.estSec)} khi nói.`, `${s.script.wc} words in ${s.script.paras} paragraphs, about ${fmtDur(s.script.estSec)} spoken.`) : L(`Người nghe AI: ${g.persona}, ${tx(g.role).toLowerCase()}.`, `AI listener: ${g.persona}, ${tx(g.role).toLowerCase()}.`)}</p>
       <div class="crit">${ranked.map(k => barRow(tx(crit[k]), s.c[k])).join('')}</div>
     </div></div></div>`;
+  if(s.server && (s.summary || s.strengths.length)) html += aiSummaryCard(s);
   html += isScript ? reportScript(s, g) : reportSpeech(s, g, sample);
   return sample ? PublicLayout(`<div class="wrap" style="padding-block:32px 40px">${html}</div>`) : AppLayout(html);
+}
+function aiSummaryCard(s){
+  return `<div class="card mt"><h3>${L('Nhận xét tổng quan','Overview')}</h3>${s.summary ? `<p style="margin-top:8px">${esc(s.summary)}</p>` : ''}
+    ${s.strengths.length ? `<div class="sec-t" style="margin-top:14px">${L('Điểm mạnh','Strengths')}</div><ul class="unlock" style="margin-top:6px">${s.strengths.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}
+    ${s.notes.some(x => noteText(x)) ? `<div class="sec-t" style="margin-top:14px">${L('Về cách nói','Delivery')}</div><ul class="unlock" style="margin-top:6px">${s.notes.map(x => noteText(x)).filter(Boolean).map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}</div>`;
 }
 function weakList(items, goal, quote){
   if(!items.length) return `<div class="empty" style="margin-top:10px"><b>${L('Không có lỗi lớn','No major issues')}</b><span>${L('Thử ghi âm để luyện phần nói.','Try recording it to practise delivery.')}</span></div>`;
@@ -230,20 +242,21 @@ function weakList(items, goal, quote){
 }
 const segText = sg => sg.p.map(x => x[1]).join('');
 function reportSpeech(s, g, sample){
-  const R = s.report, issueAt = {}; R.weak.forEach((w,i) => { if(!(w.s in issueAt)) issueAt[w.s] = i+1; });
-  const hasBody = s.c.body != null;
+  const R = s.report, issueAt = {}; R.weak.forEach((w,i) => { if(w.s != null && !(w.s in issueAt)) issueAt[w.s] = i+1; });
+  const hasBody = s.c.body != null || !!R.body, srv = !!s.server;
+  const bs = R.body || {}, bv = k => bs[k] == null ? null : bs[k], bst = v => v == null ? 'warn' : v >= 70 ? 'good' : v >= 50 ? 'warn' : 'bad';
   return `
     <div class="grid g-main mt">
       <div class="card"><h3>${L('Điểm cần cải thiện','What to improve')}</h3><div class="sub">${L('Xếp theo mức ảnh hưởng tới người nghe','Ordered by impact on your audience')}</div>
-        <div style="margin-top:6px">${weakList(R.weak, s.goal, w => `<div class="quote" style="margin-top:10px"><small>${L('Bản chép lời','Transcript')} · ${fmtT(R.segs[w.s].t)} · <button class="btn-link" style="font-size:12px" data-act="jump" data-to="seg-${w.s}">${L('Xem vị trí','Show')}</button></small>“${esc(segText(R.segs[w.s]))}”</div>`)}</div></div>
+        <div style="margin-top:6px">${weakList(R.weak, s.goal, w => w.s == null || !R.segs[w.s] ? '' : `<div class="quote" style="margin-top:10px"><small>${L('Bản chép lời','Transcript')} · ${fmtT(R.segs[w.s].t)} · <button class="btn-link" style="font-size:12px" data-act="jump" data-to="seg-${w.s}">${L('Xem vị trí','Show')}</button></small>“${esc(segText(R.segs[w.s]))}”</div>`)}</div></div>
       <div class="section-gap" style="gap:16px;min-width:0">
         <div class="card"><h3>${L('Tốc độ nói','Pace')}</h3><div class="sub">${L('Từ/phút. Vùng xanh 120–150 là dễ nghe.','Words per minute. The green band (120–150) is easy to follow.')}</div><div style="margin-top:10px">${paceChart(R.pace)}</div></div>
         ${qaCard(g, s.goal)}
       </div>
     </div>
     ${timelineCard(R)}
-    <div class="card mt"><h3>${L('Ngôn ngữ cơ thể','Body language')}</h3><div class="sub">${hasBody ? L('Phân tích từ video: ánh mắt, cử chỉ, biểu cảm, tư thế','From your video: eye contact, gestures, expression, posture') : L('Bài này nộp bằng âm thanh. Quay video để nhận phân tích ngôn ngữ cơ thể.','This was audio only. Record a video to get body language feedback.')}</div>
-      ${hasBody ? `<div class="body-l">${[[L('Ánh mắt','Eye contact'),'38%','bad',L('Nhìn xuống ghi chú 62% thời gian.','Looking at notes 62% of the time.')],[L('Cử chỉ tay','Gestures'),L('Ổn','Good'),'good',L('Dùng tay đếm ý rõ ràng, tự nhiên.','Clear, natural counting gestures.')],[L('Biểu cảm','Expression'),L('Ít','Limited'),'warn',L('Gương mặt ít thay đổi ở phần giữa.','Little change in the middle section.')],[L('Tư thế','Posture'),L('Lệch','Uneven'),'warn',L('Dồn trọng tâm sang một chân, đung đưa nhẹ.','Weight on one leg, slight swaying.')]].map(([k,v,st,n]) => `<div class="card"><div class="muted" style="font-size:13px">${k}</div><div style="font-size:22px;font-weight:700;margin-top:2px">${v}</div><div class="status" style="color:var(--${st})">${st==='good' ? L('Tốt','Good') : st==='bad' ? L('Cần sửa','Fix') : L('Cần chú ý','Watch')}</div><p class="muted" style="font-size:13px;margin-top:6px">${n}</p></div>`).join('')}</div>` : (sample ? '' : `<button class="btn btn-outline btn-sm" style="margin-top:12px" data-act="retry" data-id="${s.id}" data-kind="video">${L('Luyện lại bằng video','Practise again on video')}</button>`)}
+    <div class="card mt"><h3>${L('Ngôn ngữ cơ thể','Body language')}</h3><div class="sub">${hasBody ? L('Phân tích từ video: ánh mắt, cử chỉ, biểu cảm, tư thế','From your video: eye contact, gestures, expression, posture') : R.video ? L('Chưa có số đo ngôn ngữ cơ thể cho video này. Tính năng đo trên trình duyệt đang được hoàn thiện.','No body-language measurements for this video yet. In-browser measurement is still being finished.') : L('Bài này nộp bằng âm thanh. Quay video để nhận phân tích ngôn ngữ cơ thể.','This was audio only. Record a video to get body language feedback.')}</div>
+      ${hasBody ? `<div class="body-l">${(srv ? [[L('Ánh mắt','Eye contact'),bv('eye')],[L('Cử chỉ tay','Gestures'),bv('gesture')],[L('Biểu cảm','Expression'),bv('expression')],[L('Tư thế','Posture'),bv('posture')]].filter(x => x[1] != null).map(([k,v]) => [k, v + '/100', bst(v), '']) : [[L('Ánh mắt','Eye contact'),'38%','bad',L('Nhìn xuống ghi chú 62% thời gian.','Looking at notes 62% of the time.')],[L('Cử chỉ tay','Gestures'),L('Ổn','Good'),'good',L('Dùng tay đếm ý rõ ràng, tự nhiên.','Clear, natural counting gestures.')],[L('Biểu cảm','Expression'),L('Ít','Limited'),'warn',L('Gương mặt ít thay đổi ở phần giữa.','Little change in the middle section.')],[L('Tư thế','Posture'),L('Lệch','Uneven'),'warn',L('Dồn trọng tâm sang một chân, đung đưa nhẹ.','Weight on one leg, slight swaying.')]]).map(([k,v,st,n]) => `<div class="card"><div class="muted" style="font-size:13px">${k}</div><div style="font-size:22px;font-weight:700;margin-top:2px">${v}</div><div class="status" style="color:var(--${st})">${st==='good' ? L('Tốt','Good') : st==='bad' ? L('Cần sửa','Fix') : L('Cần chú ý','Watch')}</div>${n ? `<p class="muted" style="font-size:13px;margin-top:6px">${n}</p>` : ''}</div>`).join('')}</div>` : (sample || R.video ? '' : `<button class="btn btn-outline btn-sm" style="margin-top:12px" data-act="retry" data-id="${s.id}" data-kind="video">${L('Luyện lại bằng video','Practise again on video')}</button>`)}
     </div>
     <div class="grid g-2 mt">
       <div class="card"><h3>${L('Bản chép lời','Transcript')}</h3><div class="sub"><span style="color:var(--bad);font-weight:600">${L('Chữ đỏ','Red')}</span>: ${L('từ đệm · số: điểm cần cải thiện','filler words · numbers: issues')}</div>
@@ -306,7 +319,7 @@ function vLibrary(){
     const [cls, label] = libStatus(l), icn = l.kind === 'script' ? 'doc' : l.kind === 'video' ? 'video' : 'mic', col = l.kind === 'script' ? 'c-green' : l.kind === 'video' ? 'c-purple' : 'c-blue', open = S.openLib === l.id;
     const canPlay = l.kind === 'script' || l.hasMedia, needs = /^pending|error/.test(l.status);
     return `<div class="lib-row"><div class="lib-ic ${col}">${ic(icn,22)}</div>
-      <div style="min-width:0"><div class="row-t">${esc(l.title)}</div><div class="row-m">${tx(GOALS[l.goal].name)} · ${langName(l.lang)} · ${fmtDL(l.date)} · ${l.kind === 'script' ? wordsOf(l.text) + ' ' + L('từ','words') : fmtT(l.dur)}${l.lessonId ? ' · ' + L('Bài học','Lesson') : ''}</div><div style="margin-top:6px"><span class="chip ${cls}">${label}</span></div></div>
+      <div style="min-width:0"><div class="row-t">${esc(l.title)}</div><div class="row-m">${tx(GOALS[l.goal].name)} · ${langName(l.lang)} · ${fmtDL(l.date)} · ${l.kind === 'script' ? (l.words ?? wordsOf(l.text)) + ' ' + L('từ','words') : fmtT(l.dur)}${l.lessonId ? ' · ' + L('Bài học','Lesson') : ''}</div><div style="margin-top:6px"><span class="chip ${cls}">${label}</span></div></div>
       <div class="lib-acts">
         ${needs ? `<button class="btn btn-primary btn-sm" data-act="analyze" data-id="${l.id}">${L('Phân tích ngay','Analyse now')}</button>` : ''}
         ${l.status === 'analyzed' ? `<button class="btn btn-outline btn-sm" data-go="bao-cao" data-p="id=${l.sessionId}">${L('Báo cáo','Report')}</button>` : ''}
@@ -314,7 +327,7 @@ function vLibrary(){
         <button class="btn btn-ghost btn-sm" data-act="lib-dl" data-id="${l.id}" ${canPlay ? '' : 'disabled'}>${ic('down',14)} ${L('Tải về','Download')}</button>
         <button class="btn btn-ghost btn-sm" data-act="lib-del" data-id="${l.id}" aria-label="${L('Xóa','Delete')} ${esc(l.title)}">${ic('trash',14)}</button>
       </div>
-      ${open ? `<div class="lib-extra">${l.kind === 'script' ? `<div class="quote" style="white-space:pre-wrap;max-height:260px;overflow:auto">${esc(l.text)}</div>` : S.openUrl ? (l.kind === 'video' ? `<video src="${S.openUrl}" controls playsinline></video>` : `<audio src="${S.openUrl}" controls></audio>`) : ''}</div>` : ''}
+      ${open ? `<div class="lib-extra">${l.kind === 'script' ? `<div class="quote" style="white-space:pre-wrap;max-height:260px;overflow:auto">${esc(l.text || '')}</div>` : S.openUrl ? (l.kind === 'video' ? `<video src="${S.openUrl}" controls playsinline></video>` : `<audio src="${S.openUrl}" controls></audio>`) : ''}</div>` : ''}
       ${S.confirmDel === l.id ? `<div class="confirm" role="alertdialog" aria-label="${L('Xác nhận xóa','Confirm delete')}"><span>${L('Xóa vĩnh viễn bài này và tệp ghi âm? Báo cáo liên quan cũng bị xóa.','Permanently delete this talk and its recording? Its report will be deleted too.')}</span><span style="display:flex;gap:8px"><button class="btn btn-ghost btn-sm" data-act="lib-del-no">${L('Hủy','Cancel')}</button><button class="btn btn-danger btn-sm" data-act="lib-del-yes" data-id="${l.id}">${L('Xóa','Delete')}</button></span></div>` : ''}
     </div>`;
   };

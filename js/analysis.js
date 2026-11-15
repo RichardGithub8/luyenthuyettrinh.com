@@ -69,6 +69,7 @@ function analyzeScript(text, title, goal, lang){
 
 /* Lời nhận xét theo mã lỗi, dịch theo ngôn ngữ giao diện lúc hiển thị. */
 function weakText(w, goal){
+  if(w.title) return {title:esc(w.title), detail:esc(w.detail || ''), fix:esc(w.fix || '')};   // lỗi do máy chủ trả về đã có sẵn lời nhận xét
   const g = GOALS[goal] || GOALS.presentation, gname = tx(g.name).toLowerCase();
   const T = {
     hook:{t:L('Mở bài chưa có câu thu hút','The opening has no hook'), d:L('Câu đầu chưa có câu hỏi, con số hay câu chuyện để giữ người nghe.','Your first line has no question, number or story to grab attention.'), f:L('Mở bằng một con số, một câu hỏi hoặc một tình huống ngắn liên quan tới người nghe.','Open with a number, a question or a short situation the audience relates to.')},
@@ -89,8 +90,26 @@ function weakText(w, goal){
   const r = T[w.code] || {t:w.code, d:'', f:''};
   return {title:r.t, detail:r.d, fix:r.f};
 }
+/* Ghi chú về cách nói do máy chủ trả về dạng mã + số liệu; dịch theo ngôn ngữ giao diện lúc hiển thị. */
+function noteText(n){
+  const d = n.data || {};
+  const T = {
+    pace_fast:() => L(`Bạn nói nhanh, trung bình ${d.wpm} từ/phút (dễ nghe: 120–150).`, `You speak fast, about ${d.wpm} words per minute (easy range: 120–150).`),
+    pace_slow:() => L(`Bạn nói chậm, trung bình ${d.wpm} từ/phút (dễ nghe: 120–150).`, `You speak slowly, about ${d.wpm} words per minute (easy range: 120–150).`),
+    pace_spike:() => L(`Phút ${d.minute} tốc độ tăng lên ${d.wpm} từ/phút. Hãy tách câu và dừng một nhịp.`, `In minute ${d.minute} your pace spiked to ${d.wpm} wpm. Split sentences and pause.`),
+    pace_drop:() => L(`Phút ${d.minute} tốc độ giảm còn ${d.wpm} từ/phút, dễ làm người nghe mất tập trung.`, `In minute ${d.minute} your pace dropped to ${d.wpm} wpm, which can lose listeners.`),
+    filler_high:() => L(`Có ${d.count} từ đệm, khoảng ${d.perMin} từ mỗi phút.`, `${d.count} filler words, about ${d.perMin} per minute.`),
+    pauses_long:() => L(`Có ${d.count} lần ngắt nghỉ quá dài.`, `${d.count} overly long pauses.`),
+    eye_low:() => L(`Giao tiếp bằng mắt thấp (${d.ratio}% thời gian nhìn vào khán giả).`, `Low eye contact (${d.ratio}% of the time looking at the audience).`),
+    gesture_low:() => L(`Ít cử chỉ tay (${d.perMin} lần mỗi phút).`, `Few hand gestures (${d.perMin} per minute).`),
+    posture_sway:() => L(`Tư thế đung đưa nhiều (${d.perMin} lần đổi tư thế mỗi phút).`, `A lot of swaying (${d.perMin} posture shifts per minute).`),
+    expression_flat:() => L('Gương mặt ít biểu cảm. Thử mỉm cười ở phần mở và kết.', 'Little facial expression. Try smiling at the opening and close.'),
+  };
+  return T[n.code] ? T[n.code]() : '';
+}
 const MARK_TYPES = {filler:['bad', () => L('Từ đệm','Filler')], pace:['warn', () => L('Tốc độ','Pace')], eye:['sky', () => L('Ánh mắt','Eye contact')], structure:['pro', () => L('Cấu trúc','Structure')], good:['good', () => L('Điểm tốt','Strength')]};
 function markLabel(m){
+  if(m.label) return esc(m.label);
   return {hook:L('Mở bài chưa thu hút','Weak opening'), filler:L('Từ đệm ở câu mở đầu','Fillers in the opening'), good:L('Dẫn số liệu rõ ràng','Clear use of data'), pace:L('Tốc độ lên khoảng 172 từ/phút','Pace up to about 172 wpm'), eye:L('Nhìn xuống ghi chú','Looking down at notes'), closing:L('Kết bài đột ngột','Abrupt ending')}[m.code] || m.code;
 }
 

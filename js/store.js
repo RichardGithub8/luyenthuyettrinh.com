@@ -58,8 +58,8 @@ const Auth = {
 const UserStore = {
   key: email => 'ltt.data.' + email,
   fromMe(me){
-    const local = DB.get(this.key(me.email)) || {sessions:[], library:[], lessons:{}, placement:null, invoices:[], cycle:'m', autoRenew:true, payMethod:'MoMo'};
-    const d = {...local,
+    const local = DB.get(this.key(me.email)) || {lessons:{}, placement:null, invoices:[], cycle:'m', autoRenew:true, payMethod:'MoMo'};
+    const d = {...local, sessions:[], library:[],
       profile:{...(local.profile || {}), name:me.fullName, email:me.email, org:me.organization || '', goal:me.defaultGoal || 'presentation', speechLang:me.speakingLanguage || 'vi', ui:me.uiLanguage || I18N.ui},
       onboarded:me.onboarded, plan:me.plan, expiry:me.premiumExpiresAt ? me.premiumExpiresAt.slice(0,10) : null, used:me.usage.used, usedMonth:monthKey(),
     };
@@ -69,7 +69,8 @@ const UserStore = {
   },
   serverView: d => ({name:d.profile.name, org:d.profile.org || '', goal:d.profile.goal, speechLang:d.profile.speechLang, ui:d.profile.ui, onboarded:!!d.onboarded}),
   save(email, data){
-    if(!DB.set(this.key(email), data)) toast(L('Bộ nhớ trình duyệt đã đầy. Một số thay đổi có thể không được lưu.', 'Browser storage is full. Some changes may not be saved.'));
+    const {sessions, library, ...keep} = data;   // buổi luyện và thư viện nằm trên máy chủ, không lưu cục bộ
+    if(!DB.set(this.key(email), keep)) toast(L('Bộ nhớ trình duyệt đã đầy. Một số thay đổi có thể không được lưu.', 'Browser storage is full. Some changes may not be saved.'));
     this.sync(data);
   },
   /* Đẩy các thay đổi hồ sơ lên máy chủ (gọi sau mỗi lần save). Lỗi chỉ báo, không làm mất thao tác của người dùng. */
