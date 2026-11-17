@@ -78,7 +78,6 @@ function render(){
   if(r !== 'ghi-am' && S.rec) cleanupRec();
   if(r !== 'tai-len' && S.upload) Practice.cancelUpload();
   $('#app').innerHTML = R.v() + modalHtml() + devHtml() + (S.offline ? `<div class="offline" role="alert">${ic('wifi',14)} ${L('Mất kết nối mạng. Một số thao tác sẽ không thực hiện được cho tới khi có mạng lại.','You’re offline. Some actions won’t work until you reconnect.')}</div>` : '');
-  if(r === '') sphereInit();
   if(S.lastRoute !== r){ window.scrollTo(0,0); S.lastRoute = r; }
   if(r === 'ghi-am') attachRec();
 }
