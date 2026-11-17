@@ -1,0 +1,33 @@
+# Netlify nối với GitHub: mỗi lần push sẽ chạy build.sh và đăng thư mục netlify/.
+# Mỗi nhánh / pull request có link xem trước riêng (deploy preview).
+[build]
+  command = "bash build.sh"
+  publish = "netlify"
+
+# Frontend gọi backend ở cùng tên miền (/api, /auth, /pay). Netlify chuyển tiếp (proxy, status 200)
+# sang backend Next.js trên Vercel, nên cookie đăng nhập vẫn là cùng tên miền với trang.
+# TODO khi backend đã deploy: thay BACKEND_URL bằng địa chỉ Vercel thật (vd. https://luyenthuyettrinh-app.vercel.app).
+[[redirects]]
+  from = "/api/*"
+  to = "https://BACKEND_URL/api/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/auth/*"
+  to = "https://BACKEND_URL/auth/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/pay/*"
+  to = "https://BACKEND_URL/pay/:splat"
+  status = 200
+  force = true
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(self), microphone=(self)"
