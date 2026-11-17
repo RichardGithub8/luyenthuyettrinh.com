@@ -3,3 +3,6 @@ node_modules/
 .env
 .env.local
 *.log
+
+# Netlify build output (build.sh tạo lại mỗi lần deploy)
+netlify/
