@@ -126,25 +126,36 @@ function vRecord(){
     </div></div></div>`);
   }
   if(r.state === 'asking') return AppLayout(head + `<div class="card" style="text-align:center;padding:48px"><span class="spinner"></span><h3 style="margin-top:14px">${L('Đang xin quyền dùng micro…','Requesting microphone access…')}</h3><p class="muted" style="margin-top:6px">${L('Hãy bấm “Cho phép” trong hộp thoại của trình duyệt.','Click “Allow” in your browser’s prompt.')}</p></div>`);
+  const freeCap = !isPro() && !d.placement ? plan().maxAnalyzeSec : 0, initials = g.persona.split(' ').pop().slice(0, 1);
   return AppLayout(head + `
-    <div class="rec">
-      <div class="rec-stage">
-        ${d.kind === 'video' ? `<div class="cam"><video id="camv" autoplay muted playsinline></video><div class="ph" id="camph">${r.sim ? L('Camera giả lập (bản thử nghiệm)','Simulated camera (beta)') : L('Đang mở camera…','Opening camera…')}</div><span class="tag">${L('Theo dõi ánh mắt và cử chỉ','Tracking eye contact and gestures')}</span></div>` : ''}
-        <div style="display:flex;align-items:end;justify-content:space-between;gap:16px;flex-wrap:wrap">
-          <div><div style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600"><span class="rec-dot ${r.paused?'paused':''}" id="recdot"></span><span id="recst">${r.paused ? L('Tạm dừng','Paused') : L('Đang ghi','Recording')}</span></div><div class="timer num" id="timer">${fmtT(r.t)}</div><div class="hint num">${d.placement ? L('Tự dừng ở 01:00','Stops at 01:00') : L(`Tối đa ${fmtT(max)}`, `Max ${fmtT(max)}`)}${!isPro() && !d.placement ? ' · ' + L('Gói Miễn phí phân tích tối đa 05:00','Free plan analyses up to 05:00') : ''}</div></div>
-          <div class="rec-actions"><button class="btn btn-ghost" data-act="rec-pause" id="pausebtn">${r.paused ? L('Tiếp tục','Resume') : L('Tạm dừng','Pause')}</button><button class="btn btn-primary" data-act="rec-stop">${L('Kết thúc và nộp bài','Finish and submit')}</button></div>
+    <div class="studio">
+      <section class="studio-main" aria-label="${L('Đang ghi','Recording')}">
+        <div class="studio-top">
+          <span class="rec-pill ${r.paused ? 'paused' : ''}" id="recpill"><span class="rec-dot ${r.paused?'paused':''}" id="recdot"></span><span id="recst">${r.paused ? L('Tạm dừng','Paused') : L('Đang ghi','Recording')}</span></span>
+          <span class="hint num">${d.placement ? L('Tự dừng ở 01:00','Stops at 01:00') : L(`Tối đa ${fmtT(max)}`, `Max ${fmtT(max)}`)}${freeCap ? ' · ' + L('Gói Miễn phí phân tích tối đa 05:00','Free plan analyses up to 05:00') : ''}</span>
         </div>
-        <div id="over-note">${overNote(r)}</div>
+        ${d.kind === 'video' ? `<div class="cam"><video id="camv" autoplay muted playsinline></video><div class="ph" id="camph">${r.sim ? L('Camera giả lập (bản thử nghiệm)','Simulated camera (beta)') : L('Đang mở camera…','Opening camera…')}</div><span class="tag">${ic('face',14)} ${L('Theo dõi ánh mắt và cử chỉ','Tracking eye contact and gestures')}</span></div>` : ''}
+        <div class="studio-timer"><div class="timer num" id="timer" aria-live="off">${fmtT(r.t)}</div></div>
         <canvas class="wv" id="wv" aria-hidden="true"></canvas>
+        <div class="rec-track" aria-hidden="true"><b id="rec-prog" style="width:${Math.min(100, r.t/max*100)}%"></b>${freeCap ? `<i class="cap" style="left:${freeCap/max*100}%"><span>05:00</span></i>` : ''}</div>
+        <div id="over-note">${overNote(r)}</div>
+        <div class="rec-actions">
+          <button class="btn btn-outline btn-lg" data-act="rec-pause" aria-keyshortcuts="Space">${ic(r.paused ? 'play' : 'pause',18)}<span id="pausebtn">${r.paused ? L('Tiếp tục','Resume') : L('Tạm dừng','Pause')}</span><kbd>Space</kbd></button>
+          <button class="btn btn-primary btn-lg" data-act="rec-stop">${ic('stop',16)} ${L('Kết thúc và nộp bài','Finish and submit')}</button>
+        </div>
+        <div class="kpis">
+          <div class="kpi" id="kpi-wpm"><div class="k">${ic('gauge',15)} ${L('Tốc độ','Pace')}</div><div class="v num" id="k-wpm">–</div><div class="k">${L('từ/phút','wpm')} · 120–150</div></div>
+          <div class="kpi"><div class="k">${ic('quote',15)} ${L('Từ đệm','Fillers')}</div><div class="v num" id="k-fill">${r.fill}</div><div class="k">${L('lần','times')}</div></div>
+          <div class="kpi"><div class="k">${ic('clock',15)} ${L('Ngắt nghỉ','Pauses')}</div><div class="v num" id="k-pause">${r.pause}</div><div class="k">&gt; 2s</div></div>
+        </div>
         <div class="demo-note">${r.sim ? L('Đang dùng micro giả lập (bản thử nghiệm).','Using a simulated microphone (beta).') : L('Đang ghi bằng micro của bạn. Bản ghi được lưu vào Thư viện.','Recording with your microphone. It will be saved to your Library.')} ${d.placement ? '' : `· <button class="btn-link" style="font-size:12px" data-act="rec-ff">${L('Tua nhanh +1 phút (bản thử)','Skip ahead +1 min (beta)')}</button>`}</div>
-        <div class="kpis"><div class="kpi"><div class="k">${L('Tốc độ','Pace')}</div><div class="v num" id="k-wpm">–</div><div class="k">${L('từ/phút','wpm')}</div></div><div class="kpi"><div class="k">${L('Từ đệm','Fillers')}</div><div class="v num" id="k-fill">${r.fill}</div><div class="k">${L('lần','times')}</div></div><div class="kpi"><div class="k">${L('Ngắt nghỉ','Pauses')}</div><div class="v num" id="k-pause">${r.pause}</div><div class="k">&gt; 2s</div></div></div>
-      </div>
-      ${gate(`<div class="card" style="height:100%"><div class="card-head"><div class="t"><h3>${L('Nhắc nhở thời gian thực','Live coaching')}</h3>${proChip()}</div></div><div class="sub">${g.persona}, ${tx(g.role).toLowerCase()}, ${L('đang nghe','is listening')}</div><div class="live" id="live" style="margin-top:14px">${r.tips.map(tipHtml).join('') || `<p class="muted" style="font-size:14px">${L('Gợi ý và câu hỏi của khán giả AI sẽ hiện ở đây.','Tips and AI audience questions will appear here.')}</p>`}</div></div>`,
+      </section>
+      ${gate(`<aside class="coach"><div class="coach-head"><span class="avatar coach-av">${initials}<i class="live-dot"></i></span><div><div class="t"><h3>${L('Nhắc nhở thời gian thực','Live coaching')}</h3>${proChip()}</div><div class="sub">${g.persona}, ${tx(g.role).toLowerCase()}, ${L('đang nghe','is listening')}</div></div></div><div class="live" id="live">${r.tips.map(tipHtml).join('') || `<p class="coach-empty">${ic('sparkles',18)}<span>${L('Gợi ý và câu hỏi của khán giả AI sẽ hiện ở đây.','Tips and AI audience questions will appear here.')}</span></p>`}</div></aside>`,
         L('Nhắc nhở thời gian thực','Live coaching'), L('AI nhắc ngay khi bạn nói quá nhanh, dùng từ đệm, và đặt câu hỏi phản biện trong lúc bạn nói.','AI nudges you when you rush or use fillers, and asks questions while you speak.'))}
     </div>`);
 }
 const overNote = r => !isPro() && !S.draft.placement && r.t > plan().maxAnalyzeSec ? alertBox('warn', L('Bài đã dài hơn 5 phút. Khi kết thúc, bài sẽ được lưu vào Thư viện và phân tích khi bạn nâng cấp Premium.','You’re past 5 minutes. When you finish, the talk is saved to your Library and analysed when you upgrade to Premium.')) : '';
-const tipHtml = t => `<div class="tip ${t.q ? 'q' : ''}"><small>${t.at} · ${t.q ? L('CÂU HỎI TỪ KHÁN GIẢ','AUDIENCE QUESTION') : L('GỢI Ý','TIP')}</small>${esc(t.text)}</div>`;
+const tipHtml = t => `<div class="tip ${t.q ? 'q' : ''}"><small>${ic(t.q ? 'help' : 'sparkles',13)} ${t.q ? L('CÂU HỎI TỪ KHÁN GIẢ','AUDIENCE QUESTION') : L('GỢI Ý','TIP')}<span class="num">${t.at}</span></small>${esc(t.text)}</div>`;
 
 /* ---------- Tải lên ---------- */
 function vUpload(){

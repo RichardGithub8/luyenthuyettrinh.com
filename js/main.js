@@ -162,7 +162,8 @@ function tick(r){
 }
 function updateRecUI(r){
   const el = $('#timer'); if(el) el.textContent = fmtT(r.t);
-  if(r.t > 3){ const w = $('#k-wpm'); if(w) w.textContent = Math.round(132 + Math.sin(r.t/6)*22 + Math.random()*8); }
+  if(r.t > 3){ const w = $('#k-wpm'), v = Math.round(132 + Math.sin(r.t/6)*22 + Math.random()*8); if(w) w.textContent = v; const k = $('#kpi-wpm'); if(k) k.className = 'kpi ' + (v > 150 || v < 110 ? 'warn' : 'ok'); }
+  const pr = $('#rec-prog'); if(pr) pr.style.width = Math.min(100, r.t / (S.draft && S.draft.placement ? 60 : CONFIG.maxRecordSec) * 100) + '%';
   const n = $('#over-note'); if(n) n.innerHTML = overNote(r);
 }
 function drawWave(r){
@@ -329,7 +330,7 @@ const ACTIONS = {
   'rec-retry'(){ requestMedia(); },
   'rec-audio-only'(){ S.draft.kind = 'audio'; requestMedia(); },
   'rec-sim'(){ beginRec(S.rec, null, true); },
-  'rec-pause'(){ const r = S.rec; if(!r) return; r.paused = !r.paused; if(r.mr){ try { r.paused ? r.mr.pause() : r.mr.resume(); } catch(e){} } $('#pausebtn').textContent = r.paused ? L('Tiếp tục','Resume') : L('Tạm dừng','Pause'); $('#recst').textContent = r.paused ? L('Tạm dừng','Paused') : L('Đang ghi','Recording'); $('#recdot').classList.toggle('paused', r.paused); },
+  'rec-pause'(){ const r = S.rec; if(!r) return; r.paused = !r.paused; if(r.mr){ try { r.paused ? r.mr.pause() : r.mr.resume(); } catch(e){} } $('#pausebtn').textContent = r.paused ? L('Tiếp tục','Resume') : L('Tạm dừng','Pause'); const pb = $('#pausebtn').parentElement.querySelector('svg'); if(pb) pb.outerHTML = ic(r.paused ? 'play' : 'pause', 18); $('#recst').textContent = r.paused ? L('Tạm dừng','Paused') : L('Đang ghi','Recording'); $('#recdot').classList.toggle('paused', r.paused); $('#recpill').classList.toggle('paused', r.paused); },
   'rec-stop'(){ stopRec(); },
   'rec-ff'(){ const r = S.rec; if(!r) return; r.t = Math.min(CONFIG.maxRecordSec - 1, r.t + 60); updateRecUI(r); },
   'rec-cancel'(){ const pl = S.draft && S.draft.placement, lesson = S.draft && S.draft.lessonId; cleanupRec(); toast(L('Đã hủy bản ghi','Recording discarded')); if(pl){ S.draft = null; go('bai-test'); } else if(lesson) go('bai-hoc', {id:lesson}); else go('luyen-tap'); },
@@ -484,6 +485,12 @@ document.addEventListener('change', e => {
     rd.onerror = () => { S.scriptErr = L('Không đọc được file. Hãy thử lại hoặc dán nội dung.','Couldn’t read the file. Try again or paste the text.'); render(); };
     rd.readAsText(f);
   }
+});
+/* Phím tắt khi ghi âm (máy tính): Space = tạm dừng / tiếp tục. Bỏ qua khi đang gõ trong ô nhập hoặc đang mở hộp thoại. */
+document.addEventListener('keydown', e => {
+  if(e.code !== 'Space' || S.route !== 'ghi-am' || !S.rec || S.rec.state !== 'live' || S.modal || e.repeat) return;
+  if(/^(INPUT|TEXTAREA|SELECT|BUTTON)$/.test(document.activeElement && document.activeElement.tagName)) return;
+  e.preventDefault(); ACTIONS['rec-pause']();
 });
 document.addEventListener('keydown', e => { if(e.key === 'Escape'){ if(S.modal && !(S.modal.type === 'pay' && S.modal.step === 'processing')){ if(S.modal.type === 'pay') S.pendingAfterPay = null; S.modal = null; render(); } else if(S.menu || S.devOpen){ S.menu = false; S.devOpen = false; render(); } } });
 

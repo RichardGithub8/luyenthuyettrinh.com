@@ -750,3 +750,46 @@ details.faq p{color:var(--muted);font-size:14px;margin-top:8px;max-width:70ch}
   .steps{grid-template-columns:minmax(0,1fr)}
 }
 @media (max-width:640px){.format-grid,.pain-grid{grid-template-columns:minmax(0,1fr)}.format-img{aspect-ratio:16/9}}
+
+/* ---------- Phòng ghi âm (2026-11) ---------- */
+.studio{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:20px;align-items:start}
+.studio-main{background:#fff;border:1px solid var(--line);border-radius:var(--r-xl);padding:28px 32px;display:flex;flex-direction:column;gap:22px;box-shadow:var(--shadow-sm);min-width:0}
+.studio-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.rec-pill{display:inline-flex;align-items:center;gap:8px;padding:6px 12px 6px 10px;border-radius:999px;background:var(--bad-50);color:var(--bad);font-size:13px;font-weight:600}
+.rec-pill.paused{background:var(--soft-2);color:var(--muted)}
+.studio-timer{text-align:center;padding-top:8px}
+.studio .timer{font-size:clamp(64px,8vw,104px);font-weight:700;letter-spacing:-.04em;line-height:1;background:var(--grad-text);-webkit-background-clip:text;background-clip:text;color:transparent}
+.studio canvas.wv{height:120px;background:linear-gradient(180deg,var(--cyan-50),#fff);border:1px solid var(--line)}
+.rec-track{position:relative;height:6px;border-radius:6px;background:var(--soft-2);margin-top:-6px}
+.rec-track>b{display:block;height:100%;border-radius:6px;background:var(--grad-bright);transition:width .8s linear}
+.rec-track .cap{position:absolute;top:-4px;width:2px;height:14px;background:var(--warn);border-radius:2px}
+.rec-track .cap span{position:absolute;top:16px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:600;color:var(--warn);font-style:normal;font-variant-numeric:tabular-nums}
+.studio .rec-actions{justify-content:center;gap:12px;margin-top:4px}
+.studio .rec-actions .btn-lg{border-radius:999px;padding-inline:26px}
+.studio kbd{font:600 11px/1 var(--font);padding:3px 6px;border-radius:5px;border:1px solid var(--line-2);background:var(--soft);color:var(--muted);margin-left:2px}
+.studio .kpis{gap:12px}
+.studio .kpi{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;transition:border-color .3s,background .3s}
+.studio .kpi .k{display:flex;align-items:center;gap:6px}
+.studio .kpi .k svg{color:var(--faint)}
+.studio .kpi .v{font-size:26px;letter-spacing:-.02em;margin:2px 0}
+.studio .kpi.ok{border-color:#B7E4C7;background:var(--good-50)}.studio .kpi.ok .v{color:var(--good)}
+.studio .kpi.warn{border-color:#F6D7A7;background:var(--warn-50)}.studio .kpi.warn .v{color:var(--warn)}
+.studio .demo-note{text-align:center}
+.coach{background:#fff;border:1px solid var(--line);border-radius:var(--r-xl);padding:22px;box-shadow:var(--shadow-sm);position:sticky;top:24px;display:flex;flex-direction:column;gap:16px;min-height:420px}
+.coach-head{display:flex;gap:12px;align-items:center;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.coach-head .t{display:flex;gap:8px;align-items:center;flex-wrap:nowrap;white-space:nowrap}
+.coach-head h3{font-size:15.5px}
+.coach-head>div{min-width:0}
+.coach-head .sub{color:var(--muted);font-size:13px;margin-top:2px}
+.coach-av{position:relative;background:var(--grad-bright);color:#fff;font-size:17px}
+.live-dot{position:absolute;right:0;bottom:0;width:12px;height:12px;border-radius:50%;background:#22C55E;border:2px solid #fff;animation:blink 1.6s infinite}
+.coach .live{max-height:560px}
+.coach-empty{display:flex;gap:10px;align-items:flex-start;color:var(--muted);font-size:14px;background:var(--soft);border-radius:var(--r);padding:14px}
+.coach-empty svg{color:var(--cyan);flex:none;margin-top:2px}
+.coach .tip{border:none;background:var(--soft);border-radius:4px 14px 14px 14px;padding:10px 14px}
+.coach .tip.q{background:var(--blue-50)}
+.coach .tip small{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.coach .tip small .num{margin-left:auto;font-weight:500;letter-spacing:0}
+.studio .lock-card .coach{min-height:420px}
+@media (max-width:1100px){.studio{grid-template-columns:minmax(0,1fr)}.coach{position:static;min-height:0}}
+@media (max-width:640px){.studio-main{padding:20px}.studio kbd{display:none}.studio .rec-actions .btn{flex:1 1 100%}}
