@@ -6,22 +6,22 @@
 
 # Frontend gọi backend ở cùng tên miền (/api, /auth, /pay). Netlify chuyển tiếp (proxy, status 200)
 # sang backend Next.js trên Vercel, nên cookie đăng nhập vẫn là cùng tên miền với trang.
-# TODO khi backend đã deploy: thay BACKEND_URL bằng địa chỉ Vercel thật (vd. https://luyenthuyettrinh-app.vercel.app).
+# Backend: dự án Vercel luyenthuyettrinh-app (vùng sin1).
 [[redirects]]
   from = "/api/*"
-  to = "https://BACKEND_URL/api/:splat"
+  to = "https://luyenthuyettrinh-app.vercel.app/api/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/auth/*"
-  to = "https://BACKEND_URL/auth/:splat"
+  to = "https://luyenthuyettrinh-app.vercel.app/auth/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/pay/*"
-  to = "https://BACKEND_URL/pay/:splat"
+  to = "https://luyenthuyettrinh-app.vercel.app/pay/:splat"
   status = 200
   force = true
 
