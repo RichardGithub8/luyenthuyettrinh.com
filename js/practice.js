@@ -177,22 +177,31 @@ const Practice = {
   watch(item){
     clearInterval(S.jobTimer);
     const n = item.kind === 'script' ? AN_STEPS.script.length : AN_STEPS.speech.length - (item.kind === 'video' ? 0 : 1);
-    const j = S.job = {libId:item.id, sid:item.sessionId, i:0, n, status:'running', t0:Date.now()};
+    /* Màn "AI đang phân tích" luôn hiện ít nhất CONFIG.analyzeMinMs để người xem thấy đủ các bước.
+       Các bước chạy đều theo thời gian; báo cáo chỉ mở khi backend đã xong THẬT và đã đủ thời gian tối thiểu. */
+    const minMs = Math.max(0, CONFIG.analyzeMinMs || 0);
+    const j = S.job = {libId:item.id, sid:item.sessionId, i:0, n, status:'running', t0:Date.now(), minMs, result:null, lastPoll:0};
     let busy = false;
+    const step = () => Math.min(n - 1, Math.floor((Date.now() - j.t0) / Math.max(1, (minMs || n * 1800) / n)));
     const poll = async () => {
-      if(S.job !== j || busy) return; busy = true;
+      busy = true; j.lastPoll = Date.now();
       try {
         const v = await api('/sessions/' + j.sid);
         if(S.job !== j) return;
-        if(v.status === 'completed') return this.finish(item, j, v);
+        if(v.status === 'completed'){ j.result = v; return; }
         if(['failed', 'cancelled'].includes(v.status)) return this.fail(item, j, v.error && v.error.code);
-        if(!['queued', 'processing'].includes(v.status)){ clearInterval(S.jobTimer); S.job = null; return; }
-        j.i = Math.min(n - 1, Math.floor((Date.now() - j.t0) / 1800));
-        if(S.route === 'dang-phan-tich') render();
+        if(!['queued', 'processing'].includes(v.status)){ clearInterval(S.jobTimer); S.job = null; }
       } catch(e){ if(e instanceof ApiError && e.status === 401) clearInterval(S.jobTimer); }
       finally { busy = false; }
     };
-    S.jobTimer = setInterval(poll, 1200); poll();
+    const tick = () => {
+      if(S.job !== j || j.status !== 'running') return;
+      if(j.result && Date.now() - j.t0 >= minMs) return this.finish(item, j, j.result);
+      const i = step();
+      if(i !== j.i){ j.i = i; if(S.route === 'dang-phan-tich') render(); }
+      if(!j.result && !busy && Date.now() - j.lastPoll >= 1200) poll();
+    };
+    S.jobTimer = setInterval(tick, 200); tick();
   },
   fail(item, j, code){
     clearInterval(S.jobTimer); j.status = 'failed'; item.status = 'error'; item.reason = failReason(code); item.failStep = j.i;

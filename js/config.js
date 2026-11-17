@@ -29,4 +29,5 @@ const CONFIG = {
   codeTTL: 10*60*1000,         // mã xác thực có hiệu lực 10 phút
   resendAfter: 30*1000,
   aiTimeoutMs: 6000,           // bản thử: thời gian chờ trước khi báo quá hạn
+  analyzeMinMs: 8500,          // màn "AI đang phân tích" hiện tối thiểu 8,5 giây (7–10 giây theo yêu cầu) để trình diễn đủ các bước
 };

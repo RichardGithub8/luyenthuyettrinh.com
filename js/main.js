@@ -178,7 +178,7 @@ function drawWave(r){
   const now = performance.now()/1000;
   for(let i = 0; i < bars; i++){
     const v = r.paused ? .04 : data ? (data[Math.floor(i/bars*data.length*.7)] || 0)/255 : .15 + .55*Math.abs(Math.sin(i*.35+now*3)*Math.sin(i*.13-now*1.7)) + Math.random()*.08;
-    const h = Math.max(3, v*H*.85); c.fillStyle = i % 4 === 0 ? '#3B56B8' : '#6CC7FF';
+    const h = Math.max(3, v*H*.85); c.fillStyle = i % 4 === 0 ? '#2563EB' : '#22D3EE';
     c.beginPath(); if(c.roundRect) c.roundRect(i*7 + 2, (H-h)/2, 4, h, 2); else c.rect(i*7 + 2, (H-h)/2, 4, h); c.fill();
   }
   r.raf = requestAnimationFrame(() => drawWave(r));
