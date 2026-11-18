@@ -16,14 +16,14 @@ const CONFIG = {
   prices: {
     pass:    {once:59000},
     premium: {monthly:79000, semiannual:399000},
-    team:    {monthly:690000, semiannual:3490000},
+    team:    {monthly:299000, semiannual:1490000},
   },
   // Quyền lợi theo gói (giá trị thật lấy từ /api/me khi đã đăng nhập; đây là mặc định để hiển thị).
   plans: {
     free:    {limit:3,  period:'month', maxAnalyzeSec:300,  video:false, upload:false, live:false, allGoals:false, timeline:false, qa:false, history:false, compareMax:0},
     pass:    {limit:15, period:'pass',  maxAnalyzeSec:1200, video:true,  upload:true,  live:false, allGoals:true,  timeline:true,  qa:true,  history:false, compareMax:0},
-    premium: {limit:60, period:'month', maxAnalyzeSec:1800, video:true,  upload:true,  live:true,  allGoals:true,  timeline:true,  qa:true,  history:true,  compareMax:6},
-    team:    {limit:60, period:'month', maxAnalyzeSec:1800, video:true,  upload:true,  live:true,  allGoals:true,  timeline:true,  qa:true,  history:true,  compareMax:6},
+    premium: {limit:90, period:'month', maxAnalyzeSec:1800, video:true,  upload:true,  live:true,  allGoals:true,  timeline:true,  qa:true,  history:true,  compareMax:6},
+    team:    {limit:90, period:'month', maxAnalyzeSec:1800, video:true,  upload:true,  live:true,  allGoals:true,  timeline:true,  qa:true,  history:true,  compareMax:6},
   },
   freeGoals: ['presentation', 'reporting'],
   teamMaxMembers: 5,
