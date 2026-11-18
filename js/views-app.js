@@ -281,7 +281,8 @@ function vReport(sample){
     </div></div>${s.server && (s.summary || s.strengths.length) ? aiSummaryInner(s) : ''}</div>`;
   const sections = {'rep-top':overview, ...(isScript ? reportScript(s, g) : reportSpeech(s, g, sample))};
   const tabs = repTabs(isScript).filter(([id]) => sections[id]);
-  if(!S.repTab || S.repTab.key !== s.id) S.repTab = {key:s.id, tab:tabs.some(([id]) => id === S.params.sec) ? S.params.sec : 'rep-top'};
+  const wanted = tabs.some(([id]) => id === S.params.sec) ? S.params.sec : null; // link có chỉ định tab (vd. "Xem lỗi" ở Tổng quan)
+  if(!S.repTab || S.repTab.key !== s.id || (wanted && S.repTab.hash !== location.hash)) S.repTab = {key:s.id, tab:wanted || 'rep-top', hash:location.hash};
   const cur = tabs.find(([id]) => id === S.repTab.tab) || tabs[0];
   html += `${repNav(tabs, cur[0], sample)}<div class="rep-pane tone-${cur[2]}" id="rep-pane" role="tabpanel" aria-label="${cur[1]}">${sections[cur[0]]}</div>`;
   return sample ? PublicLayout(`<div class="wrap" style="padding-block:32px 40px">${html}</div>`) : AppLayout(html);
