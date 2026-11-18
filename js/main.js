@@ -355,6 +355,7 @@ const ACTIONS = {
     go('luyen-tap');
   },
   jump(el){ flash(el.dataset.to); },
+  'rep-sec'(el){ const t = document.getElementById(el.dataset.to); if(!t) return; t.scrollIntoView({behavior:'smooth', block:'start'}); document.querySelectorAll('.rep-nav button').forEach(b => b.classList.toggle('on', b === el)); },
   'report-reload'(el){ const x = S.data.sessions.find(q => q.id === el.dataset.id); if(x){ x.loadErr = false; x.loading = false; } render(); },
   'qa-open'(el){ if(!S.data || !isPro()){ toast(L('Trả lời phản biện có trong gói Premium','Answering questions is a Premium feature')); return S.data ? openPay(null) : go('bang-gia'); } const i = el.dataset.i; S.qa[i] = {...(S.qa[i] || {}), open:!(S.qa[i] || {}).open}; render(); },
   'qa-grade'(el){ const i = el.dataset.i, q = S.qa[i] || {}; if(!(q.text || '').trim()){ toast(L('Nhập câu trả lời trước khi chấm','Type an answer first')); return; } S.qa[i] = {...q, state:'loading'}; render(); setTimeout(() => { if(!S.qa[i]) return; S.qa[i] = {...S.qa[i], state:'done', fb:gradeAnswer(S.qa[i].text, el.dataset.goal)}; if(S.route === 'bao-cao') render(); }, 1100); },

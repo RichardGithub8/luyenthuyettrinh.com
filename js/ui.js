@@ -83,9 +83,10 @@ function paceChart(vals){
   vals.forEach((v,i) => { const x = pl + i*bw + bw*.22, w = bw*.56; s += `<rect class="bar ${v > 150 ? 'over' : ''}" x="${x}" y="${y(v)}" width="${w}" height="${y(0)-y(v)}" rx="4"/>`; if(vals.length <= 10) s += `<text class="lbl-v" x="${x+w/2}" y="${y(v)-6}" text-anchor="middle">${v}</text>`; if(i % every === 0) s += `<text x="${x+w/2}" y="${H-8}" text-anchor="middle">${L('Phút','Min')} ${i+1}</text>`; });
   return s + '</svg>';
 }
-function ring(v, size=150){
-  const sw = Math.max(5, Math.round(size/12)), r = size/2 - sw/2 - 1, c = 2*Math.PI*r, small = size < 100;
-  return `<div class="ring" style="width:${size}px;height:${size}px"><svg width="${size}" height="${size}" aria-hidden="true"><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--soft-2)" stroke-width="${sw}"/><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--blue)" stroke-width="${sw}" stroke-linecap="round" stroke-dasharray="${c*v/100} ${c}"/></svg><div class="rv" aria-label="${v}/100"><div><b class="num" style="font-size:${Math.round(size*(small ? .3 : .28))}px">${v}</b>${small ? '' : '<br><span>/ 100</span>'}</div></div></div>`;
+function ring(v, size=150, count=false){
+  const sw = Math.max(5, Math.round(size/12)), r = size/2 - sw/2 - 1, c = 2*Math.PI*r, small = size < 100, gid = 'rg' + size;
+  /* Vòng điểm dùng gradient cyan → xanh; count=true: số điểm đếm lên và vòng chạy khi mở báo cáo. */
+  return `<div class="ring ${count ? 'count-up' : ''}" style="width:${size}px;height:${size}px;--c:${c};--v:${v}"><svg width="${size}" height="${size}" aria-hidden="true"><defs><linearGradient id="${gid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22D3EE"/><stop offset="1" stop-color="#2563EB"/></linearGradient></defs><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--soft-2)" stroke-width="${sw}"/><circle class="arc" cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="url(#${gid})" stroke-width="${sw}" stroke-linecap="round" stroke-dasharray="${c*v/100} ${c}"/></svg><div class="rv" aria-label="${v}/100"><div><b class="num" style="font-size:${Math.round(size*(small ? .3 : .28))}px">${count ? `<i class="cnt" style="--n:${v}"></i>` : v}</b>${small ? '' : '<br><span>/ 100</span>'}</div></div></div>`;
 }
 const barRow = (k, v) => `<div class="bar-row"><span>${k}</span><div class="track"><b class="${bCls(v)}" style="width:${v}%"></b></div><b class="num">${v}</b></div>`;
 
