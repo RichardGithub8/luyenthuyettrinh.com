@@ -10,10 +10,18 @@ const S = {
   scriptText:'', scriptErr:'', fileErr:'', openLib:null, openUrl:null, confirmDel:null, compare:[],
   pendingAfterPay:null, pwErr:'', pwOk:'', offline:!navigator.onLine,
 };
-const plan = () => CONFIG.plans[S.data && S.data.plan === 'premium' ? 'premium' : 'free'];
-const isPro = () => !!(S.data && S.data.plan === 'premium');
+/* Gói: free | pass | premium | team (máy chủ quyết định qua /api/me; S.data.limit là số lượt thật của kỳ hiện tại). */
+const planKey = () => S.data && CONFIG.plans[S.data.plan] ? S.data.plan : 'free';
+const plan = () => { const b = CONFIG.plans[planKey()]; return {...b, limit:S.data && S.data.limit != null ? S.data.limit : b.limit}; };
+const isPro = () => ['premium', 'team'].includes(planKey());     // quyền lợi cấp Premium
+const isPaid = () => planKey() !== 'free';
+const can = f => !!plan()[f];
 const left = () => S.data ? Math.max(0, plan().limit - S.data.used) : 0;
-const planName = () => isPro() ? 'Premium' : L('Miễn phí','Free');
+const planName = (k = planKey()) => ({free:L('Miễn phí','Free'), pass:'Pass', premium:'Premium', team:'Team'})[k];
+const goalAllowed = g => can('allGoals') || CONFIG.freeGoals.includes(g);
+const periodText = () => planKey() === 'pass' ? L('trong Pass','in this Pass') : L('tháng này','this month');
+/* Gói cần để mở một tính năng (gợi ý nâng cấp đúng gói thấp nhất có tính năng đó). */
+const planFor = f => ['pass', 'premium', 'team'].find(k => CONFIG.plans[k][f]) || 'premium';
 const save = () => { if(S.me && S.data) UserStore.save(S.me, S.data); };
 
 /* ================= Điều hướng ================= */
@@ -48,6 +56,7 @@ const ROUTES = {
   'bai-hoc':           {v:vLesson, a:'app', nav:'khoa-hoc'},
   'goi-dich-vu':       {v:() => vPricing(true), a:'app', nav:'goi-dich-vu'},
   'tai-khoan':         {v:vAccount, a:'app', nav:'tai-khoan'},
+  'nhom':              {v:vTeam, a:'app', nav:'nhom'},
 };
 function parseHash(){
   const dec = x => { try { return decodeURIComponent(x); } catch(e){ return x; } };
@@ -78,9 +87,17 @@ function render(){
   if(r !== 'ghi-am' && S.rec) cleanupRec();
   if(r !== 'tai-len' && S.upload) Practice.cancelUpload();
   $('#app').innerHTML = R.v() + modalHtml() + devHtml() + (S.offline ? `<div class="offline" role="alert">${ic('wifi',14)} ${L('Mất kết nối mạng. Một số thao tác sẽ không thực hiện được cho tới khi có mạng lại.','You’re offline. Some actions won’t work until you reconnect.')}</div>` : '');
-  if(r === '') sphereInit();
   if(S.lastRoute !== r){ window.scrollTo(0,0); S.lastRoute = r; }
+  revealInit();
+  if(S.params.payment) handlePayReturn();
   if(r === 'ghi-am') attachRec();
+}
+/* Hiện dần các khối .reveal khi cuộn tới (trang chủ). Tắt chuyển động: hiện ngay. */
+function revealInit(){
+  const els = document.querySelectorAll('.reveal:not(.in)'); if(!els.length) return;
+  if(!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches){ els.forEach(e => e.classList.add('in')); return; }
+  const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }), {threshold:.15, rootMargin:'0px 0px -40px 0px'});
+  els.forEach(e => io.observe(e));
 }
 window.addEventListener('hashchange', render);
 window.addEventListener('online', () => { S.offline = false; render(); toast(L('Đã có mạng trở lại.','You’re back online.')); });
@@ -101,16 +118,9 @@ async function loadPractice(){
 function afterLogin(){ const ret = S.params.returnUrl; if(!S.data.onboarded) return go('thiet-lap-muc-tieu', {}, true); if(ret){ const {route, params} = (() => { const [r, q=''] = ret.split('?'); return {route:r, params:toParams(q)}; })(); return go(route in ROUTES ? route : 'tong-quan', params, true); } go('tong-quan', {}, true); }
 function logout(){
   if(S.rec) cleanupRec(); clearInterval(S.jobTimer); Practice.cancelUpload();
-  Auth.logout(); Object.assign(S, {me:null, data:null, draft:null, job:null, upload:null, modal:null, devOpen:false, qa:{}, compare:[], pendingAfterPay:null});
+  Auth.logout(); Object.assign(S, {me:null, data:null, draft:null, job:null, upload:null, modal:null, devOpen:false, qa:{}, compare:[], pendingAfterPay:null, team:null, teamScripts:undefined, payments:null, payHandled:null});
   toast(L('Đã đăng xuất','Logged out')); go('');
 }
-function setPlan(p){
-  const D = S.data; if((p === 'premium') === isPro()) return;
-  if(p === 'premium'){ const d = new Date(); d.setMonth(d.getMonth()+1); Object.assign(D, {plan:'premium', cycle:'m', autoRenew:true, expiry:d.toISOString().slice(0,10)}); if(!D.invoices.length) D.invoices.push(invoice(CONFIG.price.m)); }
-  else Object.assign(D, {plan:'free', expiry:null, autoRenew:true});
-  save();
-}
-const invoice = amount => ({id:'HD-' + todayISO().slice(2,7).replace('-','') + '-' + String(S.data.invoices.length+1).padStart(4,'0'), date:todayISO(), amount, method:S.data.payMethod});
 const PW_OK = p => p.length >= 8 && /[a-zA-Z]/.test(p) && /\d/.test(p);
 const EMAIL_OK = e => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e);
 
@@ -163,7 +173,8 @@ function tick(r){
 }
 function updateRecUI(r){
   const el = $('#timer'); if(el) el.textContent = fmtT(r.t);
-  if(r.t > 3){ const w = $('#k-wpm'); if(w) w.textContent = Math.round(132 + Math.sin(r.t/6)*22 + Math.random()*8); }
+  if(r.t > 3){ const w = $('#k-wpm'), v = Math.round(132 + Math.sin(r.t/6)*22 + Math.random()*8); if(w) w.textContent = v; const k = $('#kpi-wpm'); if(k) k.className = 'kpi ' + (v > 150 || v < 110 ? 'warn' : 'ok'); }
+  const pr = $('#rec-prog'); if(pr) pr.style.width = Math.min(100, r.t / (S.draft && S.draft.placement ? 60 : CONFIG.maxRecordSec) * 100) + '%';
   const n = $('#over-note'); if(n) n.innerHTML = overNote(r);
 }
 function drawWave(r){
@@ -178,7 +189,7 @@ function drawWave(r){
   const now = performance.now()/1000;
   for(let i = 0; i < bars; i++){
     const v = r.paused ? .04 : data ? (data[Math.floor(i/bars*data.length*.7)] || 0)/255 : .15 + .55*Math.abs(Math.sin(i*.35+now*3)*Math.sin(i*.13-now*1.7)) + Math.random()*.08;
-    const h = Math.max(3, v*H*.85); c.fillStyle = i % 4 === 0 ? '#3B56B8' : '#6CC7FF';
+    const h = Math.max(3, v*H*.85); c.fillStyle = i % 4 === 0 ? '#4E93B6' : '#FF7A66';
     c.beginPath(); if(c.roundRect) c.roundRect(i*7 + 2, (H-h)/2, 4, h, 2); else c.rect(i*7 + 2, (H-h)/2, 4, h); c.fill();
   }
   r.raf = requestAnimationFrame(() => drawWave(r));
@@ -211,18 +222,47 @@ function startUpload(){
 }
 
 /* ================= Thanh toán ================= */
-function openPay(forId=null, cycle='m'){ S.pendingAfterPay = forId; S.modal = {type:'pay', cycle, method:S.data.payMethod, step:'choose', forId}; render(); }
-function finishPay(){
-  const M = S.modal; if(!M || M.type !== 'pay' || M.step !== 'processing') return;
-  if(S.sim.pay === 'fail'){ M.step = 'failed'; return render(); }
-  if(S.sim.pay === 'cancel'){ M.step = 'cancelled'; return render(); }
-  const D = S.data, was = isPro(), d = new Date(); d.setMonth(d.getMonth() + (M.cycle === 'm' ? 1 : 12));
-  D.payMethod = M.method; Object.assign(D, {plan:'premium', cycle:M.cycle, autoRenew:true, expiry:d.toISOString().slice(0,10)});
-  D.invoices.push(invoice(M.cycle === 'm' ? CONFIG.price.m : CONFIG.price.y)); save();
-  const pend = S.pendingAfterPay; S.pendingAfterPay = null; S.modal = null;
-  if(pend && libItem(pend)){ toast(L('Thanh toán thành công. Đang phân tích bài vừa ghi.','Payment successful. Analysing your talk now.')); return startJob(pend); }
-  if(was){ toast(L('Đã chuyển sang gói năm','Switched to yearly billing')); return render(); }
-  S.modal = {type:'welcome'}; render();
+/* ================= Thanh toán thật qua backend =================
+   Chọn gói → POST /api/payments → chuyển sang cổng (MoMo/VNPay/cổng thử nghiệm) → cổng trả về /#goi-dich-vu?payment=…
+   Backend xác nhận chữ ký, kích hoạt gói và (nếu có) tự chạy phân tích bài đang chờ. */
+const PROVIDER_NAMES = {mock:() => L('Cổng thử nghiệm','Test gateway'), momo:() => 'MoMo', vnpay:() => 'VNPay'};
+async function loadProviders(){
+  if(S.providers) return S.providers;
+  try { const r = await api('/public/billing'); S.providers = r.providers || []; } catch(e){ S.providers = []; }
+  if(S.modal && S.modal.type === 'pay'){ S.modal.provider = S.modal.provider || S.providers[0] || null; render(); }
+  return S.providers;
+}
+function openPay(forId=null, product=null, cycle=null){
+  const prod = product || (planKey() === 'team' ? 'team' : 'premium');
+  S.pendingAfterPay = forId;
+  S.modal = {type:'pay', product:prod, cycle:cycle || (prod === 'pass' ? 'once' : 'monthly'), provider:(S.providers || [])[0] || null, step:'choose', forId, err:''};
+  render(); loadProviders();
+}
+async function submitPay(){
+  const M = S.modal; if(!M || M.type !== 'pay') return;
+  if(!navigator.onLine){ toast(L('Bạn đang ngoại tuyến. Kết nối mạng để thanh toán.','You’re offline. Reconnect to pay.'), 'err'); return; }
+  if(!M.provider){ M.err = L('Chưa có cổng thanh toán nào được bật. Vui lòng thử lại sau.','No payment method is available yet. Please try again later.'); return render(); }
+  const it = M.forId && libItem(M.forId);
+  M.step = 'redirect'; M.err = ''; render();
+  try {
+    const r = await api('/payments', {method:'POST', body:{provider:M.provider, product:M.product, cycle:M.cycle, returnPath:'/#goi-dich-vu', ...(it && it.sessionId ? {resumeSessionId:it.sessionId} : {})}});
+    location.href = r.checkoutUrl;
+  } catch(e){ M.step = 'choose'; M.err = e.message || L('Không tạo được giao dịch. Vui lòng thử lại.','Couldn’t start the payment. Please try again.'); render(); }
+}
+/* Quay về từ cổng thanh toán: xử lý một lần cho mỗi paymentId. */
+async function handlePayReturn(){
+  const st = S.params.payment, id = S.params.paymentId;
+  if(!st || !id || S.payHandled === id || !S.data) return;
+  S.payHandled = id;
+  if(st === 'succeeded'){
+    await Practice.refreshMe(); await Practice.hydrate().catch(() => {});
+    const sid = S.params.session, waiting = sid && S.data.library.find(l => l.sessionId === sid);
+    if(waiting && waiting.status === 'analyzing'){ toast(L('Thanh toán thành công. Đang phân tích bài vừa ghi.','Payment successful. Analysing your talk now.')); return go('dang-phan-tich', {id:waiting.id}, true); }
+    S.modal = {type:'welcome', plan:planKey()}; go('goi-dich-vu', {}, true); return;
+  }
+  if(st === 'processing'){ toast(L('Cổng thanh toán đang xác nhận. Gói sẽ được kích hoạt trong ít phút.','The gateway is confirming your payment. Your plan will be active in a few minutes.')); setTimeout(() => Practice.refreshMe().then(render), 8000); }
+  else toast({failed:L('Thanh toán không thành công. Bạn chưa bị trừ tiền.','Payment failed. You were not charged.'), cancelled:L('Bạn đã hủy thanh toán. Chưa có khoản nào bị trừ.','Payment cancelled. No money was taken.'), expired:L('Giao dịch đã hết hạn. Vui lòng thử lại.','The payment expired. Please try again.')}[st] || L('Không xác nhận được giao dịch.','We couldn’t confirm the payment.'), 'err');
+  go('goi-dich-vu', {}, true);
 }
 
 /* ================= Hộp thoại ================= */
@@ -234,22 +274,36 @@ function modalHtml(){
     case 'need-account': return wrap(`<h2 id="mt">${L('Cần tài khoản để bắt đầu luyện','You need an account to practise')}</h2><p class="muted" style="margin-top:8px;font-size:14px">${L(`Tài khoản lưu bài nói, báo cáo và tiến độ khóa học của bạn. Lựa chọn ${tx(GOALS[S.ob.goal].name).toLowerCase()}, ${langName(S.ob.lang).toLowerCase()} sẽ được giữ lại.`, `An account saves your talks, reports and course progress. Your choice of ${tx(GOALS[S.ob.goal].name).toLowerCase()} in ${langName(S.ob.lang)} will be kept.`)}</p><div class="acts"><button class="btn btn-primary" data-act="modal-go" data-to="dang-ky">${L('Đăng ký miễn phí','Sign up free')}</button><button class="btn btn-ghost" data-act="modal-go" data-to="dang-nhap">${L('Tôi đã có tài khoản','I have an account')}</button></div>`);
     case 'google': return wrap(`<h2 id="mt">${L('Đăng nhập bằng Google','Sign in with Google')}</h2><p class="hint" style="margin-top:6px">${L('Bản thử nghiệm mô phỏng cửa sổ Google. Nhập tài khoản Gmail để tiếp tục.','This beta simulates the Google window. Enter a Gmail account to continue.')}</p>
       <form class="form" id="googleForm" novalidate style="margin-top:16px">${alertBox('err', M.err)}<div class="field"><label for="g-name">${L('Tên hiển thị','Display name')}</label><input class="input" id="g-name" autocomplete="name" value="${esc(M.name || '')}"></div><div class="field"><label for="g-email">Gmail</label><input class="input" id="g-email" type="email" autocomplete="email" value="${esc(M.email || '')}" placeholder="ten@gmail.com"></div><div class="acts" style="margin-top:4px"><button class="btn btn-primary" type="submit">${L('Tiếp tục','Continue')}</button><button class="btn btn-ghost" type="button" data-act="google-cancel">${L('Đóng cửa sổ','Close window')}</button></div></form>`);
-    case 'over-limit': return wrap(`<div class="center"><div class="m-ic c-orange">${ic('clock',28)}</div><h2 id="mt">${L(`Bài nói dài ${fmtT(it.dur)}, vượt 5 phút của gói Miễn phí`, `Your talk is ${fmtT(it.dur)}, over the 5-minute Free limit`)}</h2><p class="muted" style="font-size:14px">${L('Bài đã được lưu vào Thư viện và chưa bị trừ lượt. Nâng cấp Premium để phân tích ngay: bài sẽ tự chạy phân tích sau khi thanh toán thành công.','It’s saved to your Library and no credit was used. Upgrade to Premium to analyse it now; analysis starts automatically after payment.')}</p></div><div class="acts" style="justify-content:center"><button class="btn btn-primary" data-act="pay-for" data-id="${it.id}">${L('Nâng cấp và phân tích','Upgrade and analyse')}</button><button class="btn btn-ghost" data-act="modal-close">${L('Để sau','Later')}</button></div>`);
-    case 'quota': return wrap(`<div class="center"><div class="m-ic c-orange">${ic('alert',28)}</div><h2 id="mt">${L(`Bạn đã dùng hết ${plan().limit} lượt phân tích tháng này`, `You’ve used all ${plan().limit} analyses this month`)}</h2><p class="muted" style="font-size:14px">${it ? L('Bài vừa nộp đã được lưu vào Thư viện. ','Your talk has been saved to your Library. ') : ''}${isPro() ? L('Lượt sẽ làm mới vào ngày 1 tháng sau.','Credits reset on the 1st of next month.') : L('Nâng cấp Premium để có 50 lượt mỗi tháng. Bài sẽ được phân tích ngay sau khi thanh toán.','Upgrade to Premium for 50 a month. Your talk is analysed right after payment.')}</p></div><div class="acts" style="justify-content:center">${isPro() ? '' : `<button class="btn btn-primary" data-act="pay-for" data-id="${it ? it.id : ''}">${L('Nâng cấp và phân tích','Upgrade and analyse')}</button>`}<button class="btn btn-ghost" data-act="modal-close">${L('Để sau','Later')}</button></div>`);
-    case 'welcome': return wrap(`${proChip()}<h2 id="mt" style="margin-top:12px">${L('Chào mừng đến với Premium','Welcome to Premium')}</h2><p class="muted" style="margin-top:6px;font-size:14px">${L('Thanh toán thành công. Các tính năng sau đã được mở:','Payment successful. You’ve unlocked:')}</p><ul class="unlock">${[L('Quay video và phân tích ngôn ngữ cơ thể','Video and body language analysis'),L('Nhắc nhở thời gian thực khi đang nói','Live coaching while you speak'),L('Trả lời phản biện của khán giả AI','Answering AI audience questions'),L('Dòng thời gian lỗi trong báo cáo','Issue timeline in reports'),L('50 lượt mỗi tháng, bài tối đa 30 phút','50 analyses a month, up to 30 minutes each')].map(x => `<li>${ic('check',16)}<span>${x}</span></li>`).join('')}</ul><div class="acts"><button class="btn btn-primary" data-act="modal-close">${L('Tiếp tục','Continue')}</button></div>`);
+    case 'over-limit': {
+      const sugg = it.dur <= CONFIG.plans.pass.maxAnalyzeSec ? 'pass' : 'premium';
+      return wrap(`<div class="center"><div class="m-ic c-orange">${ic('clock',28)}</div><h2 id="mt">${L(`Bài nói dài ${fmtT(it.dur)}, vượt ${plan().maxAnalyzeSec/60} phút của gói ${planName()}`, `Your talk is ${fmtT(it.dur)}, over the ${plan().maxAnalyzeSec/60}-minute ${planName()} limit`)}</h2><p class="muted" style="font-size:14px">${L(`Bài đã được lưu vào Thư viện và chưa bị trừ lượt. ${sugg === 'pass' ? 'Pass 7 ngày phân tích bài tới 20 phút' : 'Premium phân tích bài tới 30 phút'}; bài sẽ tự chạy phân tích sau khi thanh toán thành công.`, `It’s saved to your Library and no credit was used. ${sugg === 'pass' ? 'The 7-day Pass analyses talks up to 20 minutes' : 'Premium analyses talks up to 30 minutes'}; analysis starts automatically after payment.`)}</p></div><div class="acts" style="justify-content:center"><button class="btn btn-primary" data-act="pay-for" data-id="${it.id}" data-product="${sugg}">${L(`Mua ${planName(sugg)} và phân tích`, `Get ${planName(sugg)} and analyse`)}</button><button class="btn btn-ghost" data-act="modal-close">${L('Để sau','Later')}</button></div>`);
+    }
+    case 'quota': {
+      const k = planKey(), sugg = k === 'free' || k === 'pass' ? 'pass' : null;
+      return wrap(`<div class="center"><div class="m-ic c-orange">${ic('alert',28)}</div><h2 id="mt">${L(`Bạn đã dùng hết ${plan().limit} lượt phân tích ${periodText()}`, `You’ve used all ${plan().limit} analyses ${periodText()}`)}</h2><p class="muted" style="font-size:14px">${it ? L('Bài vừa nộp đã được lưu vào Thư viện. ','Your talk has been saved to your Library. ') : ''}${
+        k === 'free' ? L('Mua Pass 7 ngày (15 lượt) hoặc Premium (60 lượt mỗi tháng). Bài sẽ được phân tích ngay sau khi thanh toán.','Get a 7-day Pass (15 analyses) or Premium (60 a month). Your talk is analysed right after payment.')
+        : k === 'pass' ? L('Mua thêm một Pass để có thêm 15 lượt và 7 ngày, hoặc chuyển lên Premium.','Buy another Pass for 15 more analyses and 7 more days, or move to Premium.')
+        : L('Bạn đã chạm mức dùng hợp lý 60 lượt của tháng. Lượt sẽ làm mới vào ngày 1 tháng sau.','You’ve reached this month’s fair-use limit of 60. Credits reset on the 1st of next month.')}</p></div><div class="acts" style="justify-content:center">${sugg ? `<button class="btn btn-primary" data-act="pay-for" data-id="${it ? it.id : ''}" data-product="pass">${k === 'pass' ? L('Mua thêm Pass','Buy another Pass') : L('Mua Pass 7 ngày','Get a 7-day Pass')}</button><button class="btn btn-outline" data-act="pay-for" data-id="${it ? it.id : ''}" data-product="premium">Premium</button>` : ''}<button class="btn btn-ghost" data-act="modal-close">${L('Để sau','Later')}</button></div>`);
+    }
+    case 'welcome': return wrap(`<span class="chip pro">${planName(M.plan).toUpperCase()}</span><h2 id="mt" style="margin-top:12px">${L(`Gói ${planName(M.plan)} đã được kích hoạt`, `${planName(M.plan)} is now active`)}</h2><p class="muted" style="margin-top:6px;font-size:14px">${L('Thanh toán thành công. Quyền lợi của bạn:','Payment successful. What you get:')}</p><ul class="unlock">${planFeatures(M.plan).map(x => `<li>${ic('check',16)}<span>${x}</span></li>`).join('')}</ul><div class="acts">${M.plan === 'team' ? `<button class="btn btn-primary" data-act="modal-go" data-to="nhom">${L('Mở trang nhóm','Open team page')}</button>` : ''}<button class="btn ${M.plan === 'team' ? 'btn-ghost' : 'btn-primary'}" data-act="modal-close">${L('Tiếp tục','Continue')}</button></div>`);
     case 'pay': {
-      const forItem = M.forId && libItem(M.forId), total = fmtVND(M.cycle === 'm' ? CONFIG.price.m : CONFIG.price.y);
-      if(M.step === 'processing') return wrap(`<div class="center" style="padding:12px 0"><span class="spinner" style="width:40px;height:40px;border-width:4px"></span><h2 id="mt">${L(`Đang kết nối ${M.method}…`, `Connecting to ${M.method}…`)}</h2><p class="muted" style="font-size:14px">${L('Hoàn tất thanh toán trên cổng thanh toán. Vui lòng không đóng trang.','Complete payment on the gateway. Please keep this page open.')}</p><button class="btn btn-ghost" data-act="pay-cancel">${L('Hủy giao dịch','Cancel payment')}</button></div>`);
-      if(M.step === 'failed') return wrap(`<div class="center"><div class="m-ic c-pink">${ic('x',28)}</div><h2 id="mt">${L('Thanh toán không thành công','Payment failed')}</h2><p class="muted" style="font-size:14px">${L(`${M.method} từ chối giao dịch (số dư không đủ hoặc thẻ bị khóa). Bạn chưa bị trừ tiền.`, `${M.method} declined the payment (insufficient funds or card blocked). You were not charged.`)}${forItem ? ' ' + L('Bài nói vẫn được giữ trong Thư viện.','Your talk is still in your Library.') : ''}</p></div><div class="acts" style="justify-content:center"><button class="btn btn-primary" data-act="pay-submit">${L('Thử lại','Try again')}</button><button class="btn btn-outline" data-act="pay-back">${L('Đổi phương thức','Change method')}</button><button class="btn btn-ghost" data-act="modal-close">${L('Đóng','Close')}</button></div>`);
-      if(M.step === 'cancelled') return wrap(`<div class="center"><div class="m-ic c-yellow">${ic('info',28)}</div><h2 id="mt">${L('Bạn đã hủy thanh toán','Payment cancelled')}</h2><p class="muted" style="font-size:14px">${L('Chưa có khoản nào bị trừ.','No money was taken.')}${forItem ? ' ' + L('Bài nói vẫn được giữ trong Thư viện, bạn có thể nâng cấp lúc khác.','Your talk stays in your Library; you can upgrade later.') : ''}</p></div><div class="acts" style="justify-content:center"><button class="btn btn-primary" data-act="pay-back">${L('Thanh toán lại','Pay again')}</button><button class="btn btn-ghost" data-act="modal-close">${L('Đóng','Close')}</button></div>`);
-      return wrap(`<h2 id="mt">${M.cycle === 'y' && isPro() ? L('Chuyển sang gói năm','Switch to yearly') : L('Nâng cấp Premium','Upgrade to Premium')}</h2>
+      const forItem = M.forId && libItem(M.forId), rank = {free:0, pass:1, premium:2, team:3}, cur = planKey();
+      if(M.step === 'redirect') return wrap(`<div class="center" style="padding:12px 0"><span class="spinner" style="width:40px;height:40px;border-width:4px"></span><h2 id="mt">${L('Đang chuyển tới cổng thanh toán…','Taking you to the payment page…')}</h2><p class="muted" style="font-size:14px">${L('Vui lòng không đóng trang.','Please keep this page open.')}</p></div>`);
+      const blocked = k => rank[cur] > rank[k] ? L('Gói hiện tại đã bao gồm','Included in your plan') : k === 'team' && cur === 'team' && S.team && S.team.role !== 'leader' ? L('Chỉ trưởng nhóm gia hạn','Only the leader renews') : '';
+      const priceOf = (k, c) => CONFIG.prices[k][c];
+      const cycleOf = k => k === 'pass' ? 'once' : (M.cycle === 'once' ? 'monthly' : M.cycle);
+      const total = priceOf(M.product, cycleOf(M.product));
+      const opt = k => { const b = blocked(k), c = cycleOf(k); return `<button class="pay-plan tone-${({pass:'sand', premium:'coral', team:'teal'})[k]} ${M.product === k ? 'on' : ''}" data-act="pay-product" data-v="${k}" ${b ? 'disabled' : ''} aria-pressed="${M.product === k}"><b>${planName(k)}</b><span class="num">${fmtVND(priceOf(k, c))}</span><small>${b || (k === 'pass' ? L('7 ngày · 15 lượt','7 days · 15 analyses') : c === 'semiannual' ? L('6 tháng','6 months') : L('mỗi tháng','per month'))}</small></button>`; };
+      return wrap(`<h2 id="mt">${L('Chọn gói','Choose a plan')}</h2>
         ${forItem ? `<div style="margin-top:12px">${alertBox('info', L(`Sau khi thanh toán, bài “${esc(forItem.title)}” sẽ được phân tích ngay.`, `After payment, “${esc(forItem.title)}” will be analysed right away.`))}</div>` : ''}
         <div class="form" style="margin-top:18px">
-          <div><div class="sec-t">${L('Chu kỳ','Billing')}</div><div class="pills"><button class="pill ${M.cycle === 'm' ? 'on' : ''}" data-act="pay-cycle" data-v="m">${L('Tháng','Monthly')} · ${fmtVND(CONFIG.price.m)}</button><button class="pill ${M.cycle === 'y' ? 'on' : ''}" data-act="pay-cycle" data-v="y">${L('Năm','Yearly')} · ${fmtVND(CONFIG.price.y)}</button></div></div>
-          <div><div class="sec-t">${L('Phương thức','Payment method')}</div><div class="pay">${['MoMo','VNPay',L('Thẻ quốc tế','Card')].map(x => `<button class="opt ${M.method === x ? 'on' : ''}" data-act="pay-method" data-v="${x}" aria-pressed="${M.method === x}">${x}</button>`).join('')}</div></div>
-          <div style="display:flex;justify-content:space-between;font-weight:700;border-top:1px solid var(--line);padding-top:14px"><span>${L('Tổng','Total')}</span><span class="num">${total}</span></div>
-          <button class="btn btn-primary btn-lg" data-act="pay-submit">${L('Thanh toán','Pay')} ${total}</button>
-          <p class="demo-note">${L('Bản thử nghiệm: không có giao dịch thật. Chọn kết quả mô phỏng trong bảng “Bản thử nghiệm”.','Beta: no real transaction. Pick the simulated outcome in the “Beta tools” panel.')}</p>
+          <div class="pay-plans">${['pass','premium','team'].map(opt).join('')}</div>
+          ${M.product !== 'pass' ? `<div><div class="sec-t">${L('Chu kỳ','Billing')}</div><div class="pills"><button class="pill ${cycleOf(M.product) === 'monthly' ? 'on' : ''}" data-act="pay-cycle" data-v="monthly">${L('Hằng tháng','Monthly')} · ${fmtVND(priceOf(M.product,'monthly'))}</button><button class="pill ${cycleOf(M.product) === 'semiannual' ? 'on' : ''}" data-act="pay-cycle" data-v="semiannual">${L('6 tháng','6 months')} · ${fmtVND(priceOf(M.product,'semiannual'))} <span class="save">−${Math.floor((1 - priceOf(M.product,'semiannual') / (priceOf(M.product,'monthly') * 6)) * 100)}%</span></button></div></div>` : ''}
+          <div><div class="sec-t">${L('Phương thức','Payment method')}</div>${S.providers ? (S.providers.length ? `<div class="pay">${S.providers.map(x => `<button class="opt ${M.provider === x ? 'on' : ''}" data-act="pay-provider" data-v="${x}" aria-pressed="${M.provider === x}">${PROVIDER_NAMES[x] ? PROVIDER_NAMES[x]() : x}</button>`).join('')}</div>` : alertBox('warn', L('Chưa có cổng thanh toán nào được bật.','No payment method is available yet.'))) : `<span class="spinner"></span>`}</div>
+          ${alertBox('err', M.err)}
+          <div style="display:flex;justify-content:space-between;font-weight:700;border-top:1px solid var(--line);padding-top:14px"><span>${L('Tổng','Total')}</span><span class="num">${fmtVND(total)}</span></div>
+          <button class="btn btn-primary btn-lg" data-act="pay-submit" ${blocked(M.product) || !M.provider ? 'disabled' : ''}>${L('Thanh toán','Pay')} ${fmtVND(total)}</button>
+          <p class="demo-note">${M.provider === 'mock' ? L('Cổng thử nghiệm: không trừ tiền thật. Gói được kích hoạt ngay khi bạn chọn “Thanh toán thành công”.','Test gateway: no real money is charged. Your plan activates as soon as you choose “Pay”.') : L('Bạn sẽ được chuyển sang cổng thanh toán. Gói chỉ được kích hoạt khi cổng xác nhận giao dịch.','You’ll be taken to the payment gateway. Your plan activates once the gateway confirms the payment.')}</p>
         </div>`);
     }
   }
@@ -281,7 +335,7 @@ const ACTIONS = {
   scroll(el){ const to = el.dataset.to; const run = () => { const t = document.getElementById(to); if(t) t.scrollIntoView({behavior:'smooth'}); }; if(S.route !== ''){ go(''); setTimeout(run, 60); } else run(); },
   copy(el){ const v = el.dataset.v; const ok = () => toast(L('Đã sao chép','Copied')); try { navigator.clipboard.writeText(v).then(ok, () => toast(v)); } catch(e){ toast(v); } },
   'ui-lang'(el){ I18N.set(el.dataset.v); if(S.data){ S.data.profile.ui = I18N.ui; save(); } render(); },
-  'modal-close'(){ const M = S.modal; if(M && M.type === 'pay' && M.step === 'processing') return; if(M && M.type === 'pay') S.pendingAfterPay = null; S.modal = null; render(); },
+  'modal-close'(){ const M = S.modal; if(M && M.type === 'pay' && M.step === 'redirect') return; if(M && M.type === 'pay') S.pendingAfterPay = null; S.modal = null; render(); },
   'modal-go'(el){ S.modal = null; go(el.dataset.to); },
   'start-goal'(el){ S.ob.goal = el.dataset.goal; go('bat-dau'); },
   'ob-goal'(el){ S.ob.goal = el.dataset.goal; render(); },
@@ -303,22 +357,20 @@ const ACTIONS = {
   'test-start'(){ const p = S.data.profile; S.draft = {goal:p.goal, lang:p.speechLang, promptIdx:0, custom:'', kind:'audio', file:null, lessonId:null, placement:true}; startRec(); },
   'placement-seen'(){ S.data.placement.seen = true; save(); render(); },
   logout(){ logout(); },
-  buy(){ openPay(null); },
-  'pay-for'(el){ openPay(el.dataset.id || null); },
-  'to-yearly'(){ openPay(null, 'y'); },
+  buy(el){ openPay(null, el && el.dataset.product || null, el && el.dataset.cycle || null); },
+  'pay-for'(el){ openPay(el.dataset.id || null, el.dataset.product || null); },
+  'pay-product'(el){ const M = S.modal; M.product = el.dataset.v; M.cycle = M.product === 'pass' ? 'once' : (M.cycle === 'once' ? 'monthly' : M.cycle); M.err = ''; render(); },
   'pay-cycle'(el){ S.modal.cycle = el.dataset.v; render(); },
-  'pay-method'(el){ S.modal.method = el.dataset.v; render(); },
-  'pay-submit'(){ if(!navigator.onLine){ toast(L('Bạn đang ngoại tuyến. Kết nối mạng để thanh toán.','You’re offline. Reconnect to pay.'), 'err'); return; } S.modal.step = 'processing'; render(); clearTimeout(S.payTimer); S.payTimer = setTimeout(finishPay, 1600); },
-  'pay-cancel'(){ clearTimeout(S.payTimer); S.modal.step = 'cancelled'; render(); },
-  'pay-back'(){ S.modal.step = 'choose'; render(); },
-  autorenew(){ S.data.autoRenew = !S.data.autoRenew; save(); toast(S.data.autoRenew ? L('Đã bật tự động gia hạn','Auto-renew on') : L('Đã tắt tự động gia hạn','Auto-renew off')); render(); },
+  'pay-provider'(el){ S.modal.provider = el.dataset.v; render(); },
+  'pay-submit'(){ submitPay(); },
+  'price-cycle'(el){ S.priceCycle = el.dataset.v; render(); },
   'new-practice'(){ S.draft = null; S.goalPick = false; go('luyen-tap'); },
   'toggle-goals'(){ S.goalPick = !S.goalPick; render(); },
-  'd-goal'(el){ S.draft.goal = el.dataset.goal; S.draft.promptIdx = 0; render(); },
+  'd-goal'(el){ const g = el.dataset.goal; if(!goalAllowed(g)){ toast(L(`${tx(GOALS[g].name)} có trong gói Pass, Premium và Team`, `${tx(GOALS[g].name)} is part of Pass, Premium and Team`)); return openPay(null, 'pass'); } S.draft.goal = g; S.draft.promptIdx = 0; render(); },
   'make-default'(){ S.data.profile.goal = S.draft.goal; save(); toast(L('Đã đặt làm mục tiêu mặc định','Set as your default goal')); render(); },
   'd-lang'(el){ S.draft.lang = el.dataset.v; render(); },
   'd-prompt'(el){ S.draft.promptIdx = +el.dataset.i; S.draft.custom = ''; render(); },
-  'd-kind'(el){ if(el.dataset.locked){ toast(L('Quay video có trong gói Premium','Video is a Premium feature')); return openPay(null); } S.draft.kind = el.dataset.v; S.fileErr = ''; render(); },
+  'd-kind'(el){ if(el.dataset.locked){ const f = el.dataset.v === 'upload' ? 'upload' : 'video'; toast(f === 'upload' ? L('Tải file có sẵn có trong gói Pass, Premium và Team','Uploading files is part of Pass, Premium and Team') : L('Quay video có trong gói Pass, Premium và Team','Video is part of Pass, Premium and Team')); return openPay(null, planFor(f)); } S.draft.kind = el.dataset.v; S.fileErr = ''; render(); },
   'leave-lesson'(){ S.draft.lessonId = null; render(); },
   begin(){
     const d = S.draft;
@@ -330,7 +382,7 @@ const ACTIONS = {
   'rec-retry'(){ requestMedia(); },
   'rec-audio-only'(){ S.draft.kind = 'audio'; requestMedia(); },
   'rec-sim'(){ beginRec(S.rec, null, true); },
-  'rec-pause'(){ const r = S.rec; if(!r) return; r.paused = !r.paused; if(r.mr){ try { r.paused ? r.mr.pause() : r.mr.resume(); } catch(e){} } $('#pausebtn').textContent = r.paused ? L('Tiếp tục','Resume') : L('Tạm dừng','Pause'); $('#recst').textContent = r.paused ? L('Tạm dừng','Paused') : L('Đang ghi','Recording'); $('#recdot').classList.toggle('paused', r.paused); },
+  'rec-pause'(){ const r = S.rec; if(!r) return; r.paused = !r.paused; if(r.mr){ try { r.paused ? r.mr.pause() : r.mr.resume(); } catch(e){} } $('#pausebtn').textContent = r.paused ? L('Tiếp tục','Resume') : L('Tạm dừng','Pause'); const pb = $('#pausebtn').parentElement.querySelector('svg'); if(pb) pb.outerHTML = ic(r.paused ? 'play' : 'pause', 18); $('#recst').textContent = r.paused ? L('Tạm dừng','Paused') : L('Đang ghi','Recording'); $('#recdot').classList.toggle('paused', r.paused); $('#recpill').classList.toggle('paused', r.paused); },
   'rec-stop'(){ stopRec(); },
   'rec-ff'(){ const r = S.rec; if(!r) return; r.t = Math.min(CONFIG.maxRecordSec - 1, r.t + 60); updateRecUI(r); },
   'rec-cancel'(){ const pl = S.draft && S.draft.placement, lesson = S.draft && S.draft.lessonId; cleanupRec(); toast(L('Đã hủy bản ghi','Recording discarded')); if(pl){ S.draft = null; go('bai-test'); } else if(lesson) go('bai-hoc', {id:lesson}); else go('luyen-tap'); },
@@ -354,9 +406,14 @@ const ACTIONS = {
     if(kind === 'script'){ const it = libItem(s.libId); S.scriptText = it ? await Practice.scriptText(it).catch(() => '') : ''; return go('kich-ban'); }
     go('luyen-tap');
   },
-  jump(el){ flash(el.dataset.to); },
+  /* Nhảy tới một câu trong bản chép lời/kịch bản. Nếu đang ở tab khác của báo cáo thì chuyển sang tab đó trước. */
+  jump(el){ const id = el.dataset.to; if(!document.getElementById(id) && S.repTab){ S.repTab.tab = 'rep-tr'; render(); setTimeout(() => flash(id), 60); return; } flash(id); },
+  'rep-sec'(el){
+    if(!S.repTab) return; S.repTab.tab = el.dataset.to; render();
+    const nav = document.querySelector('.rep-nav'); if(nav && nav.getBoundingClientRect().top < 0) nav.scrollIntoView({block:'start'});
+  },
   'report-reload'(el){ const x = S.data.sessions.find(q => q.id === el.dataset.id); if(x){ x.loadErr = false; x.loading = false; } render(); },
-  'qa-open'(el){ if(!S.data || !isPro()){ toast(L('Trả lời phản biện có trong gói Premium','Answering questions is a Premium feature')); return S.data ? openPay(null) : go('bang-gia'); } const i = el.dataset.i; S.qa[i] = {...(S.qa[i] || {}), open:!(S.qa[i] || {}).open}; render(); },
+  'qa-open'(el){ if(!S.data || !can('qa')){ toast(L('Trả lời phản biện có trong gói Pass, Premium và Team','Answering questions is part of Pass, Premium and Team')); return S.data ? openPay(null) : go('bang-gia'); } const i = el.dataset.i; S.qa[i] = {...(S.qa[i] || {}), open:!(S.qa[i] || {}).open}; render(); },
   'qa-grade'(el){ const i = el.dataset.i, q = S.qa[i] || {}; if(!(q.text || '').trim()){ toast(L('Nhập câu trả lời trước khi chấm','Type an answer first')); return; } S.qa[i] = {...q, state:'loading'}; render(); setTimeout(() => { if(!S.qa[i]) return; S.qa[i] = {...S.qa[i], state:'done', fb:gradeAnswer(S.qa[i].text, el.dataset.goal)}; if(S.route === 'bao-cao') render(); }, 1100); },
   async 'lib-play'(el){
     const l = libItem(el.dataset.id); if(!l) return;
@@ -394,11 +451,11 @@ const ACTIONS = {
   },
   'dev-toggle'(){ S.devOpen = !S.devOpen; S.devConfirm = false; render(); },
   sim(el){ S.sim[el.dataset.k] = el.dataset.v; render(); },
-  'dev-plan'(el){ setPlan(el.dataset.v); toast(isPro() ? L('Đang xem bản Premium','Viewing Premium') : L('Đã về gói Miễn phí','Back on Free')); render(); },
   'dev-reset'(){ S.devConfirm = true; render(); },
   'dev-reset-no'(){ S.devConfirm = false; render(); },
   'dev-reset-yes'(){ const D = S.data; Object.assign(D, {sessions:[], library:[], lessons:{}, placement:null, used:0}); S.devConfirm = false; S.compare = []; save(); toast(L('Đã xóa dữ liệu luyện tập','Practice data cleared')); render(); },
 };
+Object.assign(ACTIONS, TEAM_ACTIONS);   // js/team.js
 
 /* ================= Sự kiện ================= */
 document.addEventListener('click', e => {
@@ -412,6 +469,7 @@ document.addEventListener('click', e => {
 });
 document.addEventListener('submit', async e => {
   e.preventDefault(); const f = e.target, v = id => (document.getElementById(id) || {}).value || '';
+  if(f.id.startsWith('team') && await teamSubmit(f.id, v)) return;
   if(f.id === 'loginForm'){
     const email = v('f-email').trim(), pw = v('f-pass'); S.auth.email = email; S.auth.info = '';
     if(!EMAIL_OK(email)){ S.auth.err = L('Email chưa đúng định dạng, ví dụ: ban@email.com.','Enter a valid email, e.g. you@email.com.'); return render(); }
@@ -486,7 +544,13 @@ document.addEventListener('change', e => {
     rd.readAsText(f);
   }
 });
-document.addEventListener('keydown', e => { if(e.key === 'Escape'){ if(S.modal && !(S.modal.type === 'pay' && S.modal.step === 'processing')){ if(S.modal.type === 'pay') S.pendingAfterPay = null; S.modal = null; render(); } else if(S.menu || S.devOpen){ S.menu = false; S.devOpen = false; render(); } } });
+/* Phím tắt khi ghi âm (máy tính): Space = tạm dừng / tiếp tục. Bỏ qua khi đang gõ trong ô nhập hoặc đang mở hộp thoại. */
+document.addEventListener('keydown', e => {
+  if(e.code !== 'Space' || S.route !== 'ghi-am' || !S.rec || S.rec.state !== 'live' || S.modal || e.repeat) return;
+  if(/^(INPUT|TEXTAREA|SELECT|BUTTON)$/.test(document.activeElement && document.activeElement.tagName)) return;
+  e.preventDefault(); ACTIONS['rec-pause']();
+});
+document.addEventListener('keydown', e => { if(e.key === 'Escape'){ if(S.modal && !(S.modal.type === 'pay' && S.modal.step === 'redirect')){ if(S.modal.type === 'pay') S.pendingAfterPay = null; S.modal = null; render(); } else if(S.menu || S.devOpen){ S.menu = false; S.devOpen = false; render(); } } });
 
 /* ================= Khởi động ================= */
 (async function init(){

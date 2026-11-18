@@ -7,47 +7,74 @@ const bCls = v => v >= 75 ? 'hi' : v >= 60 ? 'mid' : 'lo';
 const slug = t => String(t).normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/gi,'d').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,60) || 'bai-noi';
 function toast(msg, kind=''){ const t = document.createElement('div'); t.className = 'toast ' + kind; t.setAttribute('role', kind === 'err' ? 'alert' : 'status'); t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 3000); }
 
+/* Biểu tượng Lucide (lucide-static 1.74.0, giấy phép ISC, xem css/LUCIDE-LICENSE.txt). fb/yt/tt là biểu tượng thương hiệu tự vẽ. */
 const ICON = {
-  home:'<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
-  mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>',
-  micoff:'<path d="M3 3l18 18M9 9v2a3 3 0 0 0 5 2.2M15 9.3V6a3 3 0 0 0-5.7-1.3M5 11a7 7 0 0 0 11.5 5.4M19 11a7 7 0 0 1-.6 2.8M12 18v3"/>',
-  chart:'<path d="M4 19V5M4 19h16M8 15l4-4 3 3 5-6"/>',
-  doc:'<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/>',
-  card:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/>',
-  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
-  lib:'<path d="M4 4h4v16H4zM10 4h4v16h-4z"/><path d="m16 5 3.6-1 2.4 15.6-3.6 1z"/>',
-  book:'<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5M8 7h7M8 11h5"/>',
-  check:'<path d="M5 12.5 10 17 19 7"/>',
-  x:'<path d="M6 6l12 12M18 6 6 18"/>',
-  eye:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
-  users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"/>',
-  wave:'<path d="M3 12h2M7 8v8M11 5v14M15 9v6M19 7v10"/>',
-  video:'<rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3"/>',
-  upload:'<path d="M12 16V4M7 9l5-5 5 5M4 20h16"/>',
-  down:'<path d="M12 4v12M7 11l5 5 5-5M4 20h16"/>',
-  dollar:'<path d="M12 3v18M16.5 7.5c-.8-1.2-2.4-2-4.5-2-2.8 0-4.5 1.4-4.5 3.2 0 4.3 9.5 2.3 9.5 6.6 0 1.9-1.9 3.2-4.9 3.2-2.3 0-4.1-.9-5-2.3"/>',
-  help:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9.2a2.6 2.6 0 0 1 5 .9c0 1.8-2.5 2.3-2.5 3.9M12 17.2v.1"/>',
-  play:'<path d="M7 5v14l11-7z"/>',
-  trash:'<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',
-  menu:'<path d="M4 7h16M4 12h16M4 17h16"/>',
-  arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',
-  back:'<path d="M19 12H5M11 6l-6 6 6 6"/>',
-  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
-  alert:'<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.1"/>',
-  info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8v.1"/>',
-  mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
-  phone:'<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/>',
-  pin:'<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',
-  lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
-  star:'<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/>',
-  wifi:'<path d="M2 8.5a15 15 0 0 1 20 0M5 12a10 10 0 0 1 14 0M8.5 15.5a5 5 0 0 1 7 0M12 19v.1"/>',
-  sliders:'<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>',
+  home:'<path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+  mic:'<path d="M12 19v3"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><rect x="9" y="2" width="6" height="13" rx="3"/>',
+  micoff:'<path d="M12 19v3"/><path d="M15 9.34V5a3 3 0 0 0-5.68-1.33"/><path d="M16.95 16.95A7 7 0 0 1 5 12v-2"/><path d="M18.89 13.23A7 7 0 0 0 19 12v-2"/><path d="m2 2 20 20"/><path d="M9 9v3a3 3 0 0 0 5.12 2.12"/>',
+  chart:'<path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m19 9-5 5-4-4-3 3"/>',
+  doc:'<path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>',
+  card:'<rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/><path d="M6 14h2"/>',
+  user:'<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+  lib:'<path d="m16 6 4 14"/><path d="M12 6v14"/><path d="M8 8v12"/><path d="M4 4v16"/>',
+  book:'<path d="M12 5v16"/><path d="M20.001 19A2 2 0 0022 17V5a2 2 0 00-1.999-2L16 3.002A5 5 0 0012 5a5 5 0 00-4-2H4a2 2 0 00-2 2v12a2 2 0 001.999 2H8a5 5 0 014 2 5 5 0 014-2z"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>',
+  x:'<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+  eye:'<path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/>',
+  users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/>',
+  wave:'<path d="M2 10v3"/><path d="M6 6v11"/><path d="M10 3v18"/><path d="M14 8v7"/><path d="M18 5v13"/><path d="M22 10v3"/>',
+  video:'<path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/>',
+  upload:'<path d="M12 3v12"/><path d="m17 8-5-5-5 5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>',
+  down:'<path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/>',
+  dollar:'<path d="M12 3v18"/><path d="M17 5H9.5a1 1 0 000 7h5a1 1 0 010 7H6"/>',
+  help:'<circle cx="12" cy="12" r="10"/><path d="M9 9.5a3 2.5 0 016 0c0 2-2 2-3 3.5"/><path d="M12 17h.01"/>',
+  play:'<path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/>',
+  trash:'<path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>',
+  menu:'<path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/>',
+  arrow:'<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>',
+  back:'<path d="m12 19-7-7 7-7"/><path d="M19 12H5"/>',
+  clock:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+  alert:'<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+  info:'<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>',
+  mail:'<path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/>',
+  phone:'<path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"/>',
+  pin:'<path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>',
+  lock:'<rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  star:'<path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/>',
+  wifi:'<path d="M12 20h.01"/><path d="M2 8.82a15 15 0 0 1 20 0"/><path d="M5 12.859a10 10 0 0 1 14 0"/><path d="M8.5 16.429a5 5 0 0 1 7 0"/>',
+  sliders:'<path d="M10 5H3"/><path d="M12 19H3"/><path d="M14 3v4"/><path d="M16 17v4"/><path d="M21 12h-9"/><path d="M21 19h-5"/><path d="M21 5h-7"/><path d="M8 10v4"/><path d="M8 12H3"/>',
+  sparkles:'<path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"/><path d="M20 2v4"/><path d="M22 4h-4"/><circle cx="4" cy="20" r="2"/>',
+  brain:'<path d="M12 13h4"/><path d="M12 18h6a2 2 0 012 2v1"/><path d="M12 8h8"/><path d="M12 9a4.17 4.17 0 01-3 4"/><path d="M16 8V5a2 2 0 012-2"/><path d="M6 18a4 4 0 01-2-7.465"/><path d="M6.004 5.125a4 4 0 00-2.526 5.77"/><path d="M6.294 6.294A3 3 0 1112 5v13a4 4 0 11-7.967-.518"/><circle cx="16" cy="13" r="0.5" fill="currentColor"/><circle cx="18" cy="3" r="0.5" fill="currentColor"/><circle cx="20" cy="21" r="0.5" fill="currentColor"/><circle cx="20" cy="8" r="0.5" fill="currentColor"/>',
+  face:'<path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01"/><path d="M15 9h.01"/>',
+  gauge:'<path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/>',
+  quote:'<path d="M14 14a2 2 0 0 0 2-2V8h-2"/><path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"/><path d="M8 14a2 2 0 0 0 2-2V8H8"/>',
+  listcheck:'<path d="M13 5h8"/><path d="M13 12h8"/><path d="M13 19h8"/><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/>',
+  keyboard:'<path d="M10 8h.01"/><path d="M12 12h.01"/><path d="M14 8h.01"/><path d="M16 12h.01"/><path d="M18 8h.01"/><path d="M6 8h.01"/><path d="M7 16h10"/><path d="M8 12h.01"/><rect width="20" height="16" x="2" y="4" rx="2"/>',
+  pause:'<rect x="14" y="3" width="5" height="18" rx="1"/><rect x="5" y="3" width="5" height="18" rx="1"/>',
+  stop:'<rect width="18" height="18" x="3" y="3" rx="2"/>',
+  ok:'<circle cx="12" cy="12" r="10"/><path d="m16 9-5.5 5.5L8 12"/>',
+  'f-present':'<path d="M2 3h20"/><path d="M21 3v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V3"/><path d="m7 21 5-5 5 5"/>',
+  'f-report':'<path d="M12 16v5"/><path d="M16 14.639V21"/><path d="M20 10.656V21"/><path d="m22 3-8.646 8.646a.5.5 0 0 1-.708 0L9.354 8.354a.5.5 0 0 0-.707 0L2 15"/><path d="M4 18.463V21"/><path d="M8 14.656V21"/>',
+  'f-interview':'<rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/>',
+  'f-pitch':'<path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09"/><path d="M9 12a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.4 22.4 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 .05 5 .05"/>',
+  'f-debate':'<path d="M16 10a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 14.286V4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/><path d="M20 9a2 2 0 0 1 2 2v10.286a.71.71 0 0 1-1.212.502l-2.202-2.202A2 2 0 0 0 17.172 19H10a2 2 0 0 1-2-2v-1"/>',
   fb:'<path d="M14 8h3V4h-3a4 4 0 0 0-4 4v3H7v4h3v7h4v-7h3l1-4h-4V8z"/>',
   yt:'<rect x="2" y="5" width="20" height="14" rx="4"/><path d="m10 9 5 3-5 3z"/>',
   tt:'<path d="M14 3v11a3.5 3.5 0 1 1-3.5-3.5M14 3c.5 2.5 2.5 4.5 5 4.5"/>',
 };
-const ic = (n, s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[n] || ''}</svg>`;
+const ic = (n, s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[n] || ''}</svg>`;
 const proChip = () => '<span class="chip pro">PREMIUM</span>';
+/* Nhãn gói thấp nhất mở tính năng (vd. "PASS" cho video, "PREMIUM" cho nhắc nhở thời gian thực). */
+const lockChip = f => `<span class="chip pro">${planName(planFor(f)).toUpperCase()}</span>`;
+/* Quyền lợi từng gói theo bảng giá (dùng cho bảng giá và hộp thoại chào mừng). */
+function planFeatures(k){
+  return {
+    free: [L('3 lượt phân tích mỗi tháng, bài tối đa 5 phút','3 analyses a month, up to 5 minutes each'), L('Ghi âm trực tiếp hoặc chấm kịch bản cơ bản','Live recording or basic script review'), L('Loại hình Thuyết trình và Báo cáo','Presentation and Report modes'), L('Xem điểm tổng và báo cáo tóm tắt','Overall score and summary report')],
+    pass: [L('15 lượt phân tích trong 7 ngày, bài tối đa 20 phút','15 analyses over 7 days, up to 20 minutes each'), L('Ghi âm, quay video, tải file và chấm kịch bản đầy đủ','Audio, video, file upload and full script review'), L('Mở cả 5 loại hình: Thuyết trình, Báo cáo, Phỏng vấn, Gọi vốn, Tranh biện','All 5 modes: Presentation, Report, Interview, Pitching, Debate'), L('Đầy đủ chuyên gia AI (Cô Thảo vận hành, Nhà đầu tư AI…)','Every AI expert (Ms. Thao in operations, the AI investor…)'), L('Báo cáo theo dòng thời gian và câu hỏi phản biện của khán giả AI','Timeline reports and cross-examination from the AI audience')],
+    premium: [L('Phân tích không giới hạn (dùng hợp lý tới 60 bài mỗi tháng), bài tối đa 30 phút','Unlimited analysis (fair use up to 60 a month), up to 30 minutes each'), L('Phân tích đa phương thức video + âm thanh','Multimodal video + audio analysis'), L('Đo tốc độ nói và phát hiện từ đệm','Speaking rate and filler word detection'), L('Nhắc nhở thời gian thực khi đang nói','Live coaching while you speak'), L('Báo cáo chi tiết theo từng mốc trong video','Detailed reports by timeline milestones'), L('Lưu lịch sử và biểu đồ so sánh tiến bộ','Progress history and comparison charts')],
+    team: [L('Tối đa 5 tài khoản trong một nhóm','Up to 5 member accounts in one team'), L('Mỗi thành viên có đủ quyền lợi Premium','Every member gets all Premium privileges'), L('Bảng điều khiển nhóm cho trưởng nhóm hoặc giảng viên','Team dashboard for the leader or instructor'), L('Chia sẻ kịch bản và tài liệu luyện tập trong nhóm','Share scripts and practice resources in the team'), L('Thống kê tiến bộ của cả nhóm','Team-wide progress statistics')],
+  }[k] || [];
+}
 const alertBox = (kind, msg) => msg ? `<div class="alert ${kind}" role="${kind === 'err' ? 'alert' : 'status'}">${ic(kind === 'err' ? 'alert' : kind === 'ok' ? 'check' : 'info', 18)}<div>${msg}</div></div>` : '';
 const goalIcon = {presentation:'users', reporting:'chart', interview:'user', pitching:'dollar', debating:'mic'};
 
@@ -72,9 +99,10 @@ function paceChart(vals){
   vals.forEach((v,i) => { const x = pl + i*bw + bw*.22, w = bw*.56; s += `<rect class="bar ${v > 150 ? 'over' : ''}" x="${x}" y="${y(v)}" width="${w}" height="${y(0)-y(v)}" rx="4"/>`; if(vals.length <= 10) s += `<text class="lbl-v" x="${x+w/2}" y="${y(v)-6}" text-anchor="middle">${v}</text>`; if(i % every === 0) s += `<text x="${x+w/2}" y="${H-8}" text-anchor="middle">${L('Phút','Min')} ${i+1}</text>`; });
   return s + '</svg>';
 }
-function ring(v, size=150){
-  const sw = Math.max(5, Math.round(size/12)), r = size/2 - sw/2 - 1, c = 2*Math.PI*r, small = size < 100;
-  return `<div class="ring" style="width:${size}px;height:${size}px"><svg width="${size}" height="${size}" aria-hidden="true"><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--soft-2)" stroke-width="${sw}"/><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--blue)" stroke-width="${sw}" stroke-linecap="round" stroke-dasharray="${c*v/100} ${c}"/></svg><div class="rv" aria-label="${v}/100"><div><b class="num" style="font-size:${Math.round(size*(small ? .3 : .28))}px">${v}</b>${small ? '' : '<br><span>/ 100</span>'}</div></div></div>`;
+function ring(v, size=150, count=false){
+  const sw = Math.max(5, Math.round(size/12)), r = size/2 - sw/2 - 1, c = 2*Math.PI*r, small = size < 100, gid = 'rg' + size;
+  /* Vòng điểm dùng gradient cyan → xanh; count=true: số điểm đếm lên và vòng chạy khi mở báo cáo. */
+  return `<div class="ring ${count ? 'count-up' : ''}" style="width:${size}px;height:${size}px;--c:${c};--v:${v}"><svg width="${size}" height="${size}" aria-hidden="true"><defs><linearGradient id="${gid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF7A66"/><stop offset="1" stop-color="#4E93B6"/></linearGradient></defs><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--soft-2)" stroke-width="${sw}"/><circle class="arc" cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="url(#${gid})" stroke-width="${sw}" stroke-linecap="round" stroke-dasharray="${c*v/100} ${c}"/></svg><div class="rv" aria-label="${v}/100"><div><b class="num" style="font-size:${Math.round(size*(small ? .3 : .28))}px">${count ? `<i class="cnt" style="--n:${v}"></i>` : v}</b>${small ? '' : '<br><span>/ 100</span>'}</div></div></div>`;
 }
 const barRow = (k, v) => `<div class="bar-row"><span>${k}</span><div class="track"><b class="${bCls(v)}" style="width:${v}%"></b></div><b class="num">${v}</b></div>`;
 
@@ -82,8 +110,14 @@ const barRow = (k, v) => `<div class="bar-row"><span>${k}</span><div class="trac
 const logo = to => `<button class="logo" data-go="${to}" aria-label="${CONFIG.brand}"><span class="logo-mark"><span><i style="height:6px"></i><i style="height:14px"></i><i style="height:9px"></i><i style="height:12px"></i></span></span><span class="lname">${CONFIG.brand}</span></button>`;
 const langSwitch = () => `<div class="lang-sw" role="group" aria-label="${L('Ngôn ngữ giao diện','Interface language')}"><button class="${I18N.ui==='vi'?'on':''}" data-act="ui-lang" data-v="vi" aria-pressed="${I18N.ui==='vi'}">VI</button><button class="${I18N.ui==='en'?'on':''}" data-act="ui-lang" data-v="en" aria-pressed="${I18N.ui==='en'}">EN</button></div>`;
 
-function PublicLayout(inner, {footer=true}={}){
+function PublicLayout(inner, {footer=true, minimal=false}={}){
   const r = S.route;
+  /* Trang chủ: đầu trang tối giản theo phác thảo (menu bên trái, VI | EN bên phải), tên thương hiệu nằm trong hero. */
+  if(minimal) return `<header class="p-nav min ${S.menu ? 'open' : ''}"><div class="wrap">
+      <button class="icon-btn" data-act="menu" aria-label="${L('Mở menu','Open menu')}" aria-expanded="${S.menu}">${ic(S.menu ? 'x' : 'menu',24)}</button>
+      <div class="right">${langSwitch()}</div>
+      ${S.menu ? `<nav class="menu menu-left" aria-label="${L('Điều hướng','Navigation')}"><button data-act="scroll" data-to="khoa-hoc-gt">${ic('book',18)} ${L('Khóa học','Courses')}</button><button data-go="bang-gia">${ic('card',18)} ${L('Bảng giá','Pricing')}</button><button data-go="bao-cao-mau">${ic('chart',18)} ${L('Báo cáo mẫu','Sample report')}</button><hr><button data-go="dang-nhap">${ic('user',18)} ${L('Đăng nhập','Log in')}</button><button data-go="dang-ky">${ic('sparkles',18)} ${L('Đăng ký','Sign up')}</button></nav>` : ''}
+    </div></header><main class="p-main">${inner}</main>${footer ? Footer() : ''}`;
   const links = [['', 'khoa-hoc-gt', L('Khóa học','Courses')], ['bang-gia', null, L('Bảng giá','Pricing')], ['bao-cao-mau', null, L('Báo cáo mẫu','Sample report')]];
   return `<header class="p-nav"><div class="wrap">${logo('')}
       <nav class="p-links" aria-label="${L('Điều hướng','Navigation')}">${links.map(([to, anchor, l]) => anchor ? `<button data-act="scroll" data-to="${anchor}">${l}</button>` : `<button class="${r===to?'on':''}" data-go="${to}">${l}</button>`).join('')}</nav>
@@ -118,17 +152,19 @@ function Footer(){
 function OnboardLayout(inner){
   return `<header class="p-nav"><div class="wrap">${logo('tong-quan')}<div class="right"><span class="muted hide-sm" style="font-size:14px">${esc(S.data.profile.email)}</span><button class="btn btn-ghost btn-sm" data-act="logout">${L('Đăng xuất','Log out')}</button></div></div></header><div class="wrap flow-body"><div class="flow-card">${inner}</div></div>`;
 }
-const NAV = () => [['tong-quan', L('Tổng quan','Dashboard'), 'home'], ['luyen-tap', L('Luyện tập','Practice'), 'mic'], ['khoa-hoc', L('Khóa học','Courses'), 'book'], ['thu-vien', L('Thư viện','Library'), 'lib'], ['tien-bo', L('Tiến bộ','Progress'), 'chart'], ['goi-dich-vu', L('Gói dịch vụ','Plans'), 'card'], ['tai-khoan', L('Tài khoản','Account'), 'user']];
+const NAV = () => [['tong-quan', L('Tổng quan','Dashboard'), 'home'], ['luyen-tap', L('Luyện tập','Practice'), 'mic'], ['khoa-hoc', L('Khóa học','Courses'), 'book'], ['thu-vien', L('Thư viện','Library'), 'lib'], ['tien-bo', L('Tiến bộ','Progress'), 'chart'], ...(planKey() === 'team' || (S.team && (S.team.team || (S.team.invites || []).length)) ? [['nhom', L('Nhóm','Team'), 'users']] : []), ['goi-dich-vu', L('Gói dịch vụ','Plans'), 'card'], ['tai-khoan', L('Tài khoản','Account'), 'user']];
 function AppLayout(inner){
   const p = plan(), active = (ROUTES[S.route] || {}).nav, pending = S.data.library.filter(l => /^pending|error/.test(l.status)).length;
   const acts = NAV().filter(([k]) => k === 'goi-dich-vu' || k === 'tai-khoan').map(([k,l,i]) => `<button class="icon-btn ${active===k?'on':''}" data-go="${k}" aria-label="${l}" title="${l}">${ic(i,21)}</button>`).join('');
   return `<div class="shell"><aside class="side">${logo('tong-quan')}<div class="side-acts">${acts}</div><nav aria-label="${L('Điều hướng ứng dụng','App navigation')}">${NAV().map(([k,l,i]) => `<button class="${active===k?'on':''} ${k === 'goi-dich-vu' || k === 'tai-khoan' ? 'sec' : ''}" data-go="${k}" ${active===k?'aria-current="page"':''}>${ic(i,20)}<span>${l}</span>${k === 'thu-vien' && pending ? `<span class="badge-n" aria-label="${pending} ${L('bài chờ xử lý','pending')}">${pending}</span>` : ''}</button>`).join('')}</nav>
-    <div class="plan-box"><b>${L('Gói','Plan')} ${planName()}</b><span class="muted">${L(`Còn ${left()} / ${p.limit} lượt tháng này`, `${left()} of ${p.limit} analyses left this month`)}</span><div class="meter"><b style="width:${Math.min(100, S.data.used/p.limit*100)}%"></b></div>${isPro() ? '' : `<button class="btn btn-primary btn-sm" style="margin-top:12px" data-act="buy">${L('Nâng cấp Premium','Upgrade to Premium')}</button>`}</div>
+    <div class="plan-box"><b>${L('Gói','Plan')} ${planName()}</b><span class="muted">${L(`Còn ${left()} / ${p.limit} lượt ${periodText()}`, `${left()} of ${p.limit} analyses left ${periodText()}`)}</span>${isPaid() && S.data.expiry ? `<span class="muted">${L('Hiệu lực đến','Active until')} ${fmtDL(S.data.expiry)}</span>` : ''}<div class="meter"><b style="width:${Math.min(100, S.data.used/Math.max(1, p.limit)*100)}%"></b></div>${isPro() ? '' : `<button class="btn btn-primary btn-sm" style="margin-top:12px" data-go="goi-dich-vu">${planKey() === 'pass' ? L('Gia hạn hoặc lên Premium','Renew or go Premium') : L('Xem các gói','See plans')}</button>`}</div>
   </aside><main class="main"><div class="main-inner">${inner}</div></main></div>`;
 }
-function gate(html, title, desc){
-  if(S.data && isPro()) return html;
-  const btn = S.data ? `<button class="btn btn-primary btn-sm" data-act="buy">${L('Nâng cấp Premium','Upgrade to Premium')}</button>` : `<button class="btn btn-primary btn-sm" data-go="bang-gia">${L('Xem bảng giá','See pricing')}</button>`;
-  return `<div class="lock-card">${html}<div class="lock-over">${proChip()}<b>${title}</b><p class="muted" style="font-size:13px;max-width:42ch">${desc}</p>${btn}</div></div>`;
+/* Khóa một khối theo tính năng của gói (f: 'live' | 'timeline' | 'qa' | 'history' …). Gợi ý đúng gói thấp nhất có tính năng. */
+function gate(html, title, desc, f = 'history'){
+  if(S.data && can(f)) return html;
+  const need = planFor(f);
+  const btn = S.data ? `<button class="btn btn-primary btn-sm" data-act="buy" data-product="${need}">${L(`Mở bằng gói ${planName(need)}`, `Unlock with ${planName(need)}`)}</button>` : `<button class="btn btn-primary btn-sm" data-go="bang-gia">${L('Xem bảng giá','See pricing')}</button>`;
+  return `<div class="lock-card">${html}<div class="lock-over">${lockChip(f)}<b>${title}</b><p class="muted" style="font-size:13px;max-width:42ch">${desc}</p>${btn}</div></div>`;
 }
 const progressSteps = (labels, cur) => `<div class="progress-steps" aria-label="${L('Tiến trình','Progress')}">${labels.map((l,i) => `${i ? '<i></i>' : ''}<span class="${i===cur?'on':''} ${i<cur?'done':''}"><b>${i<cur ? ic('check',12) : i+1}</b>${l}</span>`).join('')}</div>`;

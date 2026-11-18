@@ -95,6 +95,7 @@ const Practice = {
     D.placement = ps ? {id:ps.id, score:ps.score, seen:!!(D.placement && D.placement.id === ps.id && D.placement.seen)} : null;
     this.deriveLessons();
     this.resume();
+    Team.load();   // nhóm và lời mời (gói Team)
   },
   /* Tiến độ bài học (số lần, điểm cao nhất, hoàn thành) tính từ các buổi đã chấm. */
   deriveLessons(){
@@ -108,7 +109,7 @@ const Practice = {
   },
   async refreshMe(){
     const me = await Auth.me(); if(!me || !S.data) return;
-    Object.assign(S.data, {plan:me.plan, expiry:me.premiumExpiresAt ? me.premiumExpiresAt.slice(0, 10) : null, used:me.usage.used});
+    Object.assign(S.data, {plan:me.plan, expiry:me.premiumExpiresAt ? me.premiumExpiresAt.slice(0, 10) : null, used:me.usage.used, limit:me.usage.limit, usageScope:me.usage.scope});
   },
   /* Sau khi tải lại trang: nếu có bài đang phân tích thì theo dõi tiếp. */
   resume(){
@@ -129,14 +130,14 @@ const Practice = {
   /* Tạo buổi luyện, tải tệp lên Storage, báo hoàn tất. Dùng cho cả ghi âm/quay video lẫn tải file. */
   startMedia(file, dur, kind, name){
     if(!navigator.onLine){ toast(L('Bạn đang ngoại tuyến. Kết nối mạng rồi thử lại.','You’re offline. Reconnect and try again.'), 'err'); return; }
-    S.upload = {file:{name:name || file.name || 'recording', size:file.size, type:file.type, dur}, blob:file, kind, draft:{...S.draft}, pct:0, status:'uploading', ctl:{}};
+    S.upload = {file:{name:name || file.name || 'recording', size:file.size, type:file.type, dur}, blob:file, kind, source:name === 'recording' ? 'recording' : 'upload', draft:{...S.draft}, pct:0, status:'uploading', ctl:{}};
     go('tai-len'); this.runUpload();
   },
   async runUpload(){
     const u = S.upload; if(!u) return; u.status = 'uploading'; u.pct = Math.min(u.pct, 95);
     const upd = p => { u.pct = p; const b = $('#up-bar'), t = $('#up-pct'); if(b) b.style.width = p + '%'; if(t) t.textContent = Math.round(p) + '%'; };
     try {
-      if(!u.created) u.created = await api('/sessions', {method:'POST', body:{kind:u.kind, mimeType:u.blob.type || (u.kind === 'video' ? 'video/webm' : 'audio/webm'), sizeBytes:u.blob.size, ...this.ctx(u.draft)}});
+      if(!u.created) u.created = await api('/sessions', {method:'POST', body:{kind:u.kind, mimeType:u.blob.type || (u.kind === 'video' ? 'video/webm' : 'audio/webm'), sizeBytes:u.blob.size, source:u.source, ...this.ctx(u.draft)}});
       await putSigned(u.created.upload.signedUrl, u.blob, upd, u.ctl);
       if(S.upload !== u) return;
       upd(100);
@@ -177,22 +178,31 @@ const Practice = {
   watch(item){
     clearInterval(S.jobTimer);
     const n = item.kind === 'script' ? AN_STEPS.script.length : AN_STEPS.speech.length - (item.kind === 'video' ? 0 : 1);
-    const j = S.job = {libId:item.id, sid:item.sessionId, i:0, n, status:'running', t0:Date.now()};
+    /* Màn "AI đang phân tích" luôn hiện ít nhất CONFIG.analyzeMinMs để người xem thấy đủ các bước.
+       Các bước chạy đều theo thời gian; báo cáo chỉ mở khi backend đã xong THẬT và đã đủ thời gian tối thiểu. */
+    const minMs = Math.max(0, CONFIG.analyzeMinMs || 0);
+    const j = S.job = {libId:item.id, sid:item.sessionId, i:0, n, status:'running', t0:Date.now(), minMs, result:null, lastPoll:0};
     let busy = false;
+    const step = () => Math.min(n - 1, Math.floor((Date.now() - j.t0) / Math.max(1, (minMs || n * 1800) / n)));
     const poll = async () => {
-      if(S.job !== j || busy) return; busy = true;
+      busy = true; j.lastPoll = Date.now();
       try {
         const v = await api('/sessions/' + j.sid);
         if(S.job !== j) return;
-        if(v.status === 'completed') return this.finish(item, j, v);
+        if(v.status === 'completed'){ j.result = v; return; }
         if(['failed', 'cancelled'].includes(v.status)) return this.fail(item, j, v.error && v.error.code);
-        if(!['queued', 'processing'].includes(v.status)){ clearInterval(S.jobTimer); S.job = null; return; }
-        j.i = Math.min(n - 1, Math.floor((Date.now() - j.t0) / 1800));
-        if(S.route === 'dang-phan-tich') render();
+        if(!['queued', 'processing'].includes(v.status)){ clearInterval(S.jobTimer); S.job = null; }
       } catch(e){ if(e instanceof ApiError && e.status === 401) clearInterval(S.jobTimer); }
       finally { busy = false; }
     };
-    S.jobTimer = setInterval(poll, 1200); poll();
+    const tick = () => {
+      if(S.job !== j || j.status !== 'running') return;
+      if(j.result && Date.now() - j.t0 >= minMs) return this.finish(item, j, j.result);
+      const i = step();
+      if(i !== j.i){ j.i = i; if(S.route === 'dang-phan-tich') render(); }
+      if(!j.result && !busy && Date.now() - j.lastPoll >= 1200) poll();
+    };
+    S.jobTimer = setInterval(tick, 200); tick();
   },
   fail(item, j, code){
     clearInterval(S.jobTimer); j.status = 'failed'; item.status = 'error'; item.reason = failReason(code); item.failStep = j.i;
@@ -209,8 +219,10 @@ const Practice = {
     if(item.placement){ D.placement = {id:s.id, score:s.score, seen:false}; D.onboarded = true; S.draft = null; }
     this.deriveLessons(); await this.refreshMe(); save(); S.qa = {};
     const here = S.route === 'dang-phan-tich' && S.params.id === item.id;
-    toast(item.placement ? L('Đã có kết quả bài test đầu vào','Your placement result is ready') : L('Báo cáo đã sẵn sàng','Your report is ready'));
-    if(here) item.placement ? go('tong-quan') : go('bao-cao', {id:s.id}); else render();
+    const onScreen = S.route === 'dang-phan-tich' && S.params.id === item.id;
+    if(!onScreen) toast(item.placement ? L('Đã có kết quả bài test đầu vào','Your placement result is ready') : L('Báo cáo đã sẵn sàng','Your report is ready'));
+    if(here){ render(); setTimeout(() => { if(S.route === 'dang-phan-tich' && S.params.id === item.id) item.placement ? go('tong-quan') : go('bao-cao', {id:s.id}); }, 900); } // khoảnh khắc "100%" trước khi mở báo cáo
+    else render();
   },
 
   /* ---- Báo cáo và thư viện ---- */

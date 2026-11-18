@@ -2,121 +2,68 @@
 /* PublicLayout: trang chủ, bắt đầu (khách), bảng giá, báo cáo mẫu, đăng nhập, đăng ký, xác thực email, quên mật khẩu. */
 
 /* Báo cáo mẫu thu gọn trong hero: dùng đúng dữ liệu của trang Báo cáo mẫu (cùng điểm 72 và các tiêu chí). */
-function heroReport(){
-  const c = {relevance:85, content:78, pace:66, filler:66};
-  const seg = (TRANSCRIPTS.presentation[I18N.ui] || TRANSCRIPTS.presentation.vi).segs[0].replace(/\[(.+?)\]/g, '<span class="f">$1</span>');
-  return `<div class="hero-rep" aria-label="${L('Báo cáo mẫu','Sample report')}">
-    <div class="hr-bar"><b>${L('Thuyết trình: Ứng dụng AI trong giáo dục','Presentation: AI in education')}</b><span>${L('Báo cáo mẫu','Sample report')}</span></div>
-    <div class="hr-top"><div class="hr-score num"><span class="count" role="img" aria-label="72"></span><small>${L('Điểm tổng','Overall')} · / 100</small></div>
-      <div class="bars">${Object.keys(c).map(k => barRow(tx(CRIT[k]), c[k])).join('')}</div></div>
-    <div class="hr-line"><span class="ts">00:00</span><span>${seg}</span></div>
-    <div class="hr-fix"><b>${L('Sửa:','Fix:')}</b><span>${L('Khi cần suy nghĩ, dừng im lặng 1 giây thay vì nói “ừm”.','When you need to think, pause silently for a second instead of saying “um”.')}</span></div>
-    <div class="hr-foot"><span class="chip blue">${L('Trình độ','Level')}: ${levelName(72)}</span><span class="chip bad">${L('Ánh mắt','Eye contact')} 38%</span><span class="chip line">9 ${L('từ đệm','fillers')}</span></div>
-  </div>`;
-}
-
-/* Quả cầu ảnh trong hero: các ô ảnh xếp trên mặt cầu, xoay chậm; mỗi ô đổi sang ảnh khác khi đi ra phía sau. */
-const SPHERE_IMGS = [...Array.from({length:22}, (_, i) => i + 1).filter(i => i !== 21).map(i => `img/sphere/s${String(i).padStart(2,'0')}.jpg`), 'img/interview.jpg', 'img/mic.jpg', 'img/report.jpg', 'img/stage.jpg', 'img/pitch.jpg'];
-function sphereInit(){
-  const el = document.getElementById('sphere'); if(!el || el.dataset.on) return; el.dataset.on = '1';
-  const N = 36, FAR = -.34, still = matchMedia('(prefers-reduced-motion: reduce)').matches, gold = Math.PI*(3 - Math.sqrt(5));
-  const tiles = Array.from({length:N}, (_, i) => { const y = 1 - (i + .5)*2/N, r = Math.sqrt(1 - y*y), a = i*gold; return {x0:Math.cos(a)*r, y, z0:Math.sin(a)*r, src:null, back:false}; });
-  const dot = (p, q) => p.x0*q.x0 + p.y*q.y + p.z0*q.z0;
-  /* Một ảnh chỉ được dùng lại trên ô nằm ở phía đối diện, nên không bao giờ thấy hai ảnh giống nhau cùng lúc. */
-  const pick = me => {
-    const ok = SPHERE_IMGS.filter(src => src !== me.src && tiles.every(t => t === me || t.src !== src || dot(t, me) < FAR));
-    if(!ok.length) return me.src || SPHERE_IMGS[0];
-    const free = ok.filter(src => !tiles.some(t => t.src === src));
-    const pool = free.length ? free : ok; return pool[Math.floor(Math.random()*pool.length)];
-  };
-  tiles.forEach(t => { t.img = new Image(); t.img.alt = ''; t.img.decoding = 'async'; t.src = pick(t); t.img.src = t.src; el.appendChild(t.img); });
-  const tilt = -.28, ct = Math.cos(tilt), st = Math.sin(tilt);
-  let rot = .6, last = 0;
-  const frame = t => {
-    if(!el.isConnected) return;
-    const S = el.clientWidth, R = S*.4, box = el.getBoundingClientRect();
-    if(box.bottom > 0 && box.top < innerHeight){
-      if(last && !still) rot += Math.min(64, t - last)*.00016;
-      const c = Math.cos(rot), s = Math.sin(rot);
-      for(const p of tiles){
-        const x = p.x0*c + p.z0*s, z1 = -p.x0*s + p.z0*c, y = p.y*ct - z1*st, z = p.y*st + z1*ct;
-        if(z < -.9 && !p.back){ p.back = true; if(!still){ p.src = pick(p); p.img.src = p.src; } } else if(z > -.5) p.back = false;
-        const k = .62 + (z + 1)*.25, o = Math.max(0, Math.min(1, (z + .12)/.4));
-        p.img.style.transform = `translate3d(${(x*R).toFixed(1)}px,${(y*R).toFixed(1)}px,0) scale(${k.toFixed(3)})`;
-        p.img.style.opacity = o.toFixed(2);
-        p.img.style.zIndex = Math.round((z + 1)*50);
-      }
-    }
-    last = t; if(!still) requestAnimationFrame(frame);
-  };
-  requestAnimationFrame(frame);
-}
+/* Nền "mosaic" theo ảnh bảng màu của chủ sản phẩm: các ô màu lấy mẫu trực tiếp từ ảnh (2026-11-18). */
+const MOSAIC = [
+  [['#FEA289','#FDB096',4],['#FFB89E','#FFC9A8',4],['#EECB9C','#D6D4B4',2],['#B9DBCA','#A5D9D2',3],['#8BD5DA','#96E3DD',1.5]],
+  [['#FDB096','#FEAB8F',1],['#FEAB8F','#FFC2A4',1.6],['#FFCEB0','#F6D3B6',1.2],['#F1D6BB','#D8D3BE',1],['#AFCEBC','#9EDAD3',1],['#96E3DD','#A8EEEA',1.2]],
+  [['#F86A55','#FE7D65',.7],['#FE7D65','#FD9875',2.5],['#FAB4A7','#F8BFB3',1],['#CCCDC9','#B8D3D3',1],['#62C4CB','#3FB4C4',1.2]],
+  [['#F75E4B','#FF5B48',.8],['#FF5B48','#FF5A4A',1.2],['#FF6158','#FF6A63',1.2],['#FE7C84','#F68A93',1.2],['#D97D96','#C28098',1.1],['#8C8EAD','#7A8DAE',1.1],['#4E93B6','#4B8FB6',.3]],
+];
+const mosaicHtml = () => `<div class="mosaic" aria-hidden="true">${MOSAIC.map((row, r) => `<div class="m-row">${row.map(([a, b, w], i) => `<i style="flex:${w};background:linear-gradient(90deg,${a},${b});--d:${(r*3 + i)*.35}s"></i>`).join('')}</div>`).join('')}</div>`;
 
 function vLanding(){
   const pains = [
-    ['mic','c-blue', L('Quan trọng nhưng khó tiếp cận','Important but hard to access'), L('Thuyết trình là một kỹ năng quan trọng nhưng chưa dễ tiếp cận. Từ bài tập nhóm, bảo vệ đồ án đến phỏng vấn và gọi vốn đều cần, nhưng hiếm nơi dạy bài bản.','Presenting matters, from group projects and thesis defences to interviews and pitches, yet few places teach it properly.'), L('Luyện mọi lúc ngay trên trình duyệt.','Practise any time, right in your browser.')],
-    ['user','c-orange', L('Thiếu tự tin','Low confidence'), L('Cần thiết trong học tập và công việc, nhưng nhiều người ngại đứng trước đám đông và né các cơ hội trình bày.','Many people avoid speaking up because standing in front of a crowd feels scary.'), L('Tập riêng với AI, không ai nhìn, không sợ sai.','Practise privately with AI. No audience, no pressure.')],
-    ['dollar','c-green', L('Chi phí cao','High cost'), L('Khóa học và người hướng dẫn chất lượng thường tốn kém, lịch học cố định và khó theo kịp.','Good courses and coaches are expensive and run on fixed schedules.'), L('Miễn phí 3 lượt mỗi tháng, luyện lúc nào cũng được.','3 free analyses a month, on your schedule.')],
-    ['help','c-purple', L('Thiếu phản hồi','No feedback'), L('Tự luyện ở nhà khó nhận ra mình nói nhanh, dùng từ đệm hay rời mắt khỏi khán giả.','Practising alone, it’s hard to notice when you rush, say “um” or lose eye contact.'), L('Báo cáo chỉ ra đúng câu, đúng giây cần sửa.','Reports point to the exact sentence and second to fix.')],
+    ['mic','coral', L('Quan trọng nhưng khó tiếp cận','Important but hard to access'), L('Luyện mọi lúc ngay trên trình duyệt.','Practise any time, right in your browser.')],
+    ['user','sand', L('Thiếu tự tin','Low confidence'), L('Tập riêng với AI, không ai nhìn, không sợ sai.','Practise privately with AI. No audience, no pressure.')],
+    ['dollar','teal', L('Chi phí cao','High cost'), L('Miễn phí 3 lượt mỗi tháng, luyện lúc nào cũng được.','3 free analyses a month, on your schedule.')],
+    ['help','mauve', L('Thiếu phản hồi','No feedback'), L('Báo cáo chỉ ra đúng câu, đúng giây cần sửa.','Reports point to the exact sentence and second to fix.')],
   ];
-  const feats = [['wave','c-blue',L('Giọng nói','Voice'),L('Chuyển giọng nói thành văn bản, đo tốc độ, ngắt nghỉ và đếm từ đệm.','Transcribes your speech, measures pace and pauses, counts filler words.')],['doc','c-green',L('Nội dung và kịch bản','Content and script'),L('Chấm logic, cấu trúc, cảnh báo khi lạc đề. Chấm cả kịch bản trước khi bạn nói.','Scores logic and structure, flags off-topic parts, and reviews scripts before you speak.')],['eye','c-orange',L('Ngôn ngữ cơ thể','Body language'),L('Theo dõi ánh mắt, biểu cảm, cử chỉ và tư thế qua video.','Tracks eye contact, expression, gestures and posture on video.')],['users','c-purple',L('Khán giả AI','AI audience'),L('Mỗi loại hình có một người nghe AI riêng đặt câu hỏi phản biện.','Each format has its own AI listener who asks tough questions.')]];
-  const seg0 = (TRANSCRIPTS.presentation[I18N.ui] || TRANSCRIPTS.presentation.vi).segs[3].replace(/\[(.+?)\]/g, '<span class="f">$1</span>'), q0 = GOALS.presentation;
-  const shots = [
-    `<div class="pace">${[133,142,172,123,125].map(v => `<i class="${v > 150 ? 'over' : ''}" style="height:${Math.round(v/2)}%"></i>`).join('')}</div><small>${L('Tốc độ nói','Pace')} · 172 ${L('từ/phút','wpm')}</small>`,
-    `<small>03:23</small><span>${seg0}</span>`,
-    `<small>${L('Ánh mắt','Eye contact')}</small><span class="big num">38%</span><small>${L('Nhìn xuống ghi chú 62% thời gian.','Looking at notes 62% of the time.')}</small>`,
-    `<small>${q0.persona}, ${tx(q0.role).toLowerCase()}</small><span>“${tx(q0.questions[0])}”</span>`,
-  ];
-  const nLessons = Object.values(COURSES).reduce((a,c) => a + c.length, 0);
+  const feats = [['wave','coral',L('Giọng nói','Voice'),L('Chuyển giọng nói thành văn bản, đo tốc độ, ngắt nghỉ và đếm từ đệm.','Transcribes your speech, measures pace and pauses, counts filler words.')],['doc','sand',L('Nội dung và kịch bản','Content and script'),L('Chấm logic, cấu trúc, cảnh báo khi lạc đề. Chấm cả kịch bản trước khi bạn nói.','Scores logic and structure, flags off-topic parts, and reviews scripts before you speak.')],['eye','teal',L('Ngôn ngữ cơ thể','Body language'),L('Theo dõi ánh mắt, biểu cảm, cử chỉ và tư thế qua video.','Tracks eye contact, expression, gestures and posture on video.')],['users','mauve',L('Khán giả AI','AI audience'),L('Mỗi loại hình có một người nghe AI riêng đặt câu hỏi phản biện.','Each format has its own AI listener who asks tough questions.')]];
   return PublicLayout(`
-  <section class="hero"><div class="wrap">
-    <div>
-      <h1>${L('Thuyết trình <span class="hl">tốt hơn</span> qua từng khoảnh khắc bạn luyện cùng chúng tôi.','Present <span class="hl">better</span> every moment you practise with us.')}</h1>
-      <p class="lead">${L(`${CONFIG.brand} lắng nghe bạn nói, chỉ ra từng lỗi nhỏ và gợi ý lộ trình học phù hợp với mục tiêu của bạn.`, `${CONFIG.brand} listens to you speak, points out every small mistake, and suggests a learning path that fits your goal.`)}</p>
-      <div class="ctas"><button class="btn btn-primary btn-lg" data-go="bat-dau">${L('Bắt đầu ngay','Get started')} ${ic('arrow',18)}</button><button class="btn btn-outline btn-lg" data-go="bao-cao-mau">${L('Xem báo cáo mẫu','See a sample report')}</button></div>
-      <div class="facts"><div><b class="num">${GOAL_KEYS.length}</b><span>${L('loại hình thuyết trình','speaking formats')}</span></div><div><b class="num">${nLessons}</b><span>${L('bài học có lộ trình','guided lessons')}</span></div><div><b class="num">7</b><span>${L('tiêu chí chấm điểm','scoring criteria')}</span></div><div><b class="num">2</b><span>${L('ngôn ngữ bài nói','speech languages')}</span></div></div>
+  <section class="hero2">${mosaicHtml()}<div class="hero2-veil" aria-hidden="true"></div>
+    <div class="wrap hero2-in">
+      <h1 class="brand-xl reveal">${CONFIG.brand}</h1>
+      <p class="tagline reveal" style="--rd:.12s">${L('Giải pháp luyện tập thuyết&nbsp;trình cùng mentor AI','Presentation practice with your AI mentor')}</p>
+      <div class="ctas reveal" style="--rd:.24s"><button class="btn btn-glass btn-lg" data-go="dang-nhap">${L('Đăng nhập','Log in')}</button><button class="btn btn-primary btn-lg" data-go="bat-dau">${L('Bắt đầu ngay','Get started')} ${ic('arrow',18)}</button></div>
     </div>
-    <div class="sphere" id="sphere" aria-hidden="true"></div>
+  </section>
+
+  <section class="section pain-sec"><div class="wrap">
+    <div class="sec-head reveal"><h2>${L('Vấn đề phổ biến của các bạn là gì?','What holds most people back?')}</h2></div>
+    <div class="pain-grid">${pains.map(([i,tone,t,f], n) => `<div class="pain-card reveal tone-${tone}" style="--rd:${n*.1}s" tabindex="0"><span class="pain-ic">${ic(i,26)}</span><h3>${t}</h3><p class="pain-fix">${ic('check',16)}<span>${f}</span></p></div>`).join('')}</div>
   </div></section>
 
-  <section class="section"><div class="wrap">
-    <div class="sec-head"><h2>${L('Vấn đề phổ biến của các bạn là gì?','What holds most people back?')}</h2></div>
-    <div class="pain-list"><div class="pain-head" aria-hidden="true"><span></span><span>${L('Với chúng tôi','With us')}</span></div>${pains.map(([i,c,t,p,f]) => `<div class="pain-row"><div><h3>${t}</h3><p>${p}</p></div><div class="pain-fix">${ic('check',20)}<div><b>${L('Với chúng tôi','With us')}</b>${f}</div></div></div>`).join('')}</div>
+  <section class="section feat-sec"><div class="wrap">
+    <div class="sec-head reveal"><h2>${L('AI nghe, xem và đọc bài nói của bạn.','AI listens to, watches and reads your talk.')}</h2><p>${L('Rồi chỉ ra đúng câu, đúng giây cần sửa.','Then shows you the exact sentence and second to fix.')}</p></div>
+    <div class="feat-grid">${feats.map(([i,tone,t,p], n) => `<div class="feat reveal tone-${tone}" style="--rd:${n*.1}s"><div class="feat-ic">${ic(i,28)}</div><h3>${t}</h3><p>${p}</p></div>`).join('')}</div>
   </div></section>
 
-  <section class="section tint"><div class="wrap">
-    <div class="sol-top"><div class="sec-head"><h2>${L('AI nghe, xem và đọc bài nói của bạn.','AI listens to, watches and reads your talk.')}</h2><p>${L('Rồi chỉ ra đúng câu, đúng giây cần sửa.','Then shows you the exact sentence and second to fix.')}</p><button class="btn btn-outline" style="margin-top:24px" data-go="bao-cao-mau">${L('Xem báo cáo mẫu','See a sample report')}</button></div>${heroReport()}</div>
-    <div class="feat-grid">${feats.map(([i,c,t,p], n) => `<div class="feat"><div class="feat-shot" aria-hidden="true">${shots[n]}</div><h3>${t}</h3><p>${p}</p></div>`).join('')}</div>
+  <section class="section steps-sec"><div class="wrap">
+    <div class="sec-head reveal"><h2>${L('Ba bước, khoảng năm phút.','Three steps, about five minutes.')}</h2></div>
+    <ol class="steps">
+      <li class="step reveal tone-coral"><span class="n">1</span><h3>${L('Chọn mục tiêu','Pick your goal')}</h3></li>
+      <li class="step reveal tone-sand" style="--rd:.1s"><span class="n">2</span><h3>${L('Nói hoặc gửi kịch bản','Speak or send a script')}</h3></li>
+      <li class="step reveal tone-teal" style="--rd:.2s"><span class="n">3</span><h3>${L('Nhận báo cáo và bài học tiếp theo','Get a report and your next lesson')}</h3></li>
+    </ol>
   </div></section>
 
-  <section class="section"><div class="wrap">
-    <div class="sec-head"><h2>${L('Ba bước, khoảng năm phút.','Three steps, about five minutes.')}</h2></div>
-    <div class="steps">
-      <div class="step"><div class="n">1</div><h3>${L('Chọn mục tiêu','Pick your goal')}</h3><p>${L('Một trong năm loại hình, chọn ngôn ngữ bài nói và một đề bài có sẵn.','One of five formats, your speech language and a ready-made topic.')}</p></div>
-      <div class="step"><div class="n">2</div><h3>${L('Nói hoặc gửi kịch bản','Speak or send a script')}</h3><p>${L('Ghi âm, quay video, tải file có sẵn hoặc dán kịch bản để AI chấm.','Record audio or video, upload a file, or paste a script for review.')}</p></div>
-      <div class="step"><div class="n">3</div><h3>${L('Nhận báo cáo và bài học tiếp theo','Get a report and your next lesson')}</h3><p>${L('Điểm từng tiêu chí, lỗi kèm trích dẫn, và bài học được gợi ý theo điểm yếu của bạn.','Scores per criterion, mistakes with quotes, and lessons picked for your weak spots.')}</p></div>
-    </div>
+  <section class="section format-sec" id="khoa-hoc-gt"><div class="wrap">
+    <div class="sec-head reveal"><h2>${L('Luyện cho đúng sân khấu bạn sắp bước lên.','Train for the stage you are about to step on.')}</h2><p class="strong">${L('AI riêng cho từng loại hình thuyết trình.','A dedicated AI for each speaking format.')}</p></div>
+    <div class="format-row">${GOAL_KEYS.map((k, n) => formatCard(k, n)).join('')}</div>
   </div></section>
 
-  <section class="section tint" id="khoa-hoc-gt"><div class="wrap">
-    <div class="sec-head"><h2>${L('Luyện cho đúng sân khấu bạn sắp bước lên.','Train for the stage you are about to step on.')}</h2><p class="strong">${L('AI riêng cho từng loại hình thuyết trình.','A dedicated AI for each speaking format.')}</p></div>
-    <div class="course-grid">${GOAL_KEYS.map(k => courseCard(k, {guest:true})).join('')}</div>
-  </div></section>
-
-  <section class="section" style="padding-bottom:0"><div class="wrap">
-    <div class="cta-band"><div><h2>${L('Bài thuyết trình tiếp theo sẽ khác.','Your next presentation will be different.')}</h2><p>${L('Miễn phí 3 lượt phân tích mỗi tháng. Không cần thẻ ngân hàng.','3 free analyses every month. No card needed.')}</p></div><button class="btn btn-white btn-lg" data-go="bat-dau">${L('Bắt đầu miễn phí','Start for free')}</button></div>
-  </div></section>`);
+  <section class="section cta-sec"><div class="wrap">
+    <div class="cta-band reveal">${mosaicHtml()}<div class="cta-in"><div><h2>${L('Bài thuyết trình tiếp theo sẽ khác.','Your next presentation will be different.')}</h2><p>${L('Miễn phí 3 lượt phân tích mỗi tháng. Không cần thẻ ngân hàng.','3 free analyses every month. No card needed.')}</p></div><button class="btn btn-primary btn-lg" data-go="bat-dau">${L('Bắt đầu miễn phí','Start for free')}</button></div></div>
+  </div></section>`, {minimal:true});
 }
-
-function courseCard(k, {guest=false}={}){
-  const g = GOALS[k], ls = COURSES[k], mins = ls.reduce((a,l) => a + l.mins, 0);
-  const path = !guest && S.data ? coursePath(k, S.data) : null, mine = !guest && S.data && S.data.profile.goal === k;
-  return `<div class="course-card"><div class="course-top"><img src="img/${g.img}" alt="${tx(g.alt)}" loading="lazy" width="800" height="600">${mine ? `<span class="chip yellow badge">${ic('star',12)} ${L('Mục tiêu của bạn','Your goal')}</span>` : ''}</div>
-    <div class="course-body"><span class="chip ${'c-' + g.color}" style="align-self:flex-start">${ic(goalIcon[k],14)} ${tx(g.name)}</span><h3>${L('Khóa luyện','Course:')} ${tx(g.name).toLowerCase()}</h3><p>${tx(g.desc)}</p>
-      <div class="course-meta"><span>${ic('book',14)} ${ls.length} ${L('bài học','lessons')}</span><span>${ic('clock',14)} ${mins} ${L('phút','min')}</span><span>${ic('users',14)} ${g.persona}</span></div>
-      ${path ? `<div class="meter good" aria-label="${path.done}/${path.total}"><b style="width:${path.done/path.total*100}%"></b></div><div class="hint">${L(`Đã hoàn thành ${path.done}/${path.total} bài`, `${path.done} of ${path.total} lessons done`)}</div>` : ''}
-      <div class="course-acts">${guest ? `<button class="btn btn-primary btn-sm" data-act="start-goal" data-goal="${k}">${L('Khám phá khóa học','Explore course')}</button><button class="btn btn-outline btn-sm" data-go="bao-cao-mau">${L('Xem báo cáo mẫu','Sample report')}</button>` : `<button class="btn btn-primary btn-sm" data-go="khoa-hoc-chi-tiet" data-p="g=${k}">${path && path.done ? L('Học tiếp','Continue') : L('Vào khóa học','Open course')}</button>`}</div>
-    </div></div>`;
+/* Khối loại hình theo phác thảo (2026-11-18): mỗi khối một màu, tên "Luyện …" và hình minh họa lớn; bấm để bắt đầu với mục tiêu đó. */
+const FORMAT_LOOK = {presentation:['f-present','coral'], reporting:['f-report','sand'], interview:['f-interview','teal'], pitching:['f-pitch','mauve'], debating:['f-debate','steel']};
+function formatCard(k, n = 0){
+  const g = GOALS[k], [icon, tone] = FORMAT_LOOK[k] || ['mic','coral'];
+  return `<button class="format-block reveal tone-${tone}" style="--rd:${n*.08}s" data-act="start-goal" data-goal="${k}" aria-label="${L(`Luyện ${tx(g.name).toLowerCase()}`, `${tx(g.name)} practice`)}">
+    <span class="fb-title">${L(`Luyện ${tx(g.name).toLowerCase().replace(/ /g, '&nbsp;')}`, `${tx(g.name)} practice`)}</span>
+    <span class="fb-art" aria-hidden="true"><span class="fb-blob"></span><span class="fb-ic">${ic(icon,64)}</span></span>
+    <span class="fb-go" aria-hidden="true">${ic('arrow',18)}</span></button>`;
 }
 
 /* ---------- Bắt đầu (khách): ngôn ngữ giao diện → mục tiêu → ngôn ngữ bài nói → xem trước ---------- */

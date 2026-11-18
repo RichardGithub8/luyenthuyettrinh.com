@@ -37,7 +37,7 @@ Feedback tied to the exact moment in the user's own talk (transcript line, times
 
 - Front end is a static single-page app: plain HTML, one stylesheet (`css/app.css`), vanilla JS views rendered as template strings, hash routing, localStorage as the demo store. `build.sh` wraps it for Netlify. No framework, no build step.
 - A separate Next.js + Supabase backend exists in `../luyenthuyettrinh-app`; it is not part of the visual work here.
-- Plans: Free (3 analyses a month, 5 minutes analysed, no video) and Premium (50 a month, 30 minutes, video, live coaching, AI audience Q&A, error timeline, 4-week plan). Prices and limits live in `js/config.js` and are marked "needs confirmation" by the owner; never restate them elsewhere.
+- Plans (owner's pricing sheet, 2026-11-18): Free (3 analyses a month, 5 minutes, live recording or script only, Presentation + Report modes); Pass 59.000đ for 7 days (15 analyses per pass, 20 minutes, every format and mode, timeline reports and AI audience questions); Premium 79.000đ/month or 399.000đ/6 months (fair use 60 a month, 30 minutes, live coaching, history and comparison); Team 690.000đ/month or 3.490.000đ/6 months (up to 5 accounts with Premium privileges, team dashboard, shared scripts). Prices and limits live in `js/config.js` and must match the backend's `src/config/plans.ts`; never restate them elsewhere.
 - Contact details in `js/config.js` are placeholders awaiting confirmation.
 
 ## Brand Commitments
