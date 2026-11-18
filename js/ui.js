@@ -64,6 +64,17 @@ const ICON = {
 };
 const ic = (n, s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[n] || ''}</svg>`;
 const proChip = () => '<span class="chip pro">PREMIUM</span>';
+/* Nhãn gói thấp nhất mở tính năng (vd. "PASS" cho video, "PREMIUM" cho nhắc nhở thời gian thực). */
+const lockChip = f => `<span class="chip pro">${planName(planFor(f)).toUpperCase()}</span>`;
+/* Quyền lợi từng gói theo bảng giá (dùng cho bảng giá và hộp thoại chào mừng). */
+function planFeatures(k){
+  return {
+    free: [L('3 lượt phân tích mỗi tháng, bài tối đa 5 phút','3 analyses a month, up to 5 minutes each'), L('Ghi âm trực tiếp hoặc chấm kịch bản cơ bản','Live recording or basic script review'), L('Loại hình Thuyết trình và Báo cáo','Presentation and Report modes'), L('Xem điểm tổng và báo cáo tóm tắt','Overall score and summary report')],
+    pass: [L('15 lượt phân tích trong 7 ngày, bài tối đa 20 phút','15 analyses over 7 days, up to 20 minutes each'), L('Ghi âm, quay video, tải file và chấm kịch bản đầy đủ','Audio, video, file upload and full script review'), L('Mở cả 5 loại hình: Thuyết trình, Báo cáo, Phỏng vấn, Gọi vốn, Tranh biện','All 5 modes: Presentation, Report, Interview, Pitching, Debate'), L('Đầy đủ chuyên gia AI (Cô Thảo vận hành, Nhà đầu tư AI…)','Every AI expert (Ms. Thao in operations, the AI investor…)'), L('Báo cáo theo dòng thời gian và câu hỏi phản biện của khán giả AI','Timeline reports and cross-examination from the AI audience')],
+    premium: [L('Phân tích không giới hạn (dùng hợp lý tới 60 bài mỗi tháng), bài tối đa 30 phút','Unlimited analysis (fair use up to 60 a month), up to 30 minutes each'), L('Phân tích đa phương thức video + âm thanh','Multimodal video + audio analysis'), L('Đo tốc độ nói, phát hiện từ đệm, chấm ngữ điệu','Speaking rate, filler words and intonation scoring'), L('Nhắc nhở thời gian thực khi đang nói','Live coaching while you speak'), L('Báo cáo chi tiết theo từng mốc trong video','Detailed reports by timeline milestones'), L('Lưu lịch sử và biểu đồ so sánh tiến bộ','Progress history and comparison charts')],
+    team: [L('Tối đa 5 tài khoản trong một nhóm','Up to 5 member accounts in one team'), L('Mỗi thành viên có đủ quyền lợi Premium','Every member gets all Premium privileges'), L('Bảng điều khiển nhóm cho trưởng nhóm hoặc giảng viên','Team dashboard for the leader or instructor'), L('Chia sẻ kịch bản và tài liệu luyện tập trong nhóm','Share scripts and practice resources in the team'), L('Thống kê tiến bộ của cả nhóm','Team-wide progress statistics')],
+  }[k] || [];
+}
 const alertBox = (kind, msg) => msg ? `<div class="alert ${kind}" role="${kind === 'err' ? 'alert' : 'status'}">${ic(kind === 'err' ? 'alert' : kind === 'ok' ? 'check' : 'info', 18)}<div>${msg}</div></div>` : '';
 const goalIcon = {presentation:'users', reporting:'chart', interview:'user', pitching:'dollar', debating:'mic'};
 
@@ -141,17 +152,19 @@ function Footer(){
 function OnboardLayout(inner){
   return `<header class="p-nav"><div class="wrap">${logo('tong-quan')}<div class="right"><span class="muted hide-sm" style="font-size:14px">${esc(S.data.profile.email)}</span><button class="btn btn-ghost btn-sm" data-act="logout">${L('Đăng xuất','Log out')}</button></div></div></header><div class="wrap flow-body"><div class="flow-card">${inner}</div></div>`;
 }
-const NAV = () => [['tong-quan', L('Tổng quan','Dashboard'), 'home'], ['luyen-tap', L('Luyện tập','Practice'), 'mic'], ['khoa-hoc', L('Khóa học','Courses'), 'book'], ['thu-vien', L('Thư viện','Library'), 'lib'], ['tien-bo', L('Tiến bộ','Progress'), 'chart'], ['goi-dich-vu', L('Gói dịch vụ','Plans'), 'card'], ['tai-khoan', L('Tài khoản','Account'), 'user']];
+const NAV = () => [['tong-quan', L('Tổng quan','Dashboard'), 'home'], ['luyen-tap', L('Luyện tập','Practice'), 'mic'], ['khoa-hoc', L('Khóa học','Courses'), 'book'], ['thu-vien', L('Thư viện','Library'), 'lib'], ['tien-bo', L('Tiến bộ','Progress'), 'chart'], ...(planKey() === 'team' || (S.team && (S.team.team || (S.team.invites || []).length)) ? [['nhom', L('Nhóm','Team'), 'users']] : []), ['goi-dich-vu', L('Gói dịch vụ','Plans'), 'card'], ['tai-khoan', L('Tài khoản','Account'), 'user']];
 function AppLayout(inner){
   const p = plan(), active = (ROUTES[S.route] || {}).nav, pending = S.data.library.filter(l => /^pending|error/.test(l.status)).length;
   const acts = NAV().filter(([k]) => k === 'goi-dich-vu' || k === 'tai-khoan').map(([k,l,i]) => `<button class="icon-btn ${active===k?'on':''}" data-go="${k}" aria-label="${l}" title="${l}">${ic(i,21)}</button>`).join('');
   return `<div class="shell"><aside class="side">${logo('tong-quan')}<div class="side-acts">${acts}</div><nav aria-label="${L('Điều hướng ứng dụng','App navigation')}">${NAV().map(([k,l,i]) => `<button class="${active===k?'on':''} ${k === 'goi-dich-vu' || k === 'tai-khoan' ? 'sec' : ''}" data-go="${k}" ${active===k?'aria-current="page"':''}>${ic(i,20)}<span>${l}</span>${k === 'thu-vien' && pending ? `<span class="badge-n" aria-label="${pending} ${L('bài chờ xử lý','pending')}">${pending}</span>` : ''}</button>`).join('')}</nav>
-    <div class="plan-box"><b>${L('Gói','Plan')} ${planName()}</b><span class="muted">${L(`Còn ${left()} / ${p.limit} lượt tháng này`, `${left()} of ${p.limit} analyses left this month`)}</span><div class="meter"><b style="width:${Math.min(100, S.data.used/p.limit*100)}%"></b></div>${isPro() ? '' : `<button class="btn btn-primary btn-sm" style="margin-top:12px" data-act="buy">${L('Nâng cấp Premium','Upgrade to Premium')}</button>`}</div>
+    <div class="plan-box"><b>${L('Gói','Plan')} ${planName()}</b><span class="muted">${L(`Còn ${left()} / ${p.limit} lượt ${periodText()}`, `${left()} of ${p.limit} analyses left ${periodText()}`)}</span>${isPaid() && S.data.expiry ? `<span class="muted">${L('Hiệu lực đến','Active until')} ${fmtDL(S.data.expiry)}</span>` : ''}<div class="meter"><b style="width:${Math.min(100, S.data.used/Math.max(1, p.limit)*100)}%"></b></div>${isPro() ? '' : `<button class="btn btn-primary btn-sm" style="margin-top:12px" data-go="goi-dich-vu">${planKey() === 'pass' ? L('Gia hạn hoặc lên Premium','Renew or go Premium') : L('Xem các gói','See plans')}</button>`}</div>
   </aside><main class="main"><div class="main-inner">${inner}</div></main></div>`;
 }
-function gate(html, title, desc){
-  if(S.data && isPro()) return html;
-  const btn = S.data ? `<button class="btn btn-primary btn-sm" data-act="buy">${L('Nâng cấp Premium','Upgrade to Premium')}</button>` : `<button class="btn btn-primary btn-sm" data-go="bang-gia">${L('Xem bảng giá','See pricing')}</button>`;
-  return `<div class="lock-card">${html}<div class="lock-over">${proChip()}<b>${title}</b><p class="muted" style="font-size:13px;max-width:42ch">${desc}</p>${btn}</div></div>`;
+/* Khóa một khối theo tính năng của gói (f: 'live' | 'timeline' | 'qa' | 'history' …). Gợi ý đúng gói thấp nhất có tính năng. */
+function gate(html, title, desc, f = 'history'){
+  if(S.data && can(f)) return html;
+  const need = planFor(f);
+  const btn = S.data ? `<button class="btn btn-primary btn-sm" data-act="buy" data-product="${need}">${L(`Mở bằng gói ${planName(need)}`, `Unlock with ${planName(need)}`)}</button>` : `<button class="btn btn-primary btn-sm" data-go="bang-gia">${L('Xem bảng giá','See pricing')}</button>`;
+  return `<div class="lock-card">${html}<div class="lock-over">${lockChip(f)}<b>${title}</b><p class="muted" style="font-size:13px;max-width:42ch">${desc}</p>${btn}</div></div>`;
 }
 const progressSteps = (labels, cur) => `<div class="progress-steps" aria-label="${L('Tiến trình','Progress')}">${labels.map((l,i) => `${i ? '<i></i>' : ''}<span class="${i===cur?'on':''} ${i<cur?'done':''}"><b>${i<cur ? ic('check',12) : i+1}</b>${l}</span>`).join('')}</div>`;

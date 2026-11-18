@@ -95,6 +95,7 @@ const Practice = {
     D.placement = ps ? {id:ps.id, score:ps.score, seen:!!(D.placement && D.placement.id === ps.id && D.placement.seen)} : null;
     this.deriveLessons();
     this.resume();
+    Team.load();   // nhóm và lời mời (gói Team)
   },
   /* Tiến độ bài học (số lần, điểm cao nhất, hoàn thành) tính từ các buổi đã chấm. */
   deriveLessons(){
@@ -108,7 +109,7 @@ const Practice = {
   },
   async refreshMe(){
     const me = await Auth.me(); if(!me || !S.data) return;
-    Object.assign(S.data, {plan:me.plan, expiry:me.premiumExpiresAt ? me.premiumExpiresAt.slice(0, 10) : null, used:me.usage.used});
+    Object.assign(S.data, {plan:me.plan, expiry:me.premiumExpiresAt ? me.premiumExpiresAt.slice(0, 10) : null, used:me.usage.used, limit:me.usage.limit, usageScope:me.usage.scope});
   },
   /* Sau khi tải lại trang: nếu có bài đang phân tích thì theo dõi tiếp. */
   resume(){
@@ -129,14 +130,14 @@ const Practice = {
   /* Tạo buổi luyện, tải tệp lên Storage, báo hoàn tất. Dùng cho cả ghi âm/quay video lẫn tải file. */
   startMedia(file, dur, kind, name){
     if(!navigator.onLine){ toast(L('Bạn đang ngoại tuyến. Kết nối mạng rồi thử lại.','You’re offline. Reconnect and try again.'), 'err'); return; }
-    S.upload = {file:{name:name || file.name || 'recording', size:file.size, type:file.type, dur}, blob:file, kind, draft:{...S.draft}, pct:0, status:'uploading', ctl:{}};
+    S.upload = {file:{name:name || file.name || 'recording', size:file.size, type:file.type, dur}, blob:file, kind, source:name === 'recording' ? 'recording' : 'upload', draft:{...S.draft}, pct:0, status:'uploading', ctl:{}};
     go('tai-len'); this.runUpload();
   },
   async runUpload(){
     const u = S.upload; if(!u) return; u.status = 'uploading'; u.pct = Math.min(u.pct, 95);
     const upd = p => { u.pct = p; const b = $('#up-bar'), t = $('#up-pct'); if(b) b.style.width = p + '%'; if(t) t.textContent = Math.round(p) + '%'; };
     try {
-      if(!u.created) u.created = await api('/sessions', {method:'POST', body:{kind:u.kind, mimeType:u.blob.type || (u.kind === 'video' ? 'video/webm' : 'audio/webm'), sizeBytes:u.blob.size, ...this.ctx(u.draft)}});
+      if(!u.created) u.created = await api('/sessions', {method:'POST', body:{kind:u.kind, mimeType:u.blob.type || (u.kind === 'video' ? 'video/webm' : 'audio/webm'), sizeBytes:u.blob.size, source:u.source, ...this.ctx(u.draft)}});
       await putSigned(u.created.upload.signedUrl, u.blob, upd, u.ctl);
       if(S.upload !== u) return;
       upd(100);

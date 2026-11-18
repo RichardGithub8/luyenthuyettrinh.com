@@ -12,12 +12,22 @@ const CONFIG = {
     youtube: 'https://youtube.com/',
     tiktok: 'https://tiktok.com/',
   },
-  // CẦN XÁC NHẬN: giá và giới hạn gói
-  price: {m:149000, y:1290000},
-  plans: {
-    free:    {limit:3,  maxAnalyzeSec:300,  video:false, live:false, compareMax:3},
-    premium: {limit:50, maxAnalyzeSec:1800, video:true,  live:true,  compareMax:6},
+  // Bảng giá của chủ sản phẩm (2026-11-18). Phải khớp backend: luyenthuyettrinh-app/src/config/plans.ts.
+  prices: {
+    pass:    {once:59000},
+    premium: {monthly:79000, semiannual:399000},
+    team:    {monthly:690000, semiannual:3490000},
   },
+  // Quyền lợi theo gói (giá trị thật lấy từ /api/me khi đã đăng nhập; đây là mặc định để hiển thị).
+  plans: {
+    free:    {limit:3,  period:'month', maxAnalyzeSec:300,  video:false, upload:false, live:false, allGoals:false, timeline:false, qa:false, history:false, compareMax:0},
+    pass:    {limit:15, period:'pass',  maxAnalyzeSec:1200, video:true,  upload:true,  live:false, allGoals:true,  timeline:true,  qa:true,  history:false, compareMax:0},
+    premium: {limit:60, period:'month', maxAnalyzeSec:1800, video:true,  upload:true,  live:true,  allGoals:true,  timeline:true,  qa:true,  history:true,  compareMax:6},
+    team:    {limit:60, period:'month', maxAnalyzeSec:1800, video:true,  upload:true,  live:true,  allGoals:true,  timeline:true,  qa:true,  history:true,  compareMax:6},
+  },
+  freeGoals: ['presentation', 'reporting'],
+  teamMaxMembers: 5,
+  passDays: 7,
   maxRecordSec: 1800,          // giới hạn cứng mỗi bản ghi (30 phút)
   maxUploadMB: 200,
   uploadTypes: ['audio/mpeg','audio/mp3','audio/wav','audio/x-wav','audio/mp4','audio/x-m4a','audio/m4a','audio/webm','audio/ogg','video/mp4','video/webm','video/quicktime'],

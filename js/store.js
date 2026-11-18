@@ -61,7 +61,7 @@ const UserStore = {
     const local = DB.get(this.key(me.email)) || {lessons:{}, placement:null, invoices:[], cycle:'m', autoRenew:true, payMethod:'MoMo'};
     const d = {...local, sessions:[], library:[],
       profile:{...(local.profile || {}), name:me.fullName, email:me.email, org:me.organization || '', goal:me.defaultGoal || 'presentation', speechLang:me.speakingLanguage || 'vi', ui:me.uiLanguage || I18N.ui},
-      onboarded:me.onboarded, plan:me.plan, expiry:me.premiumExpiresAt ? me.premiumExpiresAt.slice(0,10) : null, used:me.usage.used, usedMonth:monthKey(),
+      onboarded:me.onboarded, plan:me.plan, expiry:me.premiumExpiresAt ? me.premiumExpiresAt.slice(0,10) : null, used:me.usage.used, limit:me.usage.limit, usageScope:me.usage.scope, usedMonth:monthKey(),
     };
     // Bản chụp phần máy chủ đang giữ, để chỉ gửi lên khi người dùng thật sự đổi.
     Object.defineProperty(d, '_srv', {value:this.serverView(d), writable:true, enumerable:false});
