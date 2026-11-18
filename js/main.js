@@ -79,7 +79,15 @@ function render(){
   if(r !== 'tai-len' && S.upload) Practice.cancelUpload();
   $('#app').innerHTML = R.v() + modalHtml() + devHtml() + (S.offline ? `<div class="offline" role="alert">${ic('wifi',14)} ${L('Mất kết nối mạng. Một số thao tác sẽ không thực hiện được cho tới khi có mạng lại.','You’re offline. Some actions won’t work until you reconnect.')}</div>` : '');
   if(S.lastRoute !== r){ window.scrollTo(0,0); S.lastRoute = r; }
+  revealInit();
   if(r === 'ghi-am') attachRec();
+}
+/* Hiện dần các khối .reveal khi cuộn tới (trang chủ). Tắt chuyển động: hiện ngay. */
+function revealInit(){
+  const els = document.querySelectorAll('.reveal:not(.in)'); if(!els.length) return;
+  if(!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches){ els.forEach(e => e.classList.add('in')); return; }
+  const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }), {threshold:.15, rootMargin:'0px 0px -40px 0px'});
+  els.forEach(e => io.observe(e));
 }
 window.addEventListener('hashchange', render);
 window.addEventListener('online', () => { S.offline = false; render(); toast(L('Đã có mạng trở lại.','You’re back online.')); });
@@ -178,7 +186,7 @@ function drawWave(r){
   const now = performance.now()/1000;
   for(let i = 0; i < bars; i++){
     const v = r.paused ? .04 : data ? (data[Math.floor(i/bars*data.length*.7)] || 0)/255 : .15 + .55*Math.abs(Math.sin(i*.35+now*3)*Math.sin(i*.13-now*1.7)) + Math.random()*.08;
-    const h = Math.max(3, v*H*.85); c.fillStyle = i % 4 === 0 ? '#2563EB' : '#22D3EE';
+    const h = Math.max(3, v*H*.85); c.fillStyle = i % 4 === 0 ? '#4E93B6' : '#FF7A66';
     c.beginPath(); if(c.roundRect) c.roundRect(i*7 + 2, (H-h)/2, 4, h, 2); else c.rect(i*7 + 2, (H-h)/2, 4, h); c.fill();
   }
   r.raf = requestAnimationFrame(() => drawWave(r));

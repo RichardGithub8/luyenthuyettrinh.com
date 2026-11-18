@@ -86,7 +86,7 @@ function paceChart(vals){
 function ring(v, size=150, count=false){
   const sw = Math.max(5, Math.round(size/12)), r = size/2 - sw/2 - 1, c = 2*Math.PI*r, small = size < 100, gid = 'rg' + size;
   /* Vòng điểm dùng gradient cyan → xanh; count=true: số điểm đếm lên và vòng chạy khi mở báo cáo. */
-  return `<div class="ring ${count ? 'count-up' : ''}" style="width:${size}px;height:${size}px;--c:${c};--v:${v}"><svg width="${size}" height="${size}" aria-hidden="true"><defs><linearGradient id="${gid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22D3EE"/><stop offset="1" stop-color="#2563EB"/></linearGradient></defs><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--soft-2)" stroke-width="${sw}"/><circle class="arc" cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="url(#${gid})" stroke-width="${sw}" stroke-linecap="round" stroke-dasharray="${c*v/100} ${c}"/></svg><div class="rv" aria-label="${v}/100"><div><b class="num" style="font-size:${Math.round(size*(small ? .3 : .28))}px">${count ? `<i class="cnt" style="--n:${v}"></i>` : v}</b>${small ? '' : '<br><span>/ 100</span>'}</div></div></div>`;
+  return `<div class="ring ${count ? 'count-up' : ''}" style="width:${size}px;height:${size}px;--c:${c};--v:${v}"><svg width="${size}" height="${size}" aria-hidden="true"><defs><linearGradient id="${gid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF7A66"/><stop offset="1" stop-color="#4E93B6"/></linearGradient></defs><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--soft-2)" stroke-width="${sw}"/><circle class="arc" cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="url(#${gid})" stroke-width="${sw}" stroke-linecap="round" stroke-dasharray="${c*v/100} ${c}"/></svg><div class="rv" aria-label="${v}/100"><div><b class="num" style="font-size:${Math.round(size*(small ? .3 : .28))}px">${count ? `<i class="cnt" style="--n:${v}"></i>` : v}</b>${small ? '' : '<br><span>/ 100</span>'}</div></div></div>`;
 }
 const barRow = (k, v) => `<div class="bar-row"><span>${k}</span><div class="track"><b class="${bCls(v)}" style="width:${v}%"></b></div><b class="num">${v}</b></div>`;
 
@@ -94,8 +94,14 @@ const barRow = (k, v) => `<div class="bar-row"><span>${k}</span><div class="trac
 const logo = to => `<button class="logo" data-go="${to}" aria-label="${CONFIG.brand}"><span class="logo-mark"><span><i style="height:6px"></i><i style="height:14px"></i><i style="height:9px"></i><i style="height:12px"></i></span></span><span class="lname">${CONFIG.brand}</span></button>`;
 const langSwitch = () => `<div class="lang-sw" role="group" aria-label="${L('Ngôn ngữ giao diện','Interface language')}"><button class="${I18N.ui==='vi'?'on':''}" data-act="ui-lang" data-v="vi" aria-pressed="${I18N.ui==='vi'}">VI</button><button class="${I18N.ui==='en'?'on':''}" data-act="ui-lang" data-v="en" aria-pressed="${I18N.ui==='en'}">EN</button></div>`;
 
-function PublicLayout(inner, {footer=true}={}){
+function PublicLayout(inner, {footer=true, minimal=false}={}){
   const r = S.route;
+  /* Trang chủ: đầu trang tối giản theo phác thảo (menu bên trái, VI | EN bên phải), tên thương hiệu nằm trong hero. */
+  if(minimal) return `<header class="p-nav min ${S.menu ? 'open' : ''}"><div class="wrap">
+      <button class="icon-btn" data-act="menu" aria-label="${L('Mở menu','Open menu')}" aria-expanded="${S.menu}">${ic(S.menu ? 'x' : 'menu',24)}</button>
+      <div class="right">${langSwitch()}</div>
+      ${S.menu ? `<nav class="menu menu-left" aria-label="${L('Điều hướng','Navigation')}"><button data-act="scroll" data-to="khoa-hoc-gt">${ic('book',18)} ${L('Khóa học','Courses')}</button><button data-go="bang-gia">${ic('card',18)} ${L('Bảng giá','Pricing')}</button><button data-go="bao-cao-mau">${ic('chart',18)} ${L('Báo cáo mẫu','Sample report')}</button><hr><button data-go="dang-nhap">${ic('user',18)} ${L('Đăng nhập','Log in')}</button><button data-go="dang-ky">${ic('sparkles',18)} ${L('Đăng ký','Sign up')}</button></nav>` : ''}
+    </div></header><main class="p-main">${inner}</main>${footer ? Footer() : ''}`;
   const links = [['', 'khoa-hoc-gt', L('Khóa học','Courses')], ['bang-gia', null, L('Bảng giá','Pricing')], ['bao-cao-mau', null, L('Báo cáo mẫu','Sample report')]];
   return `<header class="p-nav"><div class="wrap">${logo('')}
       <nav class="p-links" aria-label="${L('Điều hướng','Navigation')}">${links.map(([to, anchor, l]) => anchor ? `<button data-act="scroll" data-to="${anchor}">${l}</button>` : `<button class="${r===to?'on':''}" data-go="${to}">${l}</button>`).join('')}</nav>

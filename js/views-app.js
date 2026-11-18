@@ -200,7 +200,7 @@ function vAnalyzing(){
   const timeout = failed && item.reason === 'timeout', cur = steps[Math.min(i, n - 1)];
   const R = 74, C = 2*Math.PI*R;
   const ringHtml = `<div class="an-ring ${failed ? 'fail' : ''} ${done ? 'done' : ''}" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100" aria-label="${tx(cur.s)}">
-      <svg viewBox="0 0 180 180" aria-hidden="true"><defs><linearGradient id="an-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22D3EE"/><stop offset="1" stop-color="#2563EB"/></linearGradient></defs>
+      <svg viewBox="0 0 180 180" aria-hidden="true"><defs><linearGradient id="an-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF7A66"/><stop offset="1" stop-color="#4E93B6"/></linearGradient></defs>
         <circle cx="90" cy="90" r="${R}" class="trk"/><circle cx="90" cy="90" r="${R}" class="val" stroke-dasharray="${C}" style="--from:${C*(1-prev/100)};--to:${C*(1-(failed ? Math.max(pct, 20) : pct)/100)}"/></svg>
       <div class="an-ring-c">${done ? ic('check',44) : failed ? ic('x',40) : `<b class="num">${pct}<small>%</small></b><span class="num">${Math.min(i + 1, n)}/${n}</span>`}</div>
     </div>`;
