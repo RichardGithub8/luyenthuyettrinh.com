@@ -80,7 +80,6 @@ function render(){
   $('#app').innerHTML = R.v() + modalHtml() + devHtml() + (S.offline ? `<div class="offline" role="alert">${ic('wifi',14)} ${L('Mất kết nối mạng. Một số thao tác sẽ không thực hiện được cho tới khi có mạng lại.','You’re offline. Some actions won’t work until you reconnect.')}</div>` : '');
   if(S.lastRoute !== r){ window.scrollTo(0,0); S.lastRoute = r; }
   revealInit();
-  if(r === 'bao-cao' && S.params.sec && S.secDone !== location.hash){ const t = document.getElementById(S.params.sec); if(t){ S.secDone = location.hash; setTimeout(() => t.scrollIntoView({behavior:'smooth', block:'start'}), 80); } } // chỉ cuộn một lần cho mỗi link
   if(r === 'ghi-am') attachRec();
 }
 /* Hiện dần các khối .reveal khi cuộn tới (trang chủ). Tắt chuyển động: hiện ngay. */
@@ -363,8 +362,12 @@ const ACTIONS = {
     if(kind === 'script'){ const it = libItem(s.libId); S.scriptText = it ? await Practice.scriptText(it).catch(() => '') : ''; return go('kich-ban'); }
     go('luyen-tap');
   },
-  jump(el){ flash(el.dataset.to); },
-  'rep-sec'(el){ const t = document.getElementById(el.dataset.to); if(!t) return; t.scrollIntoView({behavior:'smooth', block:'start'}); document.querySelectorAll('.rep-nav button').forEach(b => b.classList.toggle('on', b === el)); },
+  /* Nhảy tới một câu trong bản chép lời/kịch bản. Nếu đang ở tab khác của báo cáo thì chuyển sang tab đó trước. */
+  jump(el){ const id = el.dataset.to; if(!document.getElementById(id) && S.repTab){ S.repTab.tab = 'rep-tr'; render(); setTimeout(() => flash(id), 60); return; } flash(id); },
+  'rep-sec'(el){
+    if(!S.repTab) return; S.repTab.tab = el.dataset.to; render();
+    const nav = document.querySelector('.rep-nav'); if(nav && nav.getBoundingClientRect().top < 0) nav.scrollIntoView({block:'start'});
+  },
   'report-reload'(el){ const x = S.data.sessions.find(q => q.id === el.dataset.id); if(x){ x.loadErr = false; x.loading = false; } render(); },
   'qa-open'(el){ if(!S.data || !isPro()){ toast(L('Trả lời phản biện có trong gói Premium','Answering questions is a Premium feature')); return S.data ? openPay(null) : go('bang-gia'); } const i = el.dataset.i; S.qa[i] = {...(S.qa[i] || {}), open:!(S.qa[i] || {}).open}; render(); },
   'qa-grade'(el){ const i = el.dataset.i, q = S.qa[i] || {}; if(!(q.text || '').trim()){ toast(L('Nhập câu trả lời trước khi chấm','Type an answer first')); return; } S.qa[i] = {...q, state:'loading'}; render(); setTimeout(() => { if(!S.qa[i]) return; S.qa[i] = {...S.qa[i], state:'done', fb:gradeAnswer(S.qa[i].text, el.dataset.goal)}; if(S.route === 'bao-cao') render(); }, 1100); },

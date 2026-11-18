@@ -46,7 +46,7 @@ function vDashboard(){
   const D = S.data, ss = D.sessions, name = esc((D.profile.name || '').trim().split(' ').pop() || L('bạn','there'));
   const pending = D.library.filter(l => /^pending|error/.test(l.status));
   let body = '';
-  if(D.placement && !D.placement.seen) body += `<div class="banner good"><div><h3>${L(`Kết quả bài test đầu vào: ${levelName(D.placement.score)}, ${D.placement.score} điểm`, `Placement result: ${levelName(D.placement.score)}, ${D.placement.score} points`)}</h3><p>${L('Lộ trình khóa học đã được sắp xếp theo điểm yếu của bạn.','Your course path is now ordered by your weak spots.')}</p></div><div class="acts"><button class="btn btn-primary btn-sm" data-go="bao-cao" data-p="id=${D.placement.id}">${L('Xem báo cáo','View report')}</button><button class="btn btn-ghost btn-sm" data-act="placement-seen">${L('Đóng','Dismiss')}</button></div></div>`;
+  if(D.placement && !D.placement.seen) body += `<div class="banner good"><div><h3>${L(`Kết quả bài test đầu vào: ${levelName(D.placement.score)}, ${D.placement.score} điểm`, `Placement result: ${levelName(D.placement.score)}, ${D.placement.score} points`)}</h3></div><div class="acts"><button class="btn btn-primary btn-sm" data-go="bao-cao" data-p="id=${D.placement.id}">${L('Xem báo cáo','View report')}</button><button class="btn btn-ghost btn-sm" data-act="placement-seen">${L('Đóng','Dismiss')}</button></div></div>`;
   if(pending.length) body += `<div class="banner warn"><div><h3>${L(`${pending.length} bài nói đang chờ phân tích`, `${pending.length} talk${pending.length>1?'s':''} waiting for analysis`)}</h3><p>${esc(pending[0].title)}${pending.length > 1 ? L(` và ${pending.length-1} bài khác`, ` and ${pending.length-1} more`) : ''}</p></div><button class="btn btn-primary btn-sm" data-go="thu-vien" data-p="f=pending">${L('Mở thư viện','Open library')}</button></div>`;
   else if(!isPro() && left() <= 1) body += `<div class="banner"><div><h3>${left() ? L('Còn 1 lượt phân tích trong tháng','1 analysis left this month') : L('Bạn đã dùng hết lượt phân tích tháng này','You’ve used all analyses this month')}</h3><p>${L('Premium có 50 lượt mỗi tháng, phân tích video và khán giả AI.','Premium includes 50 analyses a month, video analysis and the AI audience.')}</p></div><button class="btn btn-primary btn-sm" data-act="buy">${L('Nâng cấp','Upgrade')}</button></div>`;
   /* Bố cục theo phác thảo của chủ sản phẩm (2026-11-18): lời chào → kết quả gần nhất → 4 chỉ số → lỗi thường gặp → nút bắt đầu luyện. */
@@ -272,26 +272,31 @@ function vReport(sample){
     ${!sample && s.mock ? `<div class="banner"><div><h3>${L('Đây là kết quả mô phỏng','These are simulated results')}</h3><p>${L('Hệ thống đang chạy chế độ mô phỏng (chưa kết nối AI thật), nên điểm và nhận xét chỉ để minh họa luồng sử dụng.','The system is in simulation mode (no live AI connected), so scores and feedback only illustrate the flow.')}</p></div></div>` : ''}
     ${!sample && !isScript && !s.server ? `<div class="banner"><div><h3>${L('Bản thử nghiệm chưa kết nối AI giọng nói','Beta: speech AI not connected yet')}</h3><p>${L(`Điểm, bản chép lời và gợi ý là dữ liệu mẫu theo loại hình ${tx(g.name).toLowerCase()}. Bản ghi của bạn vẫn được lưu để nghe lại.`, `Scores, transcript and tips are sample data for ${tx(g.name).toLowerCase()}. Your recording is still saved for playback.`)}</p></div></div>` : ''}
     ${isScript && !s.mock ? `<div class="banner good"><div><h3>${L('Phân tích tự động trên kịch bản của bạn','Automatic analysis of your script')}</h3><p>${L('Điểm và lỗi dưới đây được tính từ chính nội dung bạn gửi.','The scores and issues below are calculated from your own text.')}</p></div></div>` : ''}
-    ${repNav(isScript, sample)}
-    <div class="card rep-hero" id="rep-top"><div class="rep-top">${ring(s.score, 168, true)}<div style="min-width:0">
+`;
+  const overview = `<div class="card rep-hero" id="rep-top"><div class="rep-top">${ring(s.score, 168, true)}<div style="min-width:0">
       <div class="chips" style="margin-bottom:12px"><span class="chip blue">${L('Trình độ','Level')}: ${levelName(s.score)}</span>${prev ? `<span class="chip ${s.score >= prev.score ? 'good' : 'bad'}">${s.score >= prev.score ? '+' : ''}${s.score - prev.score} ${L('so với lần trước','vs. last time')}</span>` : ''}<span class="chip line">${isScript ? s.script.weakTotal + ' ' + L('từ thừa','filler words') : s.fillers + ' ' + L('từ đệm','fillers')}</span></div>
       <h3 style="font-size:19px">${L(`Mạnh nhất: ${tx(crit[ranked[0]]).toLowerCase()}. Cần ưu tiên: ${tx(crit[ranked[ranked.length-1]]).toLowerCase()}.`, `Strongest: ${tx(crit[ranked[0]]).toLowerCase()}. Focus next on: ${tx(crit[ranked[ranked.length-1]]).toLowerCase()}.`)}</h3>
       <p class="muted" style="margin-top:6px;font-size:14px">${isScript ? L(`Kịch bản ${s.script.wc} từ, ${s.script.paras} đoạn, khoảng ${fmtDur(s.script.estSec)} khi nói.`, `${s.script.wc} words in ${s.script.paras} paragraphs, about ${fmtDur(s.script.estSec)} spoken.`) : L(`Người nghe AI: ${g.persona}, ${tx(g.role).toLowerCase()}.`, `AI listener: ${g.persona}, ${tx(g.role).toLowerCase()}.`)}</p>
       <div class="crit">${ranked.map(k => barRow(tx(crit[k]), s.c[k])).join('')}</div>
-    </div></div></div>`;
-  if(s.server && (s.summary || s.strengths.length)) html += aiSummaryCard(s);
-  html += isScript ? reportScript(s, g) : reportSpeech(s, g, sample);
+    </div></div>${s.server && (s.summary || s.strengths.length) ? aiSummaryInner(s) : ''}</div>`;
+  const sections = {'rep-top':overview, ...(isScript ? reportScript(s, g) : reportSpeech(s, g, sample))};
+  const tabs = repTabs(isScript).filter(([id]) => sections[id]);
+  if(!S.repTab || S.repTab.key !== s.id) S.repTab = {key:s.id, tab:tabs.some(([id]) => id === S.params.sec) ? S.params.sec : 'rep-top'};
+  const cur = tabs.find(([id]) => id === S.repTab.tab) || tabs[0];
+  html += `${repNav(tabs, cur[0], sample)}<div class="rep-pane tone-${cur[2]}" id="rep-pane" role="tabpanel" aria-label="${cur[1]}">${sections[cur[0]]}</div>`;
   return sample ? PublicLayout(`<div class="wrap" style="padding-block:32px 40px">${html}</div>`) : AppLayout(html);
 }
-/* Thanh mục lục dính ở đầu báo cáo (máy tính): nhảy nhanh tới từng phần. Dùng lại đúng tên các thẻ bên dưới. */
-function repNav(isScript, sample){
-  const items = isScript
-    ? [['rep-top', L('Tổng quan','Overview')], ['rep-weak', L('Điểm cần cải thiện','What to improve')], ['rep-pace', L('Số liệu kịch bản','Script stats')], ['rep-tr', L('Kịch bản của bạn','Your script')]]
-    : [['rep-top', L('Tổng quan','Overview')], ['rep-weak', L('Điểm cần cải thiện','What to improve')], ['rep-pace', L('Tốc độ nói','Pace')], ['rep-tl', L('Dòng thời gian lỗi','Issue timeline')], ['rep-body', L('Ngôn ngữ cơ thể','Body language')], ['rep-tr', L('Bản chép lời','Transcript')]];
-  return `<nav class="rep-nav ${sample ? 'pub' : ''}" aria-label="${L('Báo cáo','Report')}">${items.map(([id, l], i) => `<button class="${i ? '' : 'on'}" data-act="rep-sec" data-to="${id}">${l}</button>`).join('')}</nav>`;
+/* Các tab của báo cáo: [id, nhãn, tông màu]. Bấm tab nào chỉ hiện đúng phần đó. */
+function repTabs(isScript){
+  return isScript
+    ? [['rep-top', L('Tổng quan','Overview'), 'coral'], ['rep-weak', L('Điểm cần cải thiện','What to improve'), 'mauve'], ['rep-pace', L('Số liệu kịch bản','Script stats'), 'teal'], ['rep-qa', L('Khán giả AI','AI audience'), 'sand'], ['rep-tr', L('Kịch bản của bạn','Your script'), 'steel']]
+    : [['rep-top', L('Tổng quan','Overview'), 'coral'], ['rep-weak', L('Điểm cần cải thiện','What to improve'), 'mauve'], ['rep-pace', L('Tốc độ nói','Pace'), 'teal'], ['rep-tl', L('Dòng thời gian lỗi','Issue timeline'), 'sand'], ['rep-body', L('Ngôn ngữ cơ thể','Body language'), 'steel'], ['rep-qa', L('Khán giả AI','AI audience'), 'coral'], ['rep-tr', L('Bản chép lời','Transcript'), 'teal']];
 }
-function aiSummaryCard(s){
-  return `<div class="card mt rep-summary"><h3>${ic('sparkles',18)} ${L('Nhận xét tổng quan','Overview')}</h3>${s.summary ? `<p style="margin-top:8px">${esc(s.summary)}</p>` : ''}
+function repNav(tabs, cur, sample){
+  return `<nav class="rep-nav ${sample ? 'pub' : ''}" role="tablist" aria-label="${L('Báo cáo','Report')}">${tabs.map(([id, l, tone]) => `<button role="tab" class="tone-${tone} ${id === cur ? 'on' : ''}" aria-selected="${id === cur}" data-act="rep-sec" data-to="${id}">${l}</button>`).join('')}</nav>`;
+}
+function aiSummaryInner(s){
+  return `<div class="rep-summary"><h3>${ic('sparkles',18)} ${L('Nhận xét tổng quan','Overview')}</h3>${s.summary ? `<p style="margin-top:8px">${esc(s.summary)}</p>` : ''}
     ${s.strengths.length ? `<div class="sec-t" style="margin-top:14px">${L('Điểm mạnh','Strengths')}</div><ul class="unlock" style="margin-top:6px">${s.strengths.map(x => `<li>${ic('check',16)}<span>${esc(x)}</span></li>`).join('')}</ul>` : ''}
     ${s.notes.some(x => noteText(x)) ? `<div class="sec-t" style="margin-top:14px">${L('Về cách nói','Delivery')}</div><ul class="unlock" style="margin-top:6px">${s.notes.map(x => noteText(x)).filter(Boolean).map(x => `<li>${ic('info',16)}<span>${esc(x)}</span></li>`).join('')}</ul>` : ''}</div>`;
 }
@@ -305,46 +310,35 @@ function reportSpeech(s, g, sample){
   const srv = !!s.server, bs = R.body || {}, bv = k => bs[k] == null ? null : bs[k], bst = v => v == null ? 'warn' : v >= 70 ? 'good' : v >= 50 ? 'warn' : 'bad';
   const bodyTiles = srv ? [[L('Ánh mắt','Eye contact'),bv('eye')],[L('Cử chỉ tay','Gestures'),bv('gesture')],[L('Biểu cảm','Expression'),bv('expression')],[L('Tư thế','Posture'),bv('posture')]].filter(x => x[1] != null).map(([k,v]) => [k, v + '/100', bst(v), '']) : null;
   const hasBody = srv ? bodyTiles.length > 0 : (s.c.body != null || !!R.body); // máy chủ có điểm tổng "body" nhưng không có số đo chi tiết → coi như chưa có
-  return `
-    <div class="grid g-main mt">
-      <div class="card" id="rep-weak"><h3>${L('Điểm cần cải thiện','What to improve')}</h3><div class="sub">${L('Xếp theo mức ảnh hưởng tới người nghe','Ordered by impact on your audience')}</div>
-        <div style="margin-top:6px">${weakList(R.weak, s.goal, w => w.s == null || !R.segs[w.s] ? '' : `<div class="quote" style="margin-top:10px"><small>${L('Bản chép lời','Transcript')} · ${fmtT(R.segs[w.s].t)} · <button class="btn-link" style="font-size:12px" data-act="jump" data-to="seg-${w.s}">${L('Xem vị trí','Show')}</button></small>“${esc(segText(R.segs[w.s]))}”</div>`)}</div></div>
-      <div class="section-gap" style="gap:16px;min-width:0">
-        <div class="card" id="rep-pace"><h3>${L('Tốc độ nói','Pace')}</h3><div class="sub">${L('Từ/phút. Vùng xanh 120–150 là dễ nghe.','Words per minute. The green band (120–150) is easy to follow.')}</div><div style="margin-top:10px">${paceChart(R.pace)}</div></div>
-        ${qaCard(g, s.goal)}
-      </div>
-    </div>
-    ${timelineCard(R)}
-    <div class="card mt" id="rep-body"><h3>${L('Ngôn ngữ cơ thể','Body language')}</h3><div class="sub">${hasBody ? L('Phân tích từ video: ánh mắt, cử chỉ, biểu cảm, tư thế','From your video: eye contact, gestures, expression, posture') : R.video ? L('Chưa có số đo ngôn ngữ cơ thể cho video này. Tính năng đo trên trình duyệt đang được hoàn thiện.','No body-language measurements for this video yet. In-browser measurement is still being finished.') : L('Bài này nộp bằng âm thanh. Quay video để nhận phân tích ngôn ngữ cơ thể.','This was audio only. Record a video to get body language feedback.')}</div>
+  /* Mỗi phần là một "tab" riêng của báo cáo (chỉ hiện phần đang chọn). */
+  return {
+    'rep-weak': `<div class="card" id="rep-weak"><h3>${L('Điểm cần cải thiện','What to improve')}</h3><div class="sub">${L('Xếp theo mức ảnh hưởng tới người nghe','Ordered by impact on your audience')}</div>
+        <div style="margin-top:6px">${weakList(R.weak, s.goal, w => w.s == null || !R.segs[w.s] ? '' : `<div class="quote" style="margin-top:10px"><small>${L('Bản chép lời','Transcript')} · ${fmtT(R.segs[w.s].t)} · <button class="btn-link" style="font-size:12px" data-act="jump" data-to="seg-${w.s}">${L('Xem vị trí','Show')}</button></small>“${esc(segText(R.segs[w.s]))}”</div>`)}</div></div>${R.rewrites.length ? `<div class="mt"><div class="card"><h3>${L('Diễn đạt tốt hơn','Say it better')}</h3><div class="sub">${L('Gợi ý cho các câu chưa rõ','Suggestions for unclear sentences')}</div>
+        <div style="margin-top:10px">${R.rewrites.map(w => `<div class="rewrite"><div class="old"><small>${L('Bạn đã nói','You said')}</small>${esc(w.old)}</div><div class="new"><small>${L('Thử nói','Try')}</small>${esc(w.neu)}</div></div>`).join('')}</div></div></div>` : ''}`,
+    'rep-pace': `<div class="card" id="rep-pace"><h3>${L('Tốc độ nói','Pace')}</h3><div class="sub">${L('Từ/phút. Vùng xanh 120–150 là dễ nghe.','Words per minute. The green band (120–150) is easy to follow.')}</div><div style="margin-top:10px">${paceChart(R.pace)}</div></div>`,
+    'rep-tl': timelineCard(R),
+    'rep-body': `<div class="card" id="rep-body"><h3>${L('Ngôn ngữ cơ thể','Body language')}</h3><div class="sub">${hasBody ? L('Phân tích từ video: ánh mắt, cử chỉ, biểu cảm, tư thế','From your video: eye contact, gestures, expression, posture') : R.video ? L('Chưa có số đo ngôn ngữ cơ thể cho video này. Tính năng đo trên trình duyệt đang được hoàn thiện.','No body-language measurements for this video yet. In-browser measurement is still being finished.') : L('Bài này nộp bằng âm thanh. Quay video để nhận phân tích ngôn ngữ cơ thể.','This was audio only. Record a video to get body language feedback.')}</div>
       ${hasBody ? `<div class="body-l">${(srv ? bodyTiles : [[L('Ánh mắt','Eye contact'),'38%','bad',L('Nhìn xuống ghi chú 62% thời gian.','Looking at notes 62% of the time.')],[L('Cử chỉ tay','Gestures'),L('Ổn','Good'),'good',L('Dùng tay đếm ý rõ ràng, tự nhiên.','Clear, natural counting gestures.')],[L('Biểu cảm','Expression'),L('Ít','Limited'),'warn',L('Gương mặt ít thay đổi ở phần giữa.','Little change in the middle section.')],[L('Tư thế','Posture'),L('Lệch','Uneven'),'warn',L('Dồn trọng tâm sang một chân, đung đưa nhẹ.','Weight on one leg, slight swaying.')]]).map(([k,v,st,n]) => `<div class="card"><div class="muted" style="font-size:13px">${k}</div><div style="font-size:22px;font-weight:700;margin-top:2px">${v}</div><div class="status" style="color:var(--${st})">${st==='good' ? L('Tốt','Good') : st==='bad' ? L('Cần sửa','Fix') : L('Cần chú ý','Watch')}</div>${n ? `<p class="muted" style="font-size:13px;margin-top:6px">${n}</p>` : ''}</div>`).join('')}</div>` : (sample || R.video ? '' : `<button class="btn btn-outline btn-sm" style="margin-top:12px" data-act="retry" data-id="${s.id}" data-kind="video">${L('Luyện lại bằng video','Practise again on video')}</button>`)}
-    </div>
-    <div class="grid g-2 mt">
-      <div class="card" id="rep-tr"><h3>${L('Bản chép lời','Transcript')}</h3><div class="sub"><span style="color:var(--bad);font-weight:600">${L('Chữ đỏ','Red')}</span>: ${L('từ đệm · số: điểm cần cải thiện','filler words · numbers: issues')}</div>
-        <div class="transcript" style="margin-top:12px">${R.segs.map((sg,i) => `<div class="seg-t" id="seg-${i}"><span class="ts num">${fmtT(sg.t)}</span><span>${sg.p.map(([t,x]) => t === 'f' ? `<span class="f">${esc(x)}</span>` : esc(x)).join('')}${issueAt[i] ? `<span class="iss">#${issueAt[i]}</span>` : ''}</span></div>`).join('')}</div></div>
-      <div class="card"><h3>${L('Diễn đạt tốt hơn','Say it better')}</h3><div class="sub">${L('Gợi ý cho các câu chưa rõ','Suggestions for unclear sentences')}</div>
-        <div style="margin-top:10px">${R.rewrites.map(w => `<div class="rewrite"><div class="old"><small>${L('Bạn đã nói','You said')}</small>${esc(w.old)}</div><div class="new"><small>${L('Thử nói','Try')}</small>${esc(w.neu)}</div></div>`).join('')}</div></div>
-    </div>`;
+    </div>`,
+    'rep-qa': qaCard(g, s.goal),
+    'rep-tr': `<div class="card" id="rep-tr"><h3>${L('Bản chép lời','Transcript')}</h3><div class="sub"><span style="color:var(--bad);font-weight:600">${L('Chữ đỏ','Red')}</span>: ${L('từ đệm · số: điểm cần cải thiện','filler words · numbers: issues')}</div>
+        <div class="transcript" style="margin-top:12px">${R.segs.map((sg,i) => `<div class="seg-t" id="seg-${i}"><span class="ts num">${fmtT(sg.t)}</span><span>${sg.p.map(([t,x]) => t === 'f' ? `<span class="f">${esc(x)}</span>` : esc(x)).join('')}${issueAt[i] ? `<span class="iss">#${issueAt[i]}</span>` : ''}</span></div>`).join('')}</div></div>`,
+  };
 }
 function reportScript(s, g){
   const r = s.script, issueAt = {}; r.weak.forEach((w,i) => { if(w.s != null && !(w.s in issueAt)) issueAt[w.s] = i+1; });
   const paras = [...new Set(r.sentences.map(x => x.p))];
-  return `
-    <div class="grid g-main mt">
-      <div class="card" id="rep-weak"><h3>${L('Điểm cần cải thiện','What to improve')}</h3><div class="sub">${L('Xếp theo mức ảnh hưởng tới người nghe','Ordered by impact on your audience')}</div>
-        <div style="margin-top:6px">${weakList(r.weak, s.goal, w => w.s != null && r.sentences[w.s] ? `<div class="quote" style="margin-top:10px"><small>${L('Trong kịch bản','In your script')} · <button class="btn-link" style="font-size:12px" data-act="jump" data-to="sen-${w.s}">${L('Xem vị trí','Show')}</button></small>“${esc(r.sentences[w.s].t)}”</div>` : '')}</div></div>
-      <div class="section-gap" style="gap:16px;min-width:0">
-        <div class="card" id="rep-pace"><h3>${L('Số liệu kịch bản','Script stats')}</h3><div class="kv"><span>${L('Số từ','Words')}</span><b class="num">${r.wc}</b><span>${L('Số đoạn','Paragraphs')}</span><b class="num">${r.paras}</b><span>${L('Số câu','Sentences')}</span><b class="num">${r.sentences.length}</b><span>${L('Thời lượng khi nói','Speaking time')}</span><b class="num">${fmtDur(r.estSec)}</b><span>${L(`Phù hợp với ${tx(g.name).toLowerCase()}`, `Ideal for ${tx(g.name).toLowerCase()}`)}</span><b class="num">${g.target[0]}–${g.target[1]} ${L('phút','min')}</b><span>${L('Con số, số liệu','Numbers used')}</span><b class="num">${r.numCount}</b></div></div>
-        ${qaCard(g, s.goal)}
-      </div>
-    </div>
-    <div class="grid g-2 mt">
-      <div class="card" id="rep-tr"><h3>${L('Kịch bản của bạn','Your script')}</h3><div class="sub">${L('Câu được tô màu có số là điểm cần cải thiện tương ứng','Highlighted sentences match the numbered issues')}</div><div class="script-view" style="margin-top:12px">${paras.map(pi => `<p>${r.sentences.filter(x => x.p === pi).map(x => issueAt[x.i] ? `<mark id="sen-${x.i}">${esc(x.t)}</mark><span class="iss">#${issueAt[x.i]}</span>` : esc(x.t)).join(' ')}</p>`).join('')}</div></div>
-      <div class="card"><h3>${L('Viết lại tốt hơn','Write it better')}</h3><div class="sub">${L('Gọn hơn, dễ nói hơn','Tighter and easier to say')}</div><div style="margin-top:10px">${r.rewrites.length ? r.rewrites.map(w => `<div class="rewrite"><div class="old"><small>${L('Bạn đã viết','You wrote')}</small>${esc(w.old)}</div><div class="new"><small>${L('Thử viết','Try')}</small>${esc(w.neu)}</div></div>`).join('') : `<p class="muted" style="font-size:14px">${L('Không có câu nào cần viết lại.','No sentences need rewriting.')}</p>`}</div></div>
-    </div>`;
+  return {
+    'rep-weak': `<div class="card" id="rep-weak"><h3>${L('Điểm cần cải thiện','What to improve')}</h3><div class="sub">${L('Xếp theo mức ảnh hưởng tới người nghe','Ordered by impact on your audience')}</div>
+        <div style="margin-top:6px">${weakList(r.weak, s.goal, w => w.s != null && r.sentences[w.s] ? `<div class="quote" style="margin-top:10px"><small>${L('Trong kịch bản','In your script')} · <button class="btn-link" style="font-size:12px" data-act="jump" data-to="sen-${w.s}">${L('Xem vị trí','Show')}</button></small>“${esc(r.sentences[w.s].t)}”</div>` : '')}</div></div><div class="mt"><div class="card"><h3>${L('Viết lại tốt hơn','Write it better')}</h3><div class="sub">${L('Gọn hơn, dễ nói hơn','Tighter and easier to say')}</div><div style="margin-top:10px">${r.rewrites.length ? r.rewrites.map(w => `<div class="rewrite"><div class="old"><small>${L('Bạn đã viết','You wrote')}</small>${esc(w.old)}</div><div class="new"><small>${L('Thử viết','Try')}</small>${esc(w.neu)}</div></div>`).join('') : `<p class="muted" style="font-size:14px">${L('Không có câu nào cần viết lại.','No sentences need rewriting.')}</p>`}</div></div></div>`,
+    'rep-pace': `<div class="card" id="rep-pace"><h3>${L('Số liệu kịch bản','Script stats')}</h3><div class="kv"><span>${L('Số từ','Words')}</span><b class="num">${r.wc}</b><span>${L('Số đoạn','Paragraphs')}</span><b class="num">${r.paras}</b><span>${L('Số câu','Sentences')}</span><b class="num">${r.sentences.length}</b><span>${L('Thời lượng khi nói','Speaking time')}</span><b class="num">${fmtDur(r.estSec)}</b><span>${L(`Phù hợp với ${tx(g.name).toLowerCase()}`, `Ideal for ${tx(g.name).toLowerCase()}`)}</span><b class="num">${g.target[0]}–${g.target[1]} ${L('phút','min')}</b><span>${L('Con số, số liệu','Numbers used')}</span><b class="num">${r.numCount}</b></div></div>`,
+    'rep-qa': qaCard(g, s.goal),
+    'rep-tr': `<div class="card" id="rep-tr"><h3>${L('Kịch bản của bạn','Your script')}</h3><div class="sub">${L('Câu được tô màu có số là điểm cần cải thiện tương ứng','Highlighted sentences match the numbered issues')}</div><div class="script-view" style="margin-top:12px">${paras.map(pi => `<p>${r.sentences.filter(x => x.p === pi).map(x => issueAt[x.i] ? `<mark id="sen-${x.i}">${esc(x.t)}</mark><span class="iss">#${issueAt[x.i]}</span>` : esc(x.t)).join(' ')}</p>`).join('')}</div></div>`,
+  };
 }
 function timelineCard(R){
   const ticks = Array.from({length:5}, (_,i) => fmtT(Math.round(R.dur*i/4)));
-  const html = `<div class="card mt" id="rep-tl"><div class="card-head"><div class="t"><h3>${L('Dòng thời gian lỗi','Issue timeline')}</h3>${proChip()}</div></div><div class="sub">${L('Bấm vào một chấm để xem đoạn bản chép lời tương ứng.','Click a dot to jump to that part of the transcript.')}</div>
+  const html = `<div class="card" id="rep-tl"><div class="card-head"><div class="t"><h3>${L('Dòng thời gian lỗi','Issue timeline')}</h3>${proChip()}</div></div><div class="sub">${L('Bấm vào một chấm để xem đoạn bản chép lời tương ứng.','Click a dot to jump to that part of the transcript.')}</div>
     <div class="tl"><div class="tl-track"></div>${R.marks.map(m => `<button class="tl-m" style="left:${m.t/R.dur*100}%" data-act="jump" data-to="seg-${m.s}" aria-label="${fmtT(m.t)}: ${markLabel(m)}" title="${fmtT(m.t)} · ${markLabel(m)}"><i style="background:var(--${MARK_TYPES[m.type][0]})"></i></button>`).join('')}</div>
     <div class="tl-ticks num">${ticks.map(x => `<span>${x}</span>`).join('')}</div>
     <div class="legend">${Object.values(MARK_TYPES).map(([c,l]) => `<span><i style="background:var(--${c});height:8px;width:8px;border-radius:50%"></i>${l()}</span>`).join('')}</div>

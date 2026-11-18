@@ -49,29 +49,21 @@ function vLanding(){
 
   <section class="section format-sec" id="khoa-hoc-gt"><div class="wrap">
     <div class="sec-head reveal"><h2>${L('Luyện cho đúng sân khấu bạn sắp bước lên.','Train for the stage you are about to step on.')}</h2><p class="strong">${L('AI riêng cho từng loại hình thuyết trình.','A dedicated AI for each speaking format.')}</p></div>
-    <div class="format-grid">${GOAL_KEYS.map((k, n) => formatCard(k, n)).join('')}</div>
+    <div class="format-row">${GOAL_KEYS.map((k, n) => formatCard(k, n)).join('')}</div>
   </div></section>
 
   <section class="section cta-sec"><div class="wrap">
     <div class="cta-band reveal">${mosaicHtml()}<div class="cta-in"><div><h2>${L('Bài thuyết trình tiếp theo sẽ khác.','Your next presentation will be different.')}</h2><p>${L('Miễn phí 3 lượt phân tích mỗi tháng. Không cần thẻ ngân hàng.','3 free analyses every month. No card needed.')}</p></div><button class="btn btn-primary btn-lg" data-go="bat-dau">${L('Bắt đầu miễn phí','Start for free')}</button></div></div>
   </div></section>`, {minimal:true});
 }
-/* Thẻ loại hình gọn cho trang chủ: ảnh, tên khóa, người nghe AI; bấm cả thẻ để bắt đầu. */
+/* Khối loại hình theo phác thảo (2026-11-18): mỗi khối một màu, tên "Luyện …" và hình minh họa lớn; bấm để bắt đầu với mục tiêu đó. */
+const FORMAT_LOOK = {presentation:['f-present','coral'], reporting:['f-report','sand'], interview:['f-interview','teal'], pitching:['f-pitch','mauve'], debating:['f-debate','steel']};
 function formatCard(k, n = 0){
-  const g = GOALS[k], ls = COURSES[k];
-  return `<button class="format-card reveal" style="--rd:${n*.08}s" data-act="start-goal" data-goal="${k}"><span class="format-img"><img src="img/${g.img}" alt="${tx(g.alt)}" loading="lazy" width="800" height="600"></span>
-    <span class="format-body"><b>${L('Khóa luyện','Course:')} ${tx(g.name).toLowerCase()}</b><span class="format-meta">${ic('book',14)} ${ls.length} ${L('bài học','lessons')} · ${ic('users',14)} ${g.persona}</span></span>
-    <span class="format-go">${L('Khám phá khóa học','Explore course')} ${ic('arrow',14)}</span></button>`;
-}
-function courseCard(k, {guest=false}={}){
-  const g = GOALS[k], ls = COURSES[k], mins = ls.reduce((a,l) => a + l.mins, 0);
-  const path = !guest && S.data ? coursePath(k, S.data) : null, mine = !guest && S.data && S.data.profile.goal === k;
-  return `<div class="course-card"><div class="course-top"><img src="img/${g.img}" alt="${tx(g.alt)}" loading="lazy" width="800" height="600">${mine ? `<span class="chip yellow badge">${ic('star',12)} ${L('Mục tiêu của bạn','Your goal')}</span>` : ''}</div>
-    <div class="course-body"><span class="chip ${'c-' + g.color}" style="align-self:flex-start">${ic(goalIcon[k],14)} ${tx(g.name)}</span><h3>${L('Khóa luyện','Course:')} ${tx(g.name).toLowerCase()}</h3><p>${tx(g.desc)}</p>
-      <div class="course-meta"><span>${ic('book',14)} ${ls.length} ${L('bài học','lessons')}</span><span>${ic('clock',14)} ${mins} ${L('phút','min')}</span><span>${ic('users',14)} ${g.persona}</span></div>
-      ${path ? `<div class="meter good" aria-label="${path.done}/${path.total}"><b style="width:${path.done/path.total*100}%"></b></div><div class="hint">${L(`Đã hoàn thành ${path.done}/${path.total} bài`, `${path.done} of ${path.total} lessons done`)}</div>` : ''}
-      <div class="course-acts">${guest ? `<button class="btn btn-primary btn-sm" data-act="start-goal" data-goal="${k}">${L('Khám phá khóa học','Explore course')}</button><button class="btn btn-outline btn-sm" data-go="bao-cao-mau">${L('Xem báo cáo mẫu','Sample report')}</button>` : `<button class="btn btn-primary btn-sm" data-go="khoa-hoc-chi-tiet" data-p="g=${k}">${path && path.done ? L('Học tiếp','Continue') : L('Vào khóa học','Open course')}</button>`}</div>
-    </div></div>`;
+  const g = GOALS[k], [icon, tone] = FORMAT_LOOK[k] || ['mic','coral'];
+  return `<button class="format-block reveal tone-${tone}" style="--rd:${n*.08}s" data-act="start-goal" data-goal="${k}" aria-label="${L(`Luyện ${tx(g.name).toLowerCase()}`, `${tx(g.name)} practice`)}">
+    <span class="fb-title">${L(`Luyện ${tx(g.name).toLowerCase().replace(/ /g, '&nbsp;')}`, `${tx(g.name)} practice`)}</span>
+    <span class="fb-art" aria-hidden="true"><span class="fb-blob"></span><span class="fb-ic">${ic(icon,64)}</span></span>
+    <span class="fb-go" aria-hidden="true">${ic('arrow',18)}</span></button>`;
 }
 
 /* ---------- Bắt đầu (khách): ngôn ngữ giao diện → mục tiêu → ngôn ngữ bài nói → xem trước ---------- */
