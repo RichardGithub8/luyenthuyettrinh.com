@@ -969,3 +969,32 @@ details.faq p{color:var(--muted);font-size:14px;margin-top:8px;max-width:70ch}
 /* ---------- Chữ tiêu đề Lexend ---------- */
 h1,h2,.logo .lname,.timer,.hr-score,.an-ring-c b,.ring .rv b,.stat .v,.price .amt{font-family:var(--font-d);letter-spacing:-.02em}
 h3{font-family:var(--font-d);font-weight:500;letter-spacing:-.01em}
+
+/* ---------- Tổng quan theo phác thảo (2026-11-18) ---------- */
+.dash-head{margin-bottom:20px}
+.dash-latest{width:100%;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:24px;align-items:center;text-align:left;cursor:pointer;border:1px solid var(--line);border-radius:999px;padding:16px 32px 16px 16px;background:linear-gradient(100deg,#FFF1EC,#FFF8F0 45%,#EDFAFA);box-shadow:var(--shadow-sm);transition:transform .3s var(--ease),box-shadow .3s}
+.dash-latest:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.dash-latest .ring{background:#fff;border-radius:50%}
+.dl-body{display:flex;flex-direction:column;gap:3px;min-width:0}
+.dl-k{font-size:13px;font-weight:600;color:var(--coral-ink)}
+.dl-body b{font-family:var(--font-d);font-size:20px;font-weight:600;letter-spacing:-.015em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dl-sub{font-size:14px;color:var(--muted)}
+.dl-go{display:inline-flex;align-items:center;gap:6px;font-weight:600;color:var(--teal-ink);white-space:nowrap}
+.dash-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:20px}
+.dash-stat{border-radius:28px;padding:22px 24px;background:var(--t-50);border:1px solid color-mix(in srgb,var(--t2) 40%,transparent);transition:transform .3s var(--ease)}
+.dash-stat:hover{transform:translateY(-3px)}
+.dash-stat .k{font-size:13.5px;font-weight:500;color:var(--t-ink)}
+.dash-stat .v{font-family:var(--font-d);font-size:34px;font-weight:700;letter-spacing:-.03em;margin-top:6px;line-height:1.1}
+.dash-stat .v small{font-size:15px;font-weight:500;color:var(--muted)}
+.dash-stat .d{font-size:12.5px;color:var(--muted);margin-top:4px}
+.dash-stat .meter{display:block;background:rgba(255,255,255,.8)}
+.dash-stat .meter b{background:linear-gradient(90deg,var(--t2),var(--t))}
+.dash-issues{display:flex;gap:24px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:20px;border:1px solid var(--line);border-radius:999px;padding:22px 26px 22px 34px;background:#fff;box-shadow:var(--shadow-sm)}
+.di-main{display:flex;gap:36px;align-items:center;flex-wrap:wrap;min-width:0}
+.di-main h3{font-size:18px}
+.di-list{display:flex;gap:32px;flex-wrap:wrap}
+.di-btn{border-radius:999px}
+.dash-start{display:flex;justify-content:center;margin-top:36px}
+.dash-start .btn{border-radius:999px;padding:16px 40px;min-height:58px;font-size:17px}
+@media (max-width:1100px){.dash-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:720px){.dash-latest{grid-template-columns:auto minmax(0,1fr);border-radius:24px;padding:16px}.dl-go{grid-column:1/-1}.dash-issues{border-radius:24px;padding:20px}.dash-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.dash-stat{padding:16px 18px;border-radius:20px}.dash-stat .v{font-size:28px}.dash-start .btn{width:100%}}

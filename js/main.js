@@ -80,6 +80,7 @@ function render(){
   $('#app').innerHTML = R.v() + modalHtml() + devHtml() + (S.offline ? `<div class="offline" role="alert">${ic('wifi',14)} ${L('Mất kết nối mạng. Một số thao tác sẽ không thực hiện được cho tới khi có mạng lại.','You’re offline. Some actions won’t work until you reconnect.')}</div>` : '');
   if(S.lastRoute !== r){ window.scrollTo(0,0); S.lastRoute = r; }
   revealInit();
+  if(r === 'bao-cao' && S.params.sec && S.secDone !== location.hash){ const t = document.getElementById(S.params.sec); if(t){ S.secDone = location.hash; setTimeout(() => t.scrollIntoView({behavior:'smooth', block:'start'}), 80); } } // chỉ cuộn một lần cho mỗi link
   if(r === 'ghi-am') attachRec();
 }
 /* Hiện dần các khối .reveal khi cuộn tới (trang chủ). Tắt chuyển động: hiện ngay. */
