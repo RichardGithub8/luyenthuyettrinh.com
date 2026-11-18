@@ -218,8 +218,10 @@ const Practice = {
     if(item.placement){ D.placement = {id:s.id, score:s.score, seen:false}; D.onboarded = true; S.draft = null; }
     this.deriveLessons(); await this.refreshMe(); save(); S.qa = {};
     const here = S.route === 'dang-phan-tich' && S.params.id === item.id;
-    toast(item.placement ? L('Đã có kết quả bài test đầu vào','Your placement result is ready') : L('Báo cáo đã sẵn sàng','Your report is ready'));
-    if(here) item.placement ? go('tong-quan') : go('bao-cao', {id:s.id}); else render();
+    const onScreen = S.route === 'dang-phan-tich' && S.params.id === item.id;
+    if(!onScreen) toast(item.placement ? L('Đã có kết quả bài test đầu vào','Your placement result is ready') : L('Báo cáo đã sẵn sàng','Your report is ready'));
+    if(here){ render(); setTimeout(() => { if(S.route === 'dang-phan-tich' && S.params.id === item.id) item.placement ? go('tong-quan') : go('bao-cao', {id:s.id}); }, 900); } // khoảnh khắc "100%" trước khi mở báo cáo
+    else render();
   },
 
   /* ---- Báo cáo và thư viện ---- */

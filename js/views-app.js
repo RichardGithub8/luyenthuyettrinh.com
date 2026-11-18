@@ -191,18 +191,56 @@ const countText = n => L(`${n} từ · khoảng ${fmtDur(Math.round(n/130*60))} 
 function vAnalyzing(){
   const id = S.params.id, item = libItem(id), j = S.job && S.job.libId === id ? S.job : null;
   if(!item) return AppLayout(`<div class="empty">${L('Không tìm thấy bài nói này.','This talk could not be found.')}<button class="btn btn-primary btn-sm" data-go="thu-vien">${L('Mở thư viện','Open library')}</button></div>`);
-  const steps = item.kind === 'script' ? AN_STEPS.script : AN_STEPS.speech.filter((s,i) => i !== 5 || item.kind === 'video');
-  const failed = item.status === 'error' && (!j || j.status !== 'running'), i = j ? j.i : failed ? (item.failStep ?? 2) : 0, pct = Math.round(i/steps.length*100);
-  const timeout = failed && item.reason === 'timeout';
-  return AppLayout(`<div class="an">
-    <h1>${failed ? (timeout ? L('Phân tích lâu hơn dự kiến','Analysis is taking too long') : L('AI chưa phân tích được bài này','AI couldn’t analyse this talk')) : item.kind === 'script' ? L('AI đang đọc kịch bản của bạn','AI is reading your script') : L('AI đang nghe lại bài nói của bạn','AI is listening to your talk')}</h1>
-    <span class="eyebrow">${item.kind === 'script' ? L(`Kịch bản ${item.words ?? wordsOf(item.text)} từ`, `Script, ${item.words ?? wordsOf(item.text)} words`) : L(`Bài nói ${fmtT(item.dur)}`, `Talk, ${fmtT(item.dur)}`)}</span>
-    <p class="muted" style="margin-top:8px">${esc(item.title)}</p>
-    ${failed ? `<div style="margin-top:16px">${alertBox('err', timeout ? L('Máy chủ phản hồi quá thời gian chờ. Lượt phân tích chưa bị trừ, bài nói vẫn được lưu trong Thư viện.','The server timed out. No analysis was used up, and your talk is still saved in your Library.') : L('Máy chủ AI gặp lỗi khi xử lý. Lượt phân tích chưa bị trừ, bài nói vẫn được lưu trong Thư viện.','The AI server hit an error. No analysis was used up, and your talk is still saved in your Library.'))}</div>` : `<p class="muted" style="margin-top:4px">${L('Thường mất dưới 2 phút. Bạn có thể rời trang, kết quả sẽ có trong Thư viện.','Usually under 2 minutes. You can leave this page; results will appear in your Library.')}</p>`}
-    <div class="big-meter ${failed ? 'fail' : ''}"><b style="width:${failed ? Math.max(pct, 20) : pct}%"></b></div>
-    <ul class="an-steps">${steps.map((s,k) => `<li class="${k<i ? 'done' : k===i ? (failed ? 'fail' : 'act') : ''}"><span class="st">${k<i ? ic('check',14) : k===i && failed ? ic('x',12) : ''}</span>${tx(s)}</li>`).join('')}</ul>
-    ${failed ? `<div class="practice-btns"><button class="btn btn-primary" data-act="analyze" data-id="${id}">${L('Thử lại','Try again')}</button><button class="btn btn-ghost" data-go="thu-vien">${L('Về thư viện','Go to library')}</button></div>` : ''}
+  const isScript = item.kind === 'script';
+  /* Mỗi bước có một hình minh họa riêng cho việc AI đang làm (giữ chỉ số gốc để bỏ bước "ngôn ngữ cơ thể" khi không có video). */
+  const all = (isScript ? AN_STEPS.script : AN_STEPS.speech).map((s, k) => ({s, vis:(isScript ? AN_VIS.script : AN_VIS.speech)[k]}));
+  const steps = isScript ? all : all.filter((x, k) => k !== 5 || item.kind === 'video');
+  const failed = item.status === 'error' && (!j || j.status !== 'running'), i = j ? j.i : failed ? (item.failStep ?? 2) : 0;
+  const done = !!(j && j.status === 'done'), n = steps.length, pct = Math.round(Math.min(i, n)/n*100), prev = Math.round(Math.max(0, i - 1)/n*100);
+  const timeout = failed && item.reason === 'timeout', cur = steps[Math.min(i, n - 1)];
+  const R = 74, C = 2*Math.PI*R;
+  const ringHtml = `<div class="an-ring ${failed ? 'fail' : ''} ${done ? 'done' : ''}" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100" aria-label="${tx(cur.s)}">
+      <svg viewBox="0 0 180 180" aria-hidden="true"><defs><linearGradient id="an-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22D3EE"/><stop offset="1" stop-color="#2563EB"/></linearGradient></defs>
+        <circle cx="90" cy="90" r="${R}" class="trk"/><circle cx="90" cy="90" r="${R}" class="val" stroke-dasharray="${C}" style="--from:${C*(1-prev/100)};--to:${C*(1-(failed ? Math.max(pct, 20) : pct)/100)}"/></svg>
+      <div class="an-ring-c">${done ? ic('check',44) : failed ? ic('x',40) : `<b class="num">${pct}<small>%</small></b><span class="num">${Math.min(i + 1, n)}/${n}</span>`}</div>
+    </div>`;
+  return AppLayout(`<div class="an2">
+    <div class="an-head">
+      <span class="eyebrow">${isScript ? L(`Kịch bản ${item.words ?? wordsOf(item.text)} từ`, `Script, ${item.words ?? wordsOf(item.text)} words`) : L(`Bài nói ${fmtT(item.dur)}`, `Talk, ${fmtT(item.dur)}`)} · ${esc(item.title)}</span>
+      <h1>${failed ? (timeout ? L('Phân tích lâu hơn dự kiến','Analysis is taking too long') : L('AI chưa phân tích được bài này','AI couldn’t analyse this talk')) : isScript ? L('AI đang đọc kịch bản của bạn','AI is reading your script') : L('AI đang nghe lại bài nói của bạn','AI is listening to your talk')}</h1>
+      ${failed ? `<div style="margin-top:14px">${alertBox('err', timeout ? L('Máy chủ phản hồi quá thời gian chờ. Lượt phân tích chưa bị trừ, bài nói vẫn được lưu trong Thư viện.','The server timed out. No analysis was used up, and your talk is still saved in your Library.') : L('Máy chủ AI gặp lỗi khi xử lý. Lượt phân tích chưa bị trừ, bài nói vẫn được lưu trong Thư viện.','The AI server hit an error. No analysis was used up, and your talk is still saved in your Library.'))}</div>` : `<p class="muted">${L('Thường mất dưới 2 phút. Bạn có thể rời trang, kết quả sẽ có trong Thư viện.','Usually under 2 minutes. You can leave this page; results will appear in your Library.')}</p>`}
+    </div>
+    <div class="an-grid">
+      <section class="an-stage">
+        ${ringHtml}
+        <div class="an-now">${failed ? '' : `<span class="an-spark">${ic(done ? 'ok' : 'sparkles',16)}</span>`}<b>${done ? L('Báo cáo đã sẵn sàng','Your report is ready') : tx(cur.s)}</b></div>
+        <div class="an-vis" aria-hidden="true">${failed ? '' : anVisual(done ? 'rubric' : cur.vis, item)}</div>
+      </section>
+      <section class="an-side">
+        <ul class="an-steps">${steps.map((x,k) => `<li class="${k<i || done ? 'done' : k===i ? (failed ? 'fail' : 'act') : ''}"><span class="st">${k<i || done ? ic('check',14) : k===i && failed ? ic('x',12) : ''}</span>${tx(x.s)}</li>`).join('')}</ul>
+        ${failed ? `<div class="practice-btns"><button class="btn btn-primary" data-act="analyze" data-id="${id}">${L('Thử lại','Try again')}</button><button class="btn btn-ghost" data-go="thu-vien">${L('Về thư viện','Go to library')}</button></div>` : ''}
+      </section>
+    </div>
   </div>`);
+}
+/* Hình minh họa cho từng bước phân tích: chỉ là hoạt ảnh (không hiển thị số liệu giả như kết quả thật). */
+const AN_VIS = {speech:['upload','transcribe','structure','pace','filler','body','rubric'], script:['read','split','structure','ends','time','rubric']};
+function anVisual(k, item){
+  const lines = (n, cls='') => Array.from({length:n}, (_, i) => `<i class="ln ${cls}" style="--w:${[92,78,86,64,81,70][i % 6]}%;--d:${i*.22}s"></i>`).join('');
+  const fillers = I18N.ui === 'en' ? ['um','uh','like'] : ['ừm','à','kiểu'];
+  switch(k){
+    case 'upload': return `<div class="v-upload"><span class="v-file">${ic(item.kind === 'video' ? 'video' : 'wave',22)}</span><div class="v-flow"><i></i><i></i><i></i></div><span class="v-cloud">${ic('upload',22)}</span></div>`;
+    case 'transcribe': return `<div class="v-tr"><div class="v-bars">${Array.from({length:18}, (_, i) => `<i style="--d:${(i%6)*.12}s;--h:${30 + (i*37 % 60)}%"></i>`).join('')}</div><span class="v-arrow">${ic('arrow',18)}</span><div class="v-lines">${lines(4,'type')}</div></div>`;
+    case 'structure': return `<div class="v-struct">${[0,1,2].map(i => `<div class="blk" style="--d:${i*.45}s"><span class="ck">${ic('check',12)}</span><i style="--w:${[70,88,60][i]}%"></i></div>`).join('')}</div>`;
+    case 'pace': return `<div class="v-pace"><span class="band"></span>${[58,64,82,56,60,66].map((h, i) => `<i class="${h > 75 ? 'over' : ''}" style="--h:${h}%;--d:${i*.18}s"></i>`).join('')}</div>`;
+    case 'filler': return `<div class="v-fill"><div class="v-lines">${lines(3)}</div><div class="chips-f">${fillers.map((f, i) => `<span style="--d:${.5 + i*.45}s">${f}</span>`).join('')}</div></div>`;
+    case 'body': return `<div class="v-body">${ic('face',72)}<i class="scan"></i>${[[34,40],[66,40],[50,58],[38,72],[62,72]].map(([x,y], i) => `<b style="left:${x}%;top:${y}%;--d:${i*.2}s"></b>`).join('')}</div>`;
+    case 'read': return `<div class="v-read">${ic('doc',40)}<div class="v-lines">${lines(5,'scan')}</div></div>`;
+    case 'split': return `<div class="v-split">${[0,1,2].map(i => `<div class="para" style="--d:${i*.3}s">${lines(2)}</div>`).join('')}</div>`;
+    case 'ends': return `<div class="v-ends"><div class="blk hi" style="--d:0s"><i style="--w:80%"></i></div><div class="blk"><i style="--w:92%"></i></div><div class="blk"><i style="--w:74%"></i></div><div class="blk hi" style="--d:.6s"><i style="--w:66%"></i></div></div>`;
+    case 'time': return `<div class="v-time">${ic('clock',48)}<div class="v-lines">${lines(3,'type')}</div></div>`;
+    default: return `<div class="v-rubric">${Object.keys(CRIT).map((c, i) => `<div><span>${tx(CRIT[c])}</span><i style="--w:${[82,74,88,66,78,62,70][i % 7]}%;--d:${i*.12}s"></i></div>`).join('')}</div>`;
+  }
 }
 
 /* ---------- Báo cáo ---------- */
