@@ -149,6 +149,7 @@ function beginRec(r, stream, sim){
   r.state = 'live'; r.sim = sim; r.stream = stream;
   if(stream){
     try { r.ctx = new (window.AudioContext || window.webkitAudioContext)(); const src = r.ctx.createMediaStreamSource(stream); r.analyser = r.ctx.createAnalyser(); r.analyser.fftSize = 256; src.connect(r.analyser); } catch(e){}
+    if(r.analyser){ r.voice = 0; const buf = new Uint8Array(r.analyser.fftSize); r.lvTimer = setInterval(() => sampleVoice(r, buf), 100); }
     if(window.MediaRecorder){ try { r.mr = new MediaRecorder(stream); r.mr.ondataavailable = e => { if(e.data && e.data.size) r.chunks.push(e.data); }; r.mr.start(1000); } catch(e){ r.mr = null; } }
   }
   clearInterval(r.timer); r.timer = setInterval(() => tick(r), 1000);
@@ -194,7 +195,15 @@ function drawWave(r){
   }
   r.raf = requestAnimationFrame(() => drawWave(r));
 }
-function releaseRec(r){ clearInterval(r.timer); cancelAnimationFrame(r.raf); if(r.stream) r.stream.getTracks().forEach(t => t.stop()); try { if(r.ctx) r.ctx.close(); } catch(e){} }
+/* Đo mức âm lượng mỗi 100 ms; r.voice đếm số khung có tiếng nói (RMS > ngưỡng). Dưới VOICE_MIN khung ≈ không nghe thấy ai nói. */
+const VOICE_RMS = 0.03, VOICE_MIN = 20;
+function sampleVoice(r, buf){
+  if(r.paused || !r.analyser) return;
+  r.analyser.getByteTimeDomainData(buf);
+  let sum = 0; for(let i = 0; i < buf.length; i++){ const v = (buf[i] - 128)/128; sum += v*v; }
+  if(Math.sqrt(sum/buf.length) > VOICE_RMS) r.voice++;
+}
+function releaseRec(r){ clearInterval(r.timer); clearInterval(r.lvTimer); cancelAnimationFrame(r.raf); if(r.stream) r.stream.getTracks().forEach(t => t.stop()); try { if(r.ctx) r.ctx.close(); } catch(e){} }
 function cleanupRec(){ const r = S.rec; if(!r) return; if(r.mr && r.mr.state !== 'inactive'){ r.mr.onstop = null; try { r.mr.stop(); } catch(e){} } releaseRec(r); S.rec = null; }
 function stopRec(){
   const r = S.rec; if(!r || r.state !== 'live') return;
@@ -203,7 +212,9 @@ function stopRec(){
   const done = blob => {
     releaseRec(r); S.rec = null;
     if(!blob || !blob.size){ toast(L('Không thu được âm thanh. Hãy kiểm tra micro rồi ghi lại.','No audio was captured. Check your microphone and record again.'), 'err'); return go(d.placement ? 'bai-test' : 'luyen-tap'); }
-    Practice.startMedia(blob, dur, d.kind === 'video' ? 'video' : 'audio', 'recording');
+    const kind = d.kind === 'video' ? 'video' : 'audio';
+    if(r.analyser && r.voice < VOICE_MIN){ S.silent = {blob, dur, kind}; S.modal = {type:'silent'}; return render(); }
+    Practice.startMedia(blob, dur, kind, 'recording');
   };
   if(r.mr && r.mr.state !== 'inactive'){ r.mr.onstop = () => done(new Blob(r.chunks, {type:r.mr.mimeType || (d.kind === 'video' ? 'video/webm' : 'audio/webm')})); r.mr.stop(); }
   else done(null);
@@ -285,6 +296,7 @@ function modalHtml(){
         : k === 'pass' ? L('Mua thêm một Pass để có thêm 15 lượt và 7 ngày, hoặc chuyển lên Premium.','Buy another Pass for 15 more analyses and 7 more days, or move to Premium.')
         : L(`Bạn đã chạm mức dùng hợp lý ${plan().limit} lượt của tháng. Lượt sẽ làm mới vào ngày 1 tháng sau.`,`You’ve reached this month’s fair-use limit of ${plan().limit}. Credits reset on the 1st of next month.`)}</p></div><div class="acts" style="justify-content:center">${sugg ? `<button class="btn btn-primary" data-act="pay-for" data-id="${it ? it.id : ''}" data-product="pass">${k === 'pass' ? L('Mua thêm Pass','Buy another Pass') : L('Mua Pass 7 ngày','Get a 7-day Pass')}</button><button class="btn btn-outline" data-act="pay-for" data-id="${it ? it.id : ''}" data-product="premium">Premium</button>` : ''}<button class="btn btn-ghost" data-act="modal-close">${L('Để sau','Later')}</button></div>`);
     }
+    case 'silent': return wrap(`<div class="center"><div class="m-ic c-orange">${ic('mic',28)}</div><h2 id="mt">${L('Không nghe thấy giọng nói','We couldn’t hear you')}</h2><p class="muted" style="font-size:14px">${L('Bản ghi gần như im lặng. Hãy kiểm tra micro đã bật, đúng thiết bị và không bị tắt tiếng, rồi ghi lại. Gửi bản ghi im lặng sẽ không có kết quả.','The recording is almost silent. Check that your microphone is on, the right device is selected and it isn’t muted, then record again. A silent recording can’t be analysed.')}</p></div><div class="acts" style="justify-content:center"><button class="btn btn-primary" data-act="silent-retry">${L('Ghi lại','Record again')}</button><button class="btn btn-ghost" data-act="silent-send">${L('Vẫn gửi phân tích','Send anyway')}</button></div>`);
     case 'welcome': return wrap(`<span class="chip pro">${planName(M.plan).toUpperCase()}</span><h2 id="mt" style="margin-top:12px">${L(`Gói ${planName(M.plan)} đã được kích hoạt`, `${planName(M.plan)} is now active`)}</h2><p class="muted" style="margin-top:6px;font-size:14px">${L('Thanh toán thành công. Quyền lợi của bạn:','Payment successful. What you get:')}</p><ul class="unlock">${planFeatures(M.plan).map(x => `<li>${ic('check',16)}<span>${x}</span></li>`).join('')}</ul><div class="acts">${M.plan === 'team' ? `<button class="btn btn-primary" data-act="modal-go" data-to="nhom">${L('Mở trang nhóm','Open team page')}</button>` : ''}<button class="btn ${M.plan === 'team' ? 'btn-ghost' : 'btn-primary'}" data-act="modal-close">${L('Tiếp tục','Continue')}</button></div>`);
     case 'pay': {
       const forItem = M.forId && libItem(M.forId), rank = {free:0, pass:1, premium:2, team:3}, cur = planKey();
@@ -335,7 +347,9 @@ const ACTIONS = {
   scroll(el){ const to = el.dataset.to; const run = () => { const t = document.getElementById(to); if(t) t.scrollIntoView({behavior:'smooth'}); }; if(S.route !== ''){ go(''); setTimeout(run, 60); } else run(); },
   copy(el){ const v = el.dataset.v; const ok = () => toast(L('Đã sao chép','Copied')); try { navigator.clipboard.writeText(v).then(ok, () => toast(v)); } catch(e){ toast(v); } },
   'ui-lang'(el){ I18N.set(el.dataset.v); if(S.data){ S.data.profile.ui = I18N.ui; save(); } render(); },
-  'modal-close'(){ const M = S.modal; if(M && M.type === 'pay' && M.step === 'redirect') return; if(M && M.type === 'pay') S.pendingAfterPay = null; S.modal = null; render(); },
+  'silent-retry'(){ S.silent = null; S.modal = null; if(S.draft) startRec(); else render(); },
+  'silent-send'(){ const x = S.silent; S.silent = null; S.modal = null; if(x) Practice.startMedia(x.blob, x.dur, x.kind, 'recording'); else render(); },
+  'modal-close'(){ const M = S.modal; if(M && M.type === 'silent') S.silent = null; if(M && M.type === 'pay' && M.step === 'redirect') return; if(M && M.type === 'pay') S.pendingAfterPay = null; S.modal = null; render(); },
   'modal-go'(el){ S.modal = null; go(el.dataset.to); },
   'start-goal'(el){ S.ob.goal = el.dataset.goal; go('bat-dau'); },
   'ob-goal'(el){ S.ob.goal = el.dataset.goal; render(); },

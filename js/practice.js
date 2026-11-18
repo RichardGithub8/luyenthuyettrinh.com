@@ -5,7 +5,7 @@
 
 const LIB_STATUS = {completed:'analyzed', queued:'analyzing', processing:'analyzing', pending_premium:'pending_premium', pending_quota:'pending_quota', failed:'error', cancelled:'error', uploading:'error', uploaded:'error'};
 const dayOf = t => String(t || new Date().toISOString()).slice(0, 10);
-const failReason = code => /TIMEOUT/i.test(code || '') ? 'timeout' : 'error';
+const failReason = code => /TIMEOUT/i.test(code || '') ? 'timeout' : /NO_SPEECH/.test(code || '') ? 'nospeech' : 'error';
 
 /* Mục thư viện (server) → mục thư viện của giao diện. `s` là tóm tắt buổi luyện mới nhất của mục đó. */
 function libFrom(it, s){
