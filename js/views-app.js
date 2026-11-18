@@ -202,7 +202,7 @@ function vAnalyzing(){
   const steps = isScript ? all : all.filter((x, k) => k !== 5 || item.kind === 'video');
   const failed = item.status === 'error' && (!j || j.status !== 'running'), i = j ? j.i : failed ? (item.failStep ?? 2) : 0;
   const done = !!(j && j.status === 'done'), n = steps.length, pct = Math.round(Math.min(i, n)/n*100), prev = Math.round(Math.max(0, i - 1)/n*100);
-  const timeout = failed && item.reason === 'timeout', cur = steps[Math.min(i, n - 1)];
+  const timeout = failed && item.reason === 'timeout', nospeech = failed && item.reason === 'nospeech', cur = steps[Math.min(i, n - 1)];
   const R = 74, C = 2*Math.PI*R;
   const ringHtml = `<div class="an-ring ${failed ? 'fail' : ''} ${done ? 'done' : ''}" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100" aria-label="${tx(cur.s)}">
       <svg viewBox="0 0 180 180" aria-hidden="true"><defs><linearGradient id="an-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF7A66"/><stop offset="1" stop-color="#4E93B6"/></linearGradient></defs>
@@ -212,8 +212,8 @@ function vAnalyzing(){
   return AppLayout(`<div class="an2">
     <div class="an-head">
       <span class="eyebrow">${isScript ? L(`Kịch bản ${item.words ?? wordsOf(item.text)} từ`, `Script, ${item.words ?? wordsOf(item.text)} words`) : L(`Bài nói ${fmtT(item.dur)}`, `Talk, ${fmtT(item.dur)}`)} · ${esc(item.title)}</span>
-      <h1>${failed ? (timeout ? L('Phân tích lâu hơn dự kiến','Analysis is taking too long') : L('AI chưa phân tích được bài này','AI couldn’t analyse this talk')) : isScript ? L('AI đang đọc kịch bản của bạn','AI is reading your script') : L('AI đang nghe lại bài nói của bạn','AI is listening to your talk')}</h1>
-      ${failed ? `<div style="margin-top:14px">${alertBox('err', timeout ? L('Máy chủ phản hồi quá thời gian chờ. Lượt phân tích chưa bị trừ, bài nói vẫn được lưu trong Thư viện.','The server timed out. No analysis was used up, and your talk is still saved in your Library.') : L('Máy chủ AI gặp lỗi khi xử lý. Lượt phân tích chưa bị trừ, bài nói vẫn được lưu trong Thư viện.','The AI server hit an error. No analysis was used up, and your talk is still saved in your Library.'))}</div>` : `<p class="muted">${L('Thường mất dưới 2 phút. Bạn có thể rời trang, kết quả sẽ có trong Thư viện.','Usually under 2 minutes. You can leave this page; results will appear in your Library.')}</p>`}
+      <h1>${failed ? nospeech ? L('AI không nghe thấy giọng nói','AI couldn’t hear any speech') : (timeout ? L('Phân tích lâu hơn dự kiến','Analysis is taking too long') : L('AI chưa phân tích được bài này','AI couldn’t analyse this talk')) : isScript ? L('AI đang đọc kịch bản của bạn','AI is reading your script') : L('AI đang nghe lại bài nói của bạn','AI is listening to your talk')}</h1>
+      ${failed ? `<div style="margin-top:14px">${alertBox('err', nospeech ? L('Bản ghi gần như im lặng hoặc không có lời nói rõ ràng. Hãy kiểm tra micro rồi ghi lại. Lượt phân tích chưa bị trừ.','The recording is nearly silent or has no clear speech. Check your microphone and record again. No analysis was used up.') : timeout ? L('Máy chủ phản hồi quá thời gian chờ. Lượt phân tích chưa bị trừ, bài nói vẫn được lưu trong Thư viện.','The server timed out. No analysis was used up, and your talk is still saved in your Library.') : L('Máy chủ AI gặp lỗi khi xử lý. Lượt phân tích chưa bị trừ, bài nói vẫn được lưu trong Thư viện.','The AI server hit an error. No analysis was used up, and your talk is still saved in your Library.'))}</div>` : `<p class="muted">${L('Thường mất dưới 2 phút. Bạn có thể rời trang, kết quả sẽ có trong Thư viện.','Usually under 2 minutes. You can leave this page; results will appear in your Library.')}</p>`}
     </div>
     <div class="an-grid">
       <section class="an-stage">
